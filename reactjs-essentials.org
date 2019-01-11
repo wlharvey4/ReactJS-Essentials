@@ -1,0 +1,46 @@
+# -*- mode: org; fill-column: 79; -*-
+
+#+TITLE: React.js Essentials
+#+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
+#+AUTHOR: Artemij Fedosejev
+#+DATE: <2019-01-11 Fri 14:08>
+
+#+TEXINFO: @insertcopying
+
+* Installing Powerful Tools for your Project
+
+* Create Your First React Element
+
+* Create Your First React Component
+
+* Make Your React Component Reactive
+
+* Use Your React Components With Another Library
+
+* Update Your React Components
+
+* Build Complex React Components
+
+* Test Your React Application With Jest
+
+* Supercharge Your React Architecture With Flux
+
+* Prepare Your React Application for Painless Maintenance with Flux
+
+* INDEX
+  :PROPERTIES:
+  :INDEX:    cp
+  :END:
+* COPYING
+  :PROPERTIES:
+  :COPYING:  t
+  :END:
+  {{{TITLE}}} by {{{AUTHOR}}}
+  \copy 2015 Packt Publishing
+* EXPORT SETTINGS                                                  :noexport:
+#+TEXINFO_CLASS: info
+#+TEXINFO_HEADER:
+#+TEXINFO_POST_HEADER:
+#+TEXINFO_DIR_CATEGORY: React
+#+TEXINFO_DIR_TITLE: React.js Essentials
+#+TEXINFO_DIR_DESC:Fast-paced guide to designing web apps with React.js

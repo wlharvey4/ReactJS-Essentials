@@ -1,0 +1,119 @@
+This is reactjs-essentials.info, produced by makeinfo version 6.5 from
+reactjs-essentials.texi.
+
+React.js Essentials by Artemij Fedosejev © 2015 Packt Publishing
+INFO-DIR-SECTION React
+START-INFO-DIR-ENTRY
+* React.js Essentials.  Fast-paced guide to designing web apps with React.js.
+END-INFO-DIR-ENTRY
+
+
+File: reactjs-essentials.info,  Node: Top,  Next: Installing Powerful Tools for your Project,  Up: (dir)
+
+React.js Essentials
+*******************
+
+React.js Essentials by Artemij Fedosejev © 2015 Packt Publishing
+
+* Menu:
+
+* Installing Powerful Tools for your Project::
+* Create Your First React Element::
+* Create Your First React Component::
+* Make Your React Component Reactive::
+* Use Your React Components With Another Library::
+* Update Your React Components::
+* Build Complex React Components::
+* Test Your React Application With Jest::
+* Supercharge Your React Architecture With Flux::
+* Prepare Your React Application for Painless Maintenance with Flux::
+* INDEX::
+
+
+File: reactjs-essentials.info,  Node: Installing Powerful Tools for your Project,  Next: Create Your First React Element,  Prev: Top,  Up: Top
+
+1 Installing Powerful Tools for your Project
+********************************************
+
+
+File: reactjs-essentials.info,  Node: Create Your First React Element,  Next: Create Your First React Component,  Prev: Installing Powerful Tools for your Project,  Up: Top
+
+2 Create Your First React Element
+*********************************
+
+
+File: reactjs-essentials.info,  Node: Create Your First React Component,  Next: Make Your React Component Reactive,  Prev: Create Your First React Element,  Up: Top
+
+3 Create Your First React Component
+***********************************
+
+
+File: reactjs-essentials.info,  Node: Make Your React Component Reactive,  Next: Use Your React Components With Another Library,  Prev: Create Your First React Component,  Up: Top
+
+4 Make Your React Component Reactive
+************************************
+
+
+File: reactjs-essentials.info,  Node: Use Your React Components With Another Library,  Next: Update Your React Components,  Prev: Make Your React Component Reactive,  Up: Top
+
+5 Use Your React Components With Another Library
+************************************************
+
+
+File: reactjs-essentials.info,  Node: Update Your React Components,  Next: Build Complex React Components,  Prev: Use Your React Components With Another Library,  Up: Top
+
+6 Update Your React Components
+******************************
+
+
+File: reactjs-essentials.info,  Node: Build Complex React Components,  Next: Test Your React Application With Jest,  Prev: Update Your React Components,  Up: Top
+
+7 Build Complex React Components
+********************************
+
+
+File: reactjs-essentials.info,  Node: Test Your React Application With Jest,  Next: Supercharge Your React Architecture With Flux,  Prev: Build Complex React Components,  Up: Top
+
+8 Test Your React Application With Jest
+***************************************
+
+
+File: reactjs-essentials.info,  Node: Supercharge Your React Architecture With Flux,  Next: Prepare Your React Application for Painless Maintenance with Flux,  Prev: Test Your React Application With Jest,  Up: Top
+
+9 Supercharge Your React Architecture With Flux
+***********************************************
+
+
+File: reactjs-essentials.info,  Node: Prepare Your React Application for Painless Maintenance with Flux,  Next: INDEX,  Prev: Supercharge Your React Architecture With Flux,  Up: Top
+
+10 Prepare Your React Application for Painless Maintenance with Flux
+********************************************************************
+
+
+File: reactjs-essentials.info,  Node: INDEX,  Prev: Prepare Your React Application for Painless Maintenance with Flux,  Up: Top
+
+INDEX
+*****
+
+
+
+Tag Table:
+Node: Top305
+Node: Installing Powerful Tools for your Project982
+Node: Create Your First React Element1219
+Node: Create Your First React Component1464
+Node: Make Your React Component Reactive1705
+Node: Use Your React Components With Another Library1963
+Node: Update Your React Components2240
+Node: Build Complex React Components2477
+Node: Test Your React Application With Jest2709
+Node: Supercharge Your React Architecture With Flux2972
+Node: Prepare Your React Application for Painless Maintenance with Flux3286
+Node: INDEX3610
+
+End Tag Table
+
+
+Local Variables:
+coding: utf-8
+End:
