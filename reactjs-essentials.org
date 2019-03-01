@@ -3,11 +3,351 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-01-11 Fri 14:08>
+#+DATE: <2019-03-01 Fri 15:09>
 
 #+TEXINFO: @insertcopying
 
+* Preface
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
+
+#+CINDEX:imperative code
+#+CINDEX:declarative code
+#+CINDEX:jQuery
+#+CINDEX:modular
+#+CINDEX:scalable
+The Web is different.  The way we build for the Web is different.  Faced by the
+challenges of dealing with unmaintainable /imperative code/ produced by jQuery
+we had to look for new ways of managing the complexity of modern user
+interfaces.  We needed a new user interface library that would help us build
+/declarative/, /modular/, fast and /scalable/ frontend applications.
+
+{{{subheading(React.js --- User Interface Library)}}}
+
+#+CINDEX:user interface library
+#+CINDEX:Facebook
+#+CINDEX:DOM
+#+CINDEX:data flow, organize
+Meet React.js --- a JavaScript user interface library developed by Facebook.
+It brings profound ideas on how to work with the DOM, organize your
+application's data flow, and think about user interface elements as individual
+components.  And yet, it's only a user interface library that makes no
+assumptions about the rest of your technology stack.
+
+{{{subheading(With Flux)}}}
+
+#+CINDEX:Flux
+#+CINDEX:frontend architecture
+Combined with Fux, we get a powerful frontend architecture that makes sense not
+only to experienced developers, but also those who are just starting their
+frontend journey.
+
+** What this Book Covers
+
+*** Chapter 1 Installing Powerful Tools
+
+- Goals
+- Tools
+- Structure for project
+
+*** Chapter 2 Create Your First React Element
+
+- Install React
+- Virtual DOM
+- React Element
+- Create and render a React element
+- with native JavaScript
+- JSX syntax
+- Create React Elements using JSX
+
+*** Chapter 3 Create Your First React Component
+
+- React components
+- Difference between stateless and stateful React components
+- Creates both kinds
+
+*** Chapter 4 Make Your React Components Reactive
+
+- How to solve problems with React
+- Plan a React application
+- Create a React component that encapsulates entire app
+- Relationship between parent and child React components
+
+*** Chapter 5 Use Your React Components with Another Library
+
+- How to use third party JavaScript libraries
+- React component's lifecycle
+- How to use mounting methods
+- Create new components for project
+
+*** Chapter 6 Update Your React Components
+
+- React component lifecycle's updating mnethods
+- CSS styles in JavaScript
+- Validate and set default component properties
+
+*** Chapter 7 Build Complex React Components
+
+- Building more complex React components
+- Implement different React components
+- Put them together into one coherent and functional app
+
+*** Chapter 8 Test Your React Application with Jest
+
+- Unit testing
+- Write and run unit tests with Jest
+- Test React components
+- Test suites, specs, expectations, and matchers
+
+*** Chapter 9 Supercharge Your React Architecture with Flux
+
+- Improve the architecture of React application
+- Flux architecture
+- Role of dispatcher, stores, and and action creators
+
+*** Chapter 10 Prepare Your React Application for Painless Maintenance with Flux
+
+- Decouple concerns in a React app with Flux
+- Refactor React app to allow painless maintainability
+
+** What You Need for this Book
+
+1. Latest version of a modern web browser, e.g.,
+   - [[https://www.google.com/chrome/browser][Google Chrome]]
+   - [[https://www.mozilla.org/en-US/firefox/new/][Mozilla Firefox]]
+
+2. Git
+
+3. Node.js
+
+4. npm
+
+5. Code editor, e.g.
+   - [[http://www.sublimetext.com][Sublime Text]]
+   - [[https://atom.io][Atom]]
+   - [[http://brackets.io][Brackets]]
+   - [[https://code.visualstudio.com][Visual Studio Code]]
+   - Your choice
+
+** Who this Book is For
+
+This book is intended for frontend developers who want to build scalable and
+maintainable user interfaces for the Web.  Some core knowledge of JavaScript,
+HTML, and CSS is the only thing you need to know to start benefiting.  If you
+have previous experience with jQuery or Angular.js, then you will benefit from
+understanding how React.js is different and how to take advantage of
+integrating different libraries with it.
+
+** Conventions
+
+** Reader Feedback
+
+** Downloading the Example Code
+
+https://github.com/fedosejev/react-essentials
+
+** Errata
+
+https://wwwpacktpub.com/books/content/support
+
+enter the name of the book in the search field.
+
 * Installing Powerful Tools for your Project
+
+#+CINDEX:Kettering, Charles
+#+BEGIN_QUOTE
+My interest is in the future because I am going to spend the rest of my life
+there.
+{{{author(Charles F. Kettering)}}}
+#+END_QUOTE
+
+#+CINDEX:spaghetti code
+#+CINDEX:mental model, spaghetti
+This brilliant inventor has left software engineers with the single most
+important piece of advice way before we even started thinking about how to
+write software.  Yet, half a century later, we're still figuring out why we end
+up with spaghetti code or the ``spaghetti mental model.''
+
+{{{heading(Writing Softward for the Future)}}}
+
+#+CINDEX:mental model
+#+CINDEX:complexity remains the same
+What does it mean to ``write software for the future, today''?  It boils down
+to creating a simple mental model that doesn't change, no matter how big your
+project becomes over time.  When the size of your project grows, the complexity
+always stays the same.  This mental model is your blueprint, and once you
+understand it you will understand how your whole piece of software works.
+
+{{{heading(Facebook Releases React in 2013)}}}
+
+#+CINDEX:Facebook
+#+CINDEX:Occhino, Tom
+In 2013, Facebook released React---an open source JavaScript library for
+building user interfaces.  You can ream more about it at
+http://facebook.github.io/react/.  In early 2015, Tom Occhino from Facebook
+summarized what makes React so powerful:
+
+{{{heading(Declarative vs Imperative Programming)}}}
+
+#+BEGIN_QUOTE
+React wraps an imperative API with a declarative one.  React's real power lies
+in how it makes you to write code.
+{{{author(Tom Occhino)}}}
+#+END_QUOTE
+
+#+CINDEX:declarative style
+#+CINDEX:imperative style
+#+CINDEX:DOM API
+#+CINDEX:jQuery
+A declarative style of programming results in less code.  It tells a computer
+what to do without specifying how, while an imperative style of programming
+describes how to do it.  JavaScript's call to the DOM API is an example of
+imperative programming.  jQuery is another such example.
+
+{{{heading(React is Good for Small Projects)}}}
+
+#+CINDEX:small React project
+#+CINDEX:shopping list
+It works for small projects too; here is an example of a [[http://fedosejev.github.io/shopping-list-react][shopping list]] build
+with React.  React is one of the best JavaScript libraries used for building
+user interfaces that is available for developers today.
+
+{{{heading(The Goal of this Book)}}}
+
+#+CINDEX:goal
+#+CINDEX:fundamental principles of React
+#+CINDEX:React's fundamental principles
+#+CINDEX:principles, fundamental
+#+CINDEX:project, real-time web application
+Goal is for you to understand the fundamental principles of React.  To achieve
+this, you will be introduced to one React component at a time, explained it,
+and shown how you can apply it.  Step by step, you'll build a real-time web
+application, raise important questions along the way, and discuss solutions
+that React provides us with.
+
+{{{heading(Flux)}}}
+
+#+CINDEX:Flux
+#+CINDEX:mental model
+You will learn about Flux, which implements a unidirectional flow of data.
+Together with Flux and React, you'll create a predictable and manageable code
+base that you will be able to expand by adding new features, without scaling
+its complexity.  The mental model of how your web application works will stay
+the same, no matter how many new features you add later.
+
+** Approaching our Project
+
+The best motivation for learning new technology is a project that excites you
+and that you can't wait to build.  In this book the author wants you to build a
+project that feels like a breath of fresh air.  A project which you most likely
+wouldn't build in your day-to-day work.  It has to be a fun endeavor, which not
+only educates you but also satisfies your curiosity and stretches your
+imagination.  This project shouldn't be a time consuming long-term commitment
+for you either.
+
+#+CINDEX:Snapterest
+#+CINDEX:project Snapterest
+#+CINDEX:Twitter
+#+CINDEX:Pinterest
+#+CINDEX:website functionality
+Enter *Snapterest*---a web application that allows you to discover and collect
+public photos posted on Twitter.  Think of it as Pinterest with the only source
+of pictures being Twitter.  We will implement a fully functional website with
+the following core functionalities:
+
+- Receiving and displaying tweets in real time
+
+- Adding and removing tweets to / from a collection
+
+- Reviewing collected tweets
+
+- Exporting a collection of tweets as an HTML snippet that you can share
+
+
+When you start working on a new project, the very first thing that you do is
+get your tools ready.  For this project, we will be using a number of tools.
+
+** TODO Installing Node.js and npm
+:todo:
+:task: Check for Jest and Node.js compatibility currently
+:end:
+
+  #+CINDEX:Node.js, installation
+- [[https://nodejs.org][Node.js]] ::
+
+     is a platform that allows us to write server-side applications with a
+     client-side language: JavaScript.  The real benefit of Node.js is that it
+     uses an /event-driven/, /non-blocking I-O/ model, which is perfect for
+     building /data-intensive/, /real-time/ applications.  It means that, with
+     Node.js, we should be able to handle an incoming stream of tweets and
+     process them as soon as they arrive.
+
+     Install Node.js.  We'll be using version =v0.10.40= because, at the time
+     of writing this book, that's the latest version of Node.js that Jest
+     supports.
+
+     Go to http://nodejs.org/dist/v0.10.40/ and download the installation
+     package for your OS:
+
+     - OS X: ::
+
+          http://nodejs.org/dist/v0.10.40/node-v0.10.40.pkg
+
+     Run it and follow the installation steps that Node.js will prompt you with.
+     Test for successful installation:
+     : $ node -v
+     : v0.10.40
+
+     #+CINDEX:npm, installation
+- [[http://www.npmjs.com][npm]] ::
+
+         is a package manager that manages Node.js modules.  It is shipped with
+         Node.js, so it was installed by the previous step.  To test:
+         : $ npm -v
+         : 1.4.28
+
+** Installing Git
+
+#+CINDEX:Git
+We'll be using Git to install Node.js modules.  Visit
+https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
+and follow the installation instructions for your OS.
+
+** Getting Data from the Twitter Streaming API
+
+#+CINDEX:Twitter API
+#+CINDEX:Streaming API
+#+CINDEX:JSON format, tweets
+The data for our React application will come from Twitter.  Twitter has the
+*Streaming API* that anyone can plug into and start receiving an endless flow
+of public tweets in the JSON format.
+
+To start using the Twitter Streaming API, you'll need to perform the following
+steps:
+
+1. Create a Twitter account.  For this, go to https://twitter.com and sign up;
+   or sign in if you already have an account.
+
+2. Create a new Twitter App by navigating to https://apps.twitter.com and click
+   on {{{key(Create New App)}}}.  You will need to fill in the *Application
+   Details* form, agree with the *Developer Agreement*, and click on *Create
+   your Twitter application*.  Now you should see your application's page.
+   Switch to the *Keys and Access Tokens* tab.
+
+** Filtering Data with Snapkite Engine
+
+** Creating the Project Structure
+
+** Creating ~package.json~
+
+** Reusing Node.js Modules
+
+** Building with Gulp.js
+
+** Creating a Web Page
+
+** Summary
 
 * Create Your First React Element
 
@@ -37,6 +377,11 @@
   :END:
   {{{TITLE}}} by {{{AUTHOR}}}
   \copy 2015 Packt Publishing
+* MACROS                                                           :noexport:
+#+MACRO:heading @@texinfo:@heading @@$1
+#+MACRO:subheading @@texinfo:@subheading @@$1
+#+MACRO:author @@texinfo:@author @@$1
+#+MACRO:key @@texinfo:@key{@@$1@@texinfo:}@@
 * EXPORT SETTINGS                                                  :noexport:
 #+TEXINFO_CLASS: info
 #+TEXINFO_HEADER:
