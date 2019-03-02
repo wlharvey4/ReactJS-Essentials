@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-01 Fri 17:08>
+#+DATE: <2019-03-02 Sat 09:03>
 
 #+TEXINFO: @insertcopying
 
@@ -265,6 +265,7 @@ the following core functionalities:
 - Exporting a collection of tweets as an HTML snippet that you can share
 
 
+#+CINDEX:tools
 When you start working on a new project, the very first thing that you do is
 get your tools ready.  For this project, we will be using a number of tools.
 
@@ -276,6 +277,11 @@ get your tools ready.  For this project, we will be using a number of tools.
   #+CINDEX:Node.js, installation
 - [[https://nodejs.org][Node.js]] ::
 
+     #+CINDEX:JavaScript
+     #+CINDEX:Node.js benefits
+     #+CINDEX:event-driven
+     #+CINDEX:non-blocking
+     #+CINDEX:real-time
      is a platform that allows us to write server-side applications with a
      client-side language: JavaScript.  The real benefit of Node.js is that it
      uses an /event-driven/, /non-blocking I-O/ model, which is perfect for
@@ -283,13 +289,18 @@ get your tools ready.  For this project, we will be using a number of tools.
      Node.js, we should be able to handle an incoming stream of tweets and
      process them as soon as they arrive.
 
+     #+CINDEX:install Node.js
+     #+CINDEX:Jest
      Install Node.js.  We'll be using version =v0.10.40= because, at the time
      of writing this book, that's the latest version of Node.js that Jest
      supports.
 
+     #+CINDEX:distribution, Node.js
+     #+CINDEX:installation package, Node.js
      Go to http://nodejs.org/dist/v0.10.40/ and download the installation
      package for your OS:
 
+       #+CINDEX:OS X
      - OS X: ::
 
           http://nodejs.org/dist/v0.10.40/node-v0.10.40.pkg
@@ -302,6 +313,7 @@ get your tools ready.  For this project, we will be using a number of tools.
      #+CINDEX:npm, installation
 - [[http://www.npmjs.com][npm]] ::
 
+         #+CINDEX:package manager, npm
          is a package manager that manages Node.js modules.  It is shipped with
          Node.js, so it was installed by the previous step.  To test:
          : $ npm -v
@@ -310,9 +322,11 @@ get your tools ready.  For this project, we will be using a number of tools.
 ** Installing Git
 
 #+CINDEX:Git
+#+CINDEX:install Git
+#+CINDEX:getting started with Git
 We'll be using Git to install Node.js modules.  Visit
-https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
-and follow the installation instructions for your OS.
+https://git-scm.com/book/en/v2/Getting-Started-Installing-Git and follow the
+installation instructions for your OS.
 
 ** Getting Data from the Twitter Streaming API
 
@@ -326,9 +340,11 @@ of public tweets in the JSON format.
 To start using the Twitter Streaming API, you'll need to perform the following
 steps:
 
+   #+CINDEX:Twitter account, create
 1. Create a Twitter account.  For this, go to https://twitter.com and sign up;
    or sign in if you already have an account.
 
+   #+CINDEX:Twitter app, create
 2. Create a new Twitter App by navigating to https://apps.twitter.com and click
    on {{{key(Create New App)}}}.  You will need to fill in the *Application
    Details* form, agree with the *Developer Agreement*, and click on *Create
@@ -338,6 +354,8 @@ steps:
 In the *Applications Settings* section of this page, you'll find two vital
 pieces of information:
 
+   #+CINDEX:Twitter API keys
+   #+CINDEX:keys, Twiter API
 1. Consumer Key (API Key)
 
 2. Consumer Secret (API Secret)
@@ -345,6 +363,7 @@ pieces of information:
 
 Take a note of them.
 
+#+CINDEX:access token, Twiter API
 Now generate an /access token/.  On the same page, you'll see *Your Access
 Token* section that is empty.  Click on {{{key(Create my access token)}}}.  It
 creates two pieces of information:
@@ -356,6 +375,7 @@ creates two pieces of information:
 
 Take a note of them too.  An access token is unique to you and you should not
 share it with anyone.  Keep it private.
+
 ** Filtering Data with Snapkite Engine
 
 #+CINDEX:filter
@@ -380,11 +400,13 @@ that socket connection and process tweets as they arrive.
 
 *** Install the Snapkite Engine
 
+   #+CINDEX:Snapkite Engine, install
 1. Clone the Snapkite Engine repository into a directory of your choice:
    : cd <dir>
    : git clone https://github.com/snapkite/snapkite-engine.git
    This should create the ~<dir>/snapkite-engine~ folder.
 
+   #+CINDEX:Node-Gyp module
 2. Now install the other node modules that ~snapkite-engine~ depends on.  One
    of them is the ~node-gyp~ module.  Also install other tools that are listed
    on [[https://github.com/TooTallNate/node-gyp#installation][node-gyp installation]].
@@ -397,46 +419,65 @@ that socket connection and process tweets as they arrive.
    : cd <dir>/snapkite-engine/
    : npm install
 
+   #+CINDEX:Snapkite Engine, configure
+   #+CINDEX:configure Snapkite Engine
 5. Configure Snapkite Engine.  Assuming you are in the ~<dir>/snapkite-engine/~
    directory, copy the ~./example.config.json~ file to ~./config.json~ by the
    following command:
    : cp example.config.json config.json
 
+   #+CINDEX:@file{config.json}
 6. Open ~config.json~ in your editor to edit the configuration properties.
 
+      #+CINDEX:@code{trackKeywords}
    - ~trackKeywords~ ::
         This is where we will tell what keywords we want to track.  If we want
         to track the keyword =my=, then set it as follows:
         : "trackKeywords": "my"
 
+   #+CINDEX:Twitter Streaming API keys, access token
+   #+CINDEX:keys, Twitter Streaming API
+   #+CINDEX:access token, Twitter Streaming API
 7. Set our Twitter Streaming API keys.  Set:
    - ~consumerKey~
    - ~consumerSecret~
    - ~accessTokenKey~
    - ~accessTokenSecret~
+     #+CINDEX:Snapkite Engine documentation
+     #+CINDEX:documentation, Snapkite Engine
    - other properties can be set to their defaults[fn::check out the Snapkite
      Engine [[https://github.com/snapkite/snapkite-engine][documentation]]]
 
+   #+CINDEX:Snapkite Filter module
+   #+CINDEX:Snapkite Filters, list
 8. Install Snapkite Filters.  =Snapkite Filter= is a Node.js module that
    validates tweets according to a set of rules.  There are a number of
    Snapkite Filters out there, and we can use any combination of them to filter
    our stream of tweets as we like.  You can find a list of all available
    Snapkite Filters at https://github.com/snapkite/snapkite-filters.
 
+   #+CINDEX:Snapkite Filters, used in project
    In our application, we'll use the following Snapkite Filters:
 
+     #+CINDEX:@code{is-possibly-sensitive} Snapkite filter
    - Is Possibly Sensitive ::
         https://github.com/snapkite/snapkite-filter-is-possibly-sensitive
 
+     #+CINDEX:@code{has-mobile-photo} Snapkite filter
    - Has Mobile Photo ::
         https://github.com/snapkite/snapkite-filter-has-mobile-photo
 
+     #+CINDEX:@code{is-retweet} Snapkite filter
    - Is Retweet ::
         https://github.com/snapkite/snapkite-filter-is-retweet
 
+     #+CINDEX:@code{has-text} Snapkite filter
    - Has Text ::
         https://github.com/snapkite/snapkite-filter-has-text
 
+
+   #+CINDEX:install Snapkite filters
+   #+CINDEX:Snapkite filters, install
    Install them.  Navigate to the ~<dir>/snapkite-engine/filters/~ directory:
    : cd <dir>/snapkite-engine/filters/
    Clone all Snapkite Filters by running these commands:
@@ -445,6 +486,8 @@ that socket connection and process tweets as they arrive.
    : git clone https://github.com/snapkite/snapkite-filter-is-retweet
    : git clone https://github.com/snapkite/snapkite-filter-has-text
 
+   #+CINDEX:Snapkite filters, configure
+   #+CINDEX:configure Snapkite filters
 9. Configure them.  In order to do so, you need to create a configuration file
    for each Snapkite Filter in JSON format and define some properties in it.
    Each Snapkite Filter comes with an example configuration file that we can
@@ -485,6 +528,7 @@ that socket connection and process tweets as they arrive.
     #+END_SRC
 
 
+#+CINDEX:Snapkite Engine, test run
 With that you have successfully installed Snapkite Engine with a number of
 Snapkite Filters.  Now let's check if we can run it.  Navigate to
 ~<dir>/snapkite-engine~ and run:
@@ -494,17 +538,283 @@ Snapkite Filters.  Now let's check if we can run it.  Navigate to
 You should see no error messages.  If you do and you are not sure how to fix
 them, go to https://github.com/fedosejev/react-essentias/issues, create a new
 issue and copy/paste the error message that you get.
+
 ** Creating the Project Structure
+
+#+CINDEX:project structure, create
+#+CINDEX:structure organization
+#+CINDEX:organization of project
+#+CINDEX:architecture of project
+Now create our project structure.  Organizing source files is not a simple
+task.  A well-thought-out project structure organization helps us understand
+the underlying architecture of our application.
+
+#+CINDEX:root project directory
+#+CINDEX:@file{snapterest} directory
+Start by creating a /root project directory/ named {{{file(snapterest/)}}}
+inside a directory of your choice: {{{file(<dir>/snapterest/)}}}.  Inside it
+create two other directories:
+
+  #+CINDEX:@file{source} directory
+  #+CINDEX:@file{components} directory
+  #+CINDEX:directories, @file{source}, @file{components}
+- {{{file(<dir>/snapterest/source/)}}} ::
+     store our source JavaScript files
+     - {{{file(components/)}}} ::
+       create this directory inside the {{{file(source/)}}} directory
+
+  #+CINDEX:@file{build} directory
+  #+CINDEX:directory, @file{build}
+- {{{file(<dir>/snapterest/build/)}}} ::
+     store compiled JavaScript files and an HTML file
+
+
+Populate the project structure with application files.
+
+   #+CINDEX:@file{app.js}
+   #+CINDEX:application file, @file{app.js}
+1. {{{file(app.js)}}} :: the main application file in the ~source/~ directory.  This file
+               will be the entry point to our application.  Leave it empty for
+               now.
 
 ** Creating ~package.json~
 
+   #+CINDEX:DRY
+   #+CINDEX:code reuse
+- *DRY*: *Don't Repeat Yourself* ::
+
+     One of the core principles in software development --- code reuse: The
+     best code is the one that you don't need to write.  One of the goals in
+     this project is to write as little code as possible.  React helps us
+     achieve this goal.
+
+
+#+CINDEX:declarative programming style
+#+CINDEX:programming style, declarative
+#+CINDEX:code reuse
+When it comes to not writing code, we can apply the following strategies:
+
+- Writing our code in a /declarative/ programming style
+- Reusing the code written by someone else
+
+
+#+CINDEX:jQuery
+We'll be using both these techniques.  The first one is covered by React
+itself.  React leaves us no choice but to write our JavaScript code in a
+/declarative/ style.  This means that instead of telling our web browser how to
+do what we want (like we do in jQuery), we just tell it what we want it to do
+and the how part is explained by React.
+
+#+CINDEX:npm
+Node.js and npm cover the second technique.  There are over a hundred thousand
+different Node.js applications available for us to use.  This means that most
+likely someone has already implemented the functionality that our application
+depends on.
+
+#+CINDEX:@command{npm install}
+#+CINDEX:@file{package.json}
+#+CINDEX:metadata, project
+#+CINDEX:project metadata
+The question is how do we know from where to get all these Node.js applications
+that we want to reuse.  We can install them via the ~npm install
+<package-name>~ command.  In the npm context, a Node.js application is called a
+*package*, and each *npm package* has a ~package.json~ file that describes the
+metadata associated with that package.[fn::[[https://docs.npmjs.com/files/package.json][package.json docs]]]
+
+#+CINDEX:package initialization
+#+CINDEX:initialize a package
+#+CINDEX:metadata file
+#+CINDEX:@file{package.json}
+#+CINDEX:@command{npm install}
+Before we install our /dependency packages/, we will /initialize/ a *package*
+for our own project.  Normally, ~package.json~ is only required when you want
+to submit your package to the npm registry so that others can reuse your
+Node.js application.  We're not going to build a Node.js application, and we're
+not going to submit our project to npm.  ~package.json~ is technically only a
+metadata file that the ~npm~ command understands, and as such, we can use it to
+store a list of dependencies that our application requires.  Once we store a
+list of dependencies in ~package.json~, we can easily install them anytime with
+the ~npm install~ command; npm will figure out from where to get them
+automatically.
+
+#+CINDEX:@file{package.json} create
+#+CINDEX:create @file{package.json}
+How do we create the ~package.json~ file for our own application?  npm comes
+with an interactive tool that asks us a bunch of questions and then, based on
+our answers, creates ~package.json~ for our project.
+
+#+CINDEX:@command{npm init}
+#+CINDEX:initialize @file{package.json}
+From the ~<dir>/snapterest/~ directory, run:
+: npm init
+Accept all the defaults.
+
+Now we are ready to install other Node.js applications that we are going to
+reuse.  An application that is built of multiple individual applications is
+called /modular/ whereas individual applications are called /modules/.  This is
+what we will call our Node.js dependencies from now on: *Node.js modules*
 ** Reusing Node.js Modules
 
+#+CINDEX:build development process
+#+CINDEX:packaging
+There will be a step in our development process called /building/.  During this
+step, our build script will take our source files and all our Node.js
+dependency packages, and transform them into a single file that web browsers
+can successfully execute.  The most important part of this building process is
+called /packaging/.  But what do we need to package and why?  We're not
+creating a Node.js application, but yet we're talking about reusing Node.js
+modules.  Does this mean that we'll be reusing Node.js modules in a non-Node.js
+application?  Is that even possible?  Yes, there is a way of doing that.
+
+#+CINDEX:Browserify
+#+CINDEX:bundling, Browserify
+*Browserify* is a tool used for bundling all your dependency files together in
+such a way that you can reuse Node.js modules in client-side JavaScript
+applications.  You can learn more about it at [[http://browserify.org][Browserify]].
+
+#+CINDEX:install Browserify
+To install Browserify, run the following command from inside the
+~<dir>/snapterest/~ directory:
+: npm install --save-dev browserify
+
+Browserify will allow us to use Node.js modules in our client-side JavaScript
+applications.  It will be a part of our build process.
 ** Building with Gulp.js
 
+#+CINDEX:Gulp.js
+Today, any modern client-side application represents a mix of many concerns
+that are addressed individually by various technologies.  Addressing each
+concern individually simplifies the overall process of managing the project's
+complexity.  The downside of this approach is that at some point in your
+project, you need to put together all the individual parts into one coherent
+application.  Developers have something called build-tools that assemble their
+projects from individual modules.  This process is called the /build/ process
+and, depending on the size and complexity of your project, it can take anywhere
+from milliseconds to hours to build.
+
+The Node.js ecosystem has a great tool for automating our build process,
+*Gulp.js*.  You can learn more about it at [[http://gulpjs.com][Gulp]].
+
+#+CINDEX:install Gulp.js
+#+CINDEX:Gulp.js installation
+Let's install it.
+: npm install --save-dev gulp
+: npm install --global gulp
+
+#+CINDEX:gulpfile
+#+CINDEX:@file{gulpfile.js}
+What is a /gulpfile/?  It's a file where we describe our build process.  Create
+~gulpfile.js~ in your ~<dir>/snapterest/~ directory and add the following
+content to it:
+
+#+BEGIN_SRC js :eval never
+var gulp = require('gulp');
+
+gulp.task('default', function() {
+    console.log('I am about to learn the essentials of React.js');
+});
+#+END_SRC
+
+#+CINDEX:@command{gulp} command
+Now if you run the ~gulp~ command, you will see output that looks like this:
+
+#+BEGIN_EXAMPLE
+Using gulpfile ~/<dir>/snapterest/gulpfile.js
+Starting 'default'...
+I am about to learn the essentials of React.js
+Finished 'default' after 62 us
+#+END_EXAMPLE
+
+#+CINDEX:@samp{default} task
+#+CINDEX:Gulp.js build system
+#+CINDEX:Browserify
+By default, when you run ~gulp~, it executes a task called =default=.  You now
+have a working Gulp.js build system.  Let's create a task tht will package our
+source and dependency modules using Browserify.
+
+#+CINDEX:@file{gulpfile.js}
+Replace the contents of your ~gulpfile.js~ with the following code:
+
+#+NAME:default-gulp-task
+#+CAPTION:A task that will package source and dependency modules using Browserify
+#+BEGIN_SRC js :eval never
+var gulp = require('gulp');
+var browserify = require('browserify');
+var babelify = require('babelify');
+var source = require('vinyl-source-stream');
+
+gulp.task('default', function() {
+    return browserify('./source/app.js')
+        .transform(babelify)
+        .bundle()
+        .pipe(source('snapterest.js'))
+        .pipe(gulp.dest('./build/'));
+});
+#+END_SRC
+
+We have already installed the ~browserify~ module, so now let's install the
+~babelify~ module:
+: npm install --save-dev babelify
+
+The ~babelify~ module allows us to write the JSX syntax that we'll introduce in
+the next chapter.
+
+Why do we need the ~vinyl-source-stream~ module?  It allows us to use
+Browserify and Gulp together.  For more details on why this works, go to
+[[https://www.npmjs.com/package/vinyl-source-stream][Vinyl-Source-Stream]].  Let's install the ~vinyl-source-stream~ dependency
+module:
+: npm install --save-dev vinyl-source-stream
+
+Now we're ready to test our ~default~ task.  Run:
+: gulp
+
+The output should look something like:
+
+#+BEGIN_EXAMPLE
+Using gulpfile <dir>/snapterest/gulpfile.js
+Starting 'default'...
+Finished 'default' after 48 ms
+#+END_EXAMPLE
+
+The project's ~<dir>/snapterest/build/~ directory now has the ~snapterest.js~
+file with some code already inside it---that's our (empty) JavaScript
+application with some Node.js modules that are ready to run in a web browser.
 ** Creating a Web Page
 
+All that is left to do is to create the ~index.html~ file with a link to our
+~snapterest.js~ script.  Create the ~index.html~ file in the
+~<dir>/snapterest/build/~ directory.  Add the following HTML markup to it:
+
+#+BEGIN_SRC html :eval never
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie-edge, chrome=1" />
+    <title>Snapterest</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  </head>
+  <body>
+    <div id="react-application">
+      I am about to learn the essentials of React.js.
+    </div>
+    <script src="./snapterest.js"></script>
+  </body>
+</html>
+#+END_SRC
+
+Open ~<dir>/snapterest/build/index.html~ in a web browser.  You should see the
+following text: ``I am about to learn the esesntials of React.js.''
 ** Summary
+
+- We learned why we should use React to build user interfaces for modern web
+  applications.
+
+- We discussed the project that we'll be building in this book.
+
+- We installed all the right tools
+
+- We created the project's structure.
 
 * Create Your First React Element
 
@@ -524,6 +834,12 @@ issue and copy/paste the error message that you get.
 
 * Prepare Your React Application for Painless Maintenance with Flux
 
+* Listings
+:PROPERTIES:
+:APPENDIX: t
+:END:
+#+TEXINFO:@listoffloats Listing
+
 * INDEX
   :PROPERTIES:
   :INDEX:    cp
@@ -539,6 +855,9 @@ issue and copy/paste the error message that you get.
 #+MACRO:subheading @@texinfo:@subheading @@$1
 #+MACRO:author @@texinfo:@author @@$1
 #+MACRO:key @@texinfo:@key{@@$1@@texinfo:}@@
+#+MACRO:file @@texinfo:@file{@@$1@@texinfo:}@@
+#+MACRO:command @@texinfo:@command{@@$1@@texinfo:}@@
+#+MACRO:samp @@texinfo:@samp{@@$1@@texinfo:}@@
 * EXPORT SETTINGS                                                  :noexport:
 #+TEXINFO_CLASS: info
 #+TEXINFO_HEADER:
