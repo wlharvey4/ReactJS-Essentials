@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-01 Fri 15:09>
+#+DATE: <2019-03-01 Fri 17:08>
 
 #+TEXINFO: @insertcopying
 
@@ -335,8 +335,165 @@ steps:
    your Twitter application*.  Now you should see your application's page.
    Switch to the *Keys and Access Tokens* tab.
 
+In the *Applications Settings* section of this page, you'll find two vital
+pieces of information:
+
+1. Consumer Key (API Key)
+
+2. Consumer Secret (API Secret)
+
+
+Take a note of them.
+
+Now generate an /access token/.  On the same page, you'll see *Your Access
+Token* section that is empty.  Click on {{{key(Create my access token)}}}.  It
+creates two pieces of information:
+
+1. Access Token
+
+2. Access Token Secret
+
+
+Take a note of them too.  An access token is unique to you and you should not
+share it with anyone.  Keep it private.
 ** Filtering Data with Snapkite Engine
 
+#+CINDEX:filter
+We need to filter the stream of data from the Twitter Streaming API into a
+meaningful set of tweets that we can display and interact with.
+
+#+CINDEX:Twitter Streaming API documentation
+Recommend that you take a quick look at the [[https://dev.twitter.com/streaming][Twitter Streaming API
+documentation]].  In particular take a look at the page that describes how to
+[[https://dev.twitter.com/streaming/reference/post/statuses/filter][filter]] an incoming stream.  Twitter provides very few filters that we can
+apply, so we need to find a way to filter that stream of data even further.
+
+{{{heading(Snapkite Engine)}}}
+
+#+CINDEX:Snapkite Engine
+#+CINDEX:web socket connection
+There is a Node.js application just for this.  It's called *Snapkite Engine*.
+It connects to the Twitter Streaming API, filters it using the available
+filters and according to the rules that you define, and outputs the filtered
+tweets to a web socket connection.  Our React app can listen to the events on
+that socket connection and process tweets as they arrive.
+
+*** Install the Snapkite Engine
+
+1. Clone the Snapkite Engine repository into a directory of your choice:
+   : cd <dir>
+   : git clone https://github.com/snapkite/snapkite-engine.git
+   This should create the ~<dir>/snapkite-engine~ folder.
+
+2. Now install the other node modules that ~snapkite-engine~ depends on.  One
+   of them is the ~node-gyp~ module.  Also install other tools that are listed
+   on [[https://github.com/TooTallNate/node-gyp#installation][node-gyp installation]].
+
+3. Once you install them, you're ready to install the ~node-gyp~ module:
+   : npm install --global node-gyp
+
+4. Navigate to the ~<dir>/snapkite-engine~ directory to install the Node.js
+   modules that Snapkite Engine depends on:
+   : cd <dir>/snapkite-engine/
+   : npm install
+
+5. Configure Snapkite Engine.  Assuming you are in the ~<dir>/snapkite-engine/~
+   directory, copy the ~./example.config.json~ file to ~./config.json~ by the
+   following command:
+   : cp example.config.json config.json
+
+6. Open ~config.json~ in your editor to edit the configuration properties.
+
+   - ~trackKeywords~ ::
+        This is where we will tell what keywords we want to track.  If we want
+        to track the keyword =my=, then set it as follows:
+        : "trackKeywords": "my"
+
+7. Set our Twitter Streaming API keys.  Set:
+   - ~consumerKey~
+   - ~consumerSecret~
+   - ~accessTokenKey~
+   - ~accessTokenSecret~
+   - other properties can be set to their defaults[fn::check out the Snapkite
+     Engine [[https://github.com/snapkite/snapkite-engine][documentation]]]
+
+8. Install Snapkite Filters.  =Snapkite Filter= is a Node.js module that
+   validates tweets according to a set of rules.  There are a number of
+   Snapkite Filters out there, and we can use any combination of them to filter
+   our stream of tweets as we like.  You can find a list of all available
+   Snapkite Filters at https://github.com/snapkite/snapkite-filters.
+
+   In our application, we'll use the following Snapkite Filters:
+
+   - Is Possibly Sensitive ::
+        https://github.com/snapkite/snapkite-filter-is-possibly-sensitive
+
+   - Has Mobile Photo ::
+        https://github.com/snapkite/snapkite-filter-has-mobile-photo
+
+   - Is Retweet ::
+        https://github.com/snapkite/snapkite-filter-is-retweet
+
+   - Has Text ::
+        https://github.com/snapkite/snapkite-filter-has-text
+
+   Install them.  Navigate to the ~<dir>/snapkite-engine/filters/~ directory:
+   : cd <dir>/snapkite-engine/filters/
+   Clone all Snapkite Filters by running these commands:
+   : git clone https://github.com/snapkite/snapkite-filter-is-possibly-sensitive
+   : git clone https://github.com/snapkite/snapkite-filter-has-mobile-photo
+   : git clone https://github.com/snapkite/snapkite-filter-is-retweet
+   : git clone https://github.com/snapkite/snapkite-filter-has-text
+
+9. Configure them.  In order to do so, you need to create a configuration file
+   for each Snapkite Filter in JSON format and define some properties in it.
+   Each Snapkite Filter comes with an example configuration file that we can
+   duplicate and edit as needed.
+
+   While in the ~<dir>/snapkite-engine/filters/~ directory, run the following
+   commands:
+
+   : cp snapkite-filter-is-possibly-sensitive/example.config.json
+   : snapkite-filter-is-possibly-sensitive/config.json
+
+   : cp snapkite-filter-has-mobile-photo/example.config.json
+   : snapkite/snapkite-filter-has-mobile-photo/config.json
+
+   : cp snapkite-filter-is-retweet/example.config.json
+   : snapkite-filter-is-retweet/config.json
+
+   : cp snapkite-filter-has-text/example.config.json
+   : snapkite-filter-has-text/config.json
+
+   We don't need to change any of the default settings in these ~config.json~
+   files, as they are already configured to fit our purposes.
+
+10. Tell Snapkite Engine which Snapkite Filters it should use.  Open the
+    ~<dir>/snapkite-engine/config.json~ file in a text editor and look for
+    this:
+    : "filters" : []
+
+    Now replace that with the following:
+
+    #+BEGIN_SRC js :eval never
+    "filters": [
+        "snapkite-filter-is-possibly-sensitive",
+        "snapkite-filter-has-mobile-photo",
+        "snapkit-filter-is-retweet",
+        "snapkite-filter-has-text"
+    ]
+    #+END_SRC
+
+
+With that you have successfully installed Snapkite Engine with a number of
+Snapkite Filters.  Now let's check if we can run it.  Navigate to
+~<dir>/snapkite-engine~ and run:
+: npm start
+
+
+You should see no error messages.  If you do and you are not sure how to fix
+them, go to https://github.com/fedosejev/react-essentias/issues, create a new
+issue and copy/paste the error message that you get.
 ** Creating the Project Structure
 
 ** Creating ~package.json~
