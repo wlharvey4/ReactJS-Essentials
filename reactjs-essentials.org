@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-02 Sat 19:38>
+#+DATE: <2019-03-03 Sun 09:46>
 
 #+TEXINFO: @insertcopying
 
@@ -957,12 +957,489 @@ React.js.''
 
 * Prepare Your React Application for Painless Maintenance with Flux
 
+* React.js
+:PROPERTIES:
+:APPENDIX: t
+:END:
+
+A JavaScript library for building user interfaces.
+
+- [[https://reactjs.org/][React.js Home]]
+
+* Flux
+:PROPERTIES:
+:APPENDIX: t
+:END:
+
+{{{heading(APPLICATION ARCHITECTURE FOR BUILDING USER INTERFACES)}}}
+
+{{{subheading(An application architecture for React utilizing a unidirectional data flow.)}}}
+
+Flux is the application architecture that Facebook uses for building
+client-side web applications. It complements React's composable view components
+by utilizing a unidirectional data flow. It's more of a pattern rather than a
+formal framework, and you can start using Flux immediately without a lot of new
+code.
+
+- [[https://facebook.github.io/flux/][Flux Home]]
+- [[https://github.com/facebook/flux][Flux Github Home]]
+- [[https://facebook.github.io/flux/docs/overview.html][Flux Docs]]
+- [[https://facebook.github.io/flux/docs/videos.html#content][Flux Videos]]
+
+** Getting Started
+
+Start by looking through the guides and examples on Github. For more resources
+and API docs check out [[https://facebook.github.io/flux][facebook.github.io/flux]].
+
+#+NAME:flux-diagram.png
+#+CAPTION:Flux Diagram
+[[file:img/flux-diagram-white-background-25.png]]
+
+** How Flux works
+
+For more information on how Flux works check out the [[https://github.com/facebook/flux/blob/master/examples/flux-concepts][Flux Concepts]] guide, or
+the [[https://facebook.github.io/flux/docs/in-depth-overview.html#content][In Depth Overview]].
+
+** Flux Concepts
+
+#+CINDEX:Flux concepts
+#+CINDEX:concepts of Flux
+These are the important high-level concepts and principles you should know
+about when writing applications that use Flux.
+
+{{{heading(Overview)}}}
+
+#+CINDEX:Flux overview
+#+CINDEX:overview of Flux
+Flux is a pattern for managing data flow in your application. The most
+important concept is that /data flows in one direction/.  As we go through this
+guide we'll talk about the different pieces of a Flux application and show how
+they form /unidirectional cycles/ that data can flow through.
+
+{{{subheading(Flux Parts)}}}
+
+- Dispatcher
+
+- Store
+
+- Action
+
+- View
+
+*** Dispatcher
+
+#+CINDEX:Dispatcher
+#+CINDEX:actions
+#+CINDEX:stores
+#+CINDEX:register store with dispatcher
+#+CINDEX:singleton dispatcher
+The {{{dfn(dispatcher)}}} receives actions and dispatches them to stores that
+have registered with the dispatcher.  Every store will receive every action.
+There should be only one singleton dispatcher in each application.
+
+Example:
+
+1. User types in title for a todo and hits enter.
+2. The view captures this event and dispatches an "add-todo" action containing
+   the title of the todo.
+3. *Every store* will then receive this action.
+
+*** Store
+
+#+CINDEX:store
+#+CINDEX:store, register with dispatcher
+#+CINDEX:register, store with dispatcher
+#+CINDEX:action
+#+CINDEX:mutate data
+#+CINDEX:setters
+#+CINDEX:getters
+#+CINDEX:@samp{change} event
+A store is what holds the data of an application. Stores will register with the
+application's dispatcher so that they can receive actions.  The data in a store
+must only be mutated by responding to an action. There should not be any public
+setters on a store, only getters.  Stores decide what actions they want to
+respond to.  Every time a store's data changes it must emit a
+{{{samp(change)}}} event.  There should be many stores in each application.
+
+Examples:
+
+1. Store receives an "add-todo" action.
+2. It decides it is relevant and adds the todo to the list of things that need
+   to be done today.
+3. The store updates its data and then emits a "change" event.
+
+*** Actions
+
+#+CINDEX:actions
+#+CINDEX:@samp{type} field
+Actions define the internal API of your application.  They capture the ways in
+which anything might interact with your application.  They are simple objects
+that have a {{{samp(type)}}} field and some data.
+
+Actions should be semantic and descriptive of the action taking place.  They
+should not describe implementation details of that action. Use
+{{{samp(delete-user)}}} rather than breaking it up into
+{{{samp(delete-user-id)}}}, {{{samp(clear-user-data)}}},
+{{{samp(refresh-credentials)}}} (or however the process works).  Remember that
+all stores will receive the action and can know they need to clear the data or
+refresh credentials by handling the same {{{samp(delete-user)}}} action.
+
+Examples:
+
+1. When a user clicks "delete" on a completed todo a single "delete-todo"
+   action is dispatched:
+
+   #+BEGIN_SRC js :eval never
+  {
+    type: 'delete-todo',
+    todoID: '1234',
+  }
+   #+END_SRC
+
+*** Views
+
+#+CINDEX:views
+#+CINDEX:subscribe to change events, view
+#+CINDEX:actions, dispatched from views
+Data from stores is displayed in views.  Views can use whatever framework you
+want (In most examples here we will use React).  When a view uses data from a
+store it must also subscribe to change events from that store.  Then when the
+store emits a change the view can get the new data and re-render.  If a
+component ever uses a store and does not subscribe to it then there is likely a
+subtle bug waiting to be found.  Actions are typically dispatched from views as
+the user interacts with parts of the application's interface.
+
+Example:
+
+1. The main view subscribes to the TodoStore.
+2. It accesses a list of the Todos and renders them in a readable format for
+   the user to interact with.
+3. When a user types in the title of a new Todo and hits enter the view tells
+   the Dispatcher to dispatch an action.
+4. All stores receive the dispatched action.
+5. The TodoStore handles the action and adds another Todo to its internal data
+   structure, then emits a "change" event.
+6. The main view is listening for the "change" event. It gets the event, gets
+   new data from the TodoStore, and then re-renders the list of Todos in the
+   user interface.
+
+*** Flow of data
+
+We can piece the parts of Flux above into a diagram describing how data flows
+through the system.
+
+1. Views send actions to the dispatcher.
+2. The dispatcher sends actions to every store.
+3. Stores send data to the views.
+
+#+NAME:flow.png
+#+CAPTION:Views get data from the stores.
+[[file:img/flux-simple-f8-diagram-with-client-action-1300w-50.png]]
+
+*** Next steps
+
+You can start coding with the [[todo-example][flux-todomvc]] example, or head back to check out
+the full list of [[*Examples][example topics]].
+** Requirements
+
+{{{subheading{EventEmitter}
+
+#+CINDEX:EventEmitter, Flux
+Flux is more of a pattern than a framework, and does not have any hard
+dependencies.  However, we often use [[https://nodejs.org/api/events.html#events_class_events_eventemitter][EventEmitter]] as a basis for Stores and
+[[https://github.com/facebook/react][React]] for our Views.
+
+{{{subheading(Dispatcher)}}}
+
+#+CINDEX:Dispatcher, Flux
+The one piece of Flux not readily available elsewhere is the =Dispatcher=.
+This module, along with some other utilities, is available here to complete
+your Flux toolbox.
+
+** Installing Flux
+
+#+CINDEX:Flux, install
+#+CINDEX:install Flux
+#+CINDEX:@code{Flux.Dispatcher}
+Flux is available as an [[https://www.npmjs.org/package/flux][npm module]], so you can add it to your ~package.json~
+file or run {{{command(npm install flux)}}}. The dispatcher will be available
+as ~Flux.Dispatcher~ and can be required like this:
+: const Dispatcher = require('flux').Dispatcher;
+
+  #+CINDEX:dispatcher API
+- Take a look at the [[https://facebook.github.io/flux/docs/dispatcher.html#content][dispatcher API and some examples]].
+
+** Building Flux from a Cloned Repo
+
+Clone the repo and navigate into the resulting flux directory. Then run
+{{{command(npm install)}}}.
+
+#+CINDEX:Gulp, Flux
+#+CINDEX:build process, Flux
+This will run Gulp-based build tasks automatically and produce the file
+~Flux.js~, which you can then require as a module.
+
+#+CINDEX:Dispatcher
+You could then require the Dispatcher like so:
+: const Dispatcher = require('path/to/this/directory/Flux').Dispatcher;
+
+The build process also produces de-sugared versions of the =Dispatcher= and
+=invariant= modules in a ~lib~ directory, and you can require those modules
+directly, copying them into whatever directory is most convenient for you. The
+flux-todomvc and flux-chat example applications both do this.
+
+** Examples
+
+https://github.com/facebook/flux/tree/master/examples
+
+This directory contains examples that should help get you started with
+Flux. They are listed in the order you should complete them.
+
+- [[https://github.com/facebook/flux/blob/master/examples/flux-concepts][Basic concepts (no code)]]
+
+  These are the important high-level concepts and principles you should know
+  about when writing applications that use Flux.
+
+- [[https://github.com/facebook/flux/blob/master/examples/flux-todomvc][Start coding here]]
+
+  <<todo-example>>This example is where you should start. It walks you through
+  creating the classic TodoMVC application using a simple Flux implementation.
+
+- [[https://github.com/facebook/flux/blob/master/examples/flux-jest][Unit Testing Stores]]
+
+  Being able to unit test stores is critical. This example shows you how to
+  write tests for the TodoMVC stores we created in an earlier example.
+
+- [[https://github.com/facebook/flux/blob/master/examples/flux-flow][Static typing]]
+
+  This is a very simple example that highlights how to set up Flux and Flow in
+  the same project. Flow is a static-type checking tool that will help catch
+  errors in your code statically. It complements Flux well since it supports
+  refining the action based on a type string.
+
+- [[https://github.com/facebook/flux/blob/master/examples/flux-logging][Add logging to Flux apps]]
+
+  Taking advantage of the fact that a store gets every action makes it easy to
+  add logging to a Flux application. Check out this quick example where we add
+  a logger store to the TodoMVC app we created in an earlier example.
+
+- [[https://github.com/facebook/flux/blob/master/examples/flux-jest-container][Unit Testing Containers]]
+
+  Testing the container logic that connects stores to views can be tricky. This
+  example shows you how to create some utilities to help mock out store data in
+  order to write these kinds of tests effectively.
+
+- [[https://github.com/facebook/flux/blob/master/examples/flux-async][Flux with async requests]]
+
+  This is an advanced example. It pulls a lot of the concepts from previous
+  examples into a single application. This implements TodoMVC where the data is
+  persisted and requested through a simple server. The server simulates delays
+  and errors. In the example we will handle things like optimistic updates,
+  loading states, and failing API requests.
+
+** In-Depth Overview
+
+- [[https://facebook.github.io/flux/docs/in-depth-overview.html#content][Link]]
+- [[https://youtu.be/nYkdrAPrdcw?list=PLb0IAmt7-GS188xDYE-u1ShQmFFGbrk0v][Video]]
+
+** Reference
+
+*** Disptacher Docs
+
+#+CINDEX:Dispatcher
+Dispatcher is used to broadcast payloads to registered callbacks. This is
+different from generic pub-sub systems in two ways:
+
+- Callbacks are not subscribed to particular events. Every payload is
+  dispatched to every registered callback.
+- Callbacks can be deferred in whole or part until other callbacks have been
+  executed.
+
+
+Check out [[https://github.com/facebook/flux/blob/master/src/Dispatcher.js][Dispatcher.js]] for the source code.
+
+  #+CINDEX:Dispatcher API
+**** Dispatcher API
+
+  #+CINDEX:@code{register()}
+- ~register(function callback)~: string ::
+
+     Registers a callback to be invoked with every dispatched payload. Returns
+     a token that can be used with ~waitFor()~.
+
+  #+CINDEX:@code{unregister()}
+- ~unregister(string id)~: void ::
+
+     Removes a callback based on its token.
+
+  #+CINDEX:@code{waitFor()}
+- ~waitFor(array<string> ids)~: void ::
+
+     Waits for the callbacks specified to be invoked before continuing
+     execution of the current callback. This method should only be used by a
+     callback in response to a dispatched payload.
+
+  #+CINDEX:@code{dispatch()}
+- ~dispatch(object payload)~: void ::
+
+     Dispatches a payload to all registered callbacks.
+
+  #+CINDEX:@code{isDispatching()}
+- ~isDispatching()~: boolean ::
+
+      Is this Dispatcher currently dispatching.
+
+**** Example
+
+#+CINDEX:flight destination form
+For example, consider this hypothetical flight destination form, which selects
+a default city when a country is selected:
+
+#+BEGIN_SRC js -n :eval never
+var flightDispatcher = new Dispatcher();
+
+// Keeps track of which country is selected
+var CountryStore = {country: null};
+
+// Keeps track of which city is selected
+var CityStore = {city: null};
+
+// Keeps track of the base flight price of the selected city
+var FlightPriceStore = {price: null};
+#+END_SRC
+
+When a user changes the selected city, we dispatch the payload:
+
+#+BEGIN_SRC js +n :eval never
+flightDispatcher.dispatch({
+  actionType: 'city-update',
+  selectedCity: 'paris'
+});
+#+END_SRC
+
+This payload is digested by CityStore:
+
+#+BEGIN_SRC js +n :eval never
+flightDispatcher.register(function(payload) {
+  if (payload.actionType === 'city-update') {
+    CityStore.city = payload.selectedCity;
+  }
+});
+#+END_SRC
+
+When the user selects a country, we dispatch the payload:
+
+#+BEGIN_SRC js +n :eval never
+flightDispatcher.dispatch({
+  actionType: 'country-update',
+  selectedCountry: 'australia'
+});
+#+END_SRC
+
+This payload is digested by both stores:
+
+#+BEGIN_SRC js +n :eval never
+CountryStore.dispatchToken = flightDispatcher.register(function(payload) {
+  if (payload.actionType === 'country-update') {
+    CountryStore.country = payload.selectedCountry;
+  }
+});
+#+END_SRC
+
+When the callback to update ~CountryStore~ is registered, we save a reference
+to the returned token. Using this token with ~waitFor()~, we can guarantee that
+~CountryStore~ is updated before the callback that updates ~CityStore~ needs to
+query its data.
+
+#+BEGIN_SRC js +n :eval never
+CityStore.dispatchToken = flightDispatcher.register(function(payload) {
+  if (payload.actionType === 'country-update') {
+    // `CountryStore.country` may not be updated.
+    flightDispatcher.waitFor([CountryStore.dispatchToken]);
+    // `CountryStore.country` is now guaranteed to be updated.
+
+    // Select the default city for the new country
+    CityStore.city = getDefaultCityForCountry(CountryStore.country);
+  }
+});
+#+END_SRC
+
+The usage of ~waitFor()~ can be chained, for example:
+
+#+BEGIN_SRC js +n :eval never
+FlightPriceStore.dispatchToken =
+  flightDispatcher.register(function(payload) {
+    switch (payload.actionType) {
+      case 'country-update':
+      case 'city-update':
+        flightDispatcher.waitFor([CityStore.dispatchToken]);
+        FlightPriceStore.price =
+          getFlightPriceStore(CountryStore.country, CityStore.city);
+        break;
+  }
+});
+#+END_SRC
+
+The ~country-update~ payload will be guaranteed to invoke the stores' registered
+callbacks in order: ~CountryStore~, ~CityStore~, then ~FlightPriceStore~.
+
+*** Flux Utils
+
+#+CINDEX:Flux utils
+#+CINDEX:utility classes, Flux
+#+CINDEX:class, Flux utility
+We have also provided some basic utility classes to help get you started with
+Flux.  These base classes are a solid foundation for a simple Flux application,
+but they are *not* a feature-complete framework that will handle all use cases.
+There are many other great Flux frameworks out there if these utilities do not
+fulfill your needs.
+
+{{{heading(Usage)}}}
+
+There are four[sic] main classes exposed in Flux Utils:
+
+1. Store
+2. ReduceStore
+3. Container
+
+These base classes can be imported from ~flux/utils~ like this:
+
+#+NAME:flux-utils.js
+#+CAPTION:Importing base classes from ~flux/utils~
+#+BEGIN_SRC js :eval never
+import {ReduceStore} from 'flux/utils';
+
+class CounterStore extends ReduceStore<number> {
+  getInitialState(): number {
+    return 0;
+  }
+
+  reduce(state: number, action: Object): number {
+    switch (action.type) {
+      case 'increment':
+        return state + 1;
+
+      case 'square':
+        return state * state;
+
+      default:
+        return state;
+    }
+  }
+}
+#+END_SRC
+
 * Listings
 :PROPERTIES:
 :APPENDIX: t
 :END:
 #+TEXINFO:@listoffloats Listing
 
+* Figures
+:PROPERTIES:
+:APPENDIX: t
+:END:
+#+TEXINFO:@listoffloats Figure
 * Index
   :PROPERTIES:
   :INDEX:    cp
@@ -990,6 +1467,7 @@ Outline prepared by WLHarvey \copy {{{date(%F)}}}
 #+MACRO:samp @@texinfo:@samp{@@$1@@texinfo:}@@
 #+MACRO:cite @@texinfo:@cite{@@$1@@texinfo:}@@
 #+MACRO:noindent @@texinfo:@noindent @@
+#+MACRO:dfn @@texinfo:@dfn{@@$1@@texinfo:}@@
 * EXPORT SETTINGS                                                  :noexport:
 #+OPTIONS: h:4
 #+TEXINFO_CLASS: info
