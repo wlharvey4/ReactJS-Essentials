@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-03 Sun 09:46>
+#+DATE: <2019-03-03 Sun 11:34>
 
 #+TEXINFO: @insertcopying
 
@@ -39,9 +39,81 @@ assumptions about the rest of your technology stack.
 
 #+CINDEX:Flux
 #+CINDEX:frontend architecture
-Combined with Fux, we get a powerful frontend architecture that makes sense not
-only to experienced developers, but also those who are just starting their
+Combined with Flux, we get a powerful frontend architecture that makes sense
+not only to experienced developers, but also those who are just starting their
 frontend journey.
+
+** From the Author
+
+  #+CINDEX:Fedosejev, Artemij
+- [[https://github.com/fedosejev][Artemij Fedosejev]]
+
+  #+CINDEX:tutorials, React
+- [[https://react.tips][React Tutorials]]
+
+- [[https://react.tips/from-react-to-flux-to-redux/][From React.js To Flux To Redux]]
+
+  If you want to really understand what's the difference between building web
+  apps with React only, or with React and Flux, or with React and Redux, then
+  check the four examples that I've prepared for you.
+
+  #+CINDEX:shopping list app examples
+  #+CINDEX:examples, shopping list app
+  They all implement exactly the same Shopping List app, but most importantly -
+  they highlight the difference in how you approach building web apps using
+  different tools.
+
+    #+CINDEX:ES5 JavaScript
+    #+CINDEX:JavaScript ES5
+  - Built with React.js and JavaScript ES5
+
+    In this [[https://github.com/fedosejev/shopping-list-react][example]], I am using only React.js without Flux or Redux to build
+    the entire app. And I am using the good old JavaScript that all know and
+    love (or hate?): version ECMAScript 5.
+
+    This example is the best place for you to start if you're not familiar with
+    Flux or Redux at all. It helps you to understand why we need Flux or
+    Redux. You will feel strange when storing application state (the shopping
+    list itself) in React components, knowing that React should only be
+    responsible for knowing how to render the user interface.
+
+    #+CINDEX:ES2015, JavaScript
+    #+CINDEX:JavaScript ES2015
+  - Built with React.js and JavaScript ES2015
+
+    The industry uses a newer version of JavaScript today: ECMAScript 2015. It
+    brings new syntax and React takes advantage of that syntax.
+
+    If you want to see how to transition from tradition ES5 syntax to newer
+    ES2015 syntax in the context of React app, then this [[https://github.com/fedosejev/shopping-list-react-es2015][example]] is perfect for
+    you. Feel free to compare it with the the previous one (ES5 version).
+
+    #+CINDEX:Flux with ES5
+    #+CINDEX:ES5 and Flux
+  - Built with React.js and Flux and JavaScript ES5
+
+    If React feels familiar to you and you can build simple apps with it then
+    you most likely faced a problem of accessing application state from
+    different React components. It's not a straight forward task! And it feels
+    awkward, because we know that React is a UI library, and if we follow the
+    separation of concerns principle, then it's clear to us that we shouldn't
+    store application state in React components!
+
+    Where do we store it then? That's why you might need to introduce Flux
+    architecture to your React application.
+
+    This [[https://github.com/fedosejev/shopping-list-react-flux][example]] is a perfect introduction to the Flux architecture, because
+    you're building exactly the same app, but now you're clearly separating
+    your UI logic from your application state logic.
+
+    #+CINDEX:Redux with ES2015
+    #+CINDEX:ES2015 and Redux
+  - Built with React.js and Redux and JavaScript ES2015
+
+    Flux is a great start for understanding how data flows in your React
+    application. Redux takes it to the next level by building on top of ideas
+    from Flux and introducing new important concepts that allow you to build
+    really scalable and robust React apps.  See [[https://github.com/fedosejev/shopping-list-react-redux][example]].
 
 ** What this Book Covers
 
@@ -184,7 +256,7 @@ understand it you will understand how your whole piece of software works.
 #+CINDEX:Facebook
 #+CINDEX:Occhino, Tom
 In 2013, Facebook released React---an open source JavaScript library for
-building user interfaces.  You can ream more about it at
+building user interfaces.  You can read more about it at
 http://facebook.github.io/react/.  In early 2015, Tom Occhino from Facebook
 summarized what makes React so powerful:
 
@@ -230,7 +302,7 @@ that React provides us with.
 
 #+CINDEX:Flux
 #+CINDEX:mental model
-You will learn about Flux, which implements a unidirectional flow of data.
+You will learn about [[*Flux][Flux]], which implements a unidirectional flow of data.
 Together with Flux and React, you'll create a predictable and manageable code
 base that you will be able to expand by adding new features, without scaling
 its complexity.  The mental model of how your web application works will stay
@@ -415,7 +487,7 @@ find a way to filter that stream of data even further.
 #+CINDEX:Twitter Streaming API, filter engine for
 #+CINDEX:tweets, filtered
 #+CINDEX:web socket connection for filtered tweets
-There is a Node.js application just for this.  It's called *Snapkite Engine*.
+There is a Node.js application just for this.  It's called [[https://github.com/snapkite/snapkite-engine][Snapkite Engine]].
 It connects to the Twitter Streaming API, filters it using the available
 filters and according to the rules that you define, and outputs the filtered
 tweets to a web socket connection.  Our React app can listen to the events on
@@ -1428,6 +1500,93 @@ class CounterStore extends ReduceStore<number> {
   }
 }
 #+END_SRC
+
+* Twitter and Snapkite
+
+** Twitter Docs
+
+- [[https://developer.twitter.com/en/docs.html][Twitter Docs]]
+
+** Twitter Tutorial on Consuming Streaming Data
+
+- [[https://developer.twitter.com/en/docs/tutorials/consuming-streaming-data][Consuming streaming data]]
+
+** Snapkite Engine
+
+Snapkite Engine gives you filtered stream of photos posted publicly on Twitter.
+
+- [[https://github.com/Snapkite][Snapkite on Github]]
+- [[https://github.com/snapkite/snapkite-engine][Snapkite Engine on Github]]
+
+It can do 2 (either or both) things with those photos:
+
+1. Send them to a socket connection and allow all your clients to receive them
+   in real-time.
+2. Store them in MongoDB and retrieve later with [[https://github.com/snapkite/snapkite-api-server.git][Snapkite API Server]] or your
+   own application.
+
+{{{heading(Examples)}}}
+
+- [[http://snapterest.com/][Snapterest.com]]
+- [[http://map.snapkite.com/][Map.Snapkite.com]]
+
+*** Installation Instructions
+
+- https://github.com/snapkite/snapkite-engine#install
+
+
+1. git clone https://github.com/Snapkite/snapkite-engine.git
+2. cd snapkite-engine
+3. npm install
+4. cp example.config.json config.json
+5. Add your Twitter API keys to config.json
+6. Change default MongoDB config in config.json
+
+*** Configure Instructions
+
+- https://github.com/snapkite/snapkite-engine#configure
+
+
+You can configure Snapkite Engine by editing config.json.
+
+- ~application.pushTweets~ :: Send tweets to client?  Expects true or false.
+
+- ~application.storeTweets~ :: Store tweets in a MongoDB collection?  Expects
+     true or false.
+
+- ~application.pushKeywords~ :: Send keyword stats to client?  Expects true or
+     false.
+
+- ~application.trackKeywords~ ::
+     Which keywords should we ask Twitter to track for us?  Expects a string of
+     keywords separated by a single whitespace or comma, e.g.: =selfie london= or
+     =selfie,london=
+
+     Read this for more details:
+     https://dev.twitter.com/streaming/overview/request-parameters#track
+
+- ~application.excludeKeywords~ ::
+     Which keywords should be ignored?  Expects a string of keywords separated
+     by a comma, e.g.: =exclude,these,keywords=
+
+- ~application.filters~ ::
+     List of Snapkite filters that this application should use. You can find
+     the list of all available filters [[https://github.com/snapkite/snapkite-engine/tree/master/filters/README.md][here]].
+
+- ~application.twitter.api~ ::
+     Twitter API keys that Twitter provides you with. You can find them [[https://apps.twitter.com/][here]].
+
+- ~application.database~ : :MongoDB connection configuration.
+
+- ~application.socket~ :: Socket configuration.
+
+*** Snapkite Filters
+
+[[https://github.com/snapkite/snapkite-filters/blob/master/README.md][Everything you need to know]] about Snapkite filters.
+
+*** MongoDB
+
+https://github.com/snapkite/snapkite-engine#mongodb
 
 * Listings
 :PROPERTIES:
