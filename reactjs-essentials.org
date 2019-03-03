@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-03 Sun 11:34>
+#+DATE: <2019-03-03 Sun 12:26>
 
 #+TEXINFO: @insertcopying
 
@@ -47,6 +47,10 @@ frontend journey.
 
   #+CINDEX:Fedosejev, Artemij
 - [[https://github.com/fedosejev][Artemij Fedosejev]]
+
+
+  #+CINDEX:React Essentials Github
+- [[https://github.com/fedosejev/react-essentials][Author's React Essentials Github Page]]
 
   #+CINDEX:tutorials, React
 - [[https://react.tips][React Tutorials]]
@@ -225,7 +229,17 @@ https://wwwpacktpub.com/books/content/support
 
 enter the name of the book in the search field.
 
-* Installing Powerful Tools for your Project
+** ES6 Version
+
+A refactoring of the project described in "React.js Essentials" using ES6
+rather than just ES5.  This is merely a refactoring of the project described in
+"React.js Essentials" (by Artemij Fedosejev) that uses ES6 features (e.g.,
+class, import, etc.) rather than just ES5. (It also leaves out the console.log
+spam.)
+
+- From [[https://github.com/jmrog/react-essentials-es6-version][Jason Roger]]
+
+* 1. Installing Powerful Tools for your Project
 
 #+CINDEX:Kettering, Charles
 #+BEGIN_QUOTE
@@ -884,8 +898,10 @@ gulp.task('default', function() {
 #+CINDEX:Babelify
 #+CINDEX:install @file{babelify} module
 <<install-Browserify>>We have already installed the ~browserify~ module, so now
-let's install the ~babelify~ module:
-: npm install --save-dev babelify
+let's install the ~babelify~ module[fn::See [[https://github.com/fedosejev/react-essentials/blob/master/updates.md#chapter-1-page-14][errata]]; The book uses babelify
+version 6.  Version 7 introduced some [[https://github.com/fedosejev/react-essentials#i-get-syntaxerror-appjs-unexpected-token-when-i-run-gulp-command-what-should-i-do][breaking changes]];  to use Version 7, see
+[[https://github.com/fedosejev/react-essentials/issues/21#issuecomment-160316774][this comment]].]:
+: npm install --save-dev babelify@^6.2.0
 
 #+CINDEX:JSX
 The ~babelify~ module allows us to write the JSX syntax that we'll introduce in
@@ -1011,24 +1027,35 @@ React.js.''
   + [[create-index.html][Create ~index.html~]]
   + [[open-index.html][Open ~index.html~]]
 
-* Create Your First React Element
+* 2. Create Your First React Element
 
-* Create Your First React Component
+* 3. Create Your First React Component
 
-* Make Your React Component Reactive
+* 4. Make Your React Component Reactive
 
-* Use Your React Components With Another Library
+* 5. Use Your React Components With Another Library
 
-* Update Your React Components
+* 6. Update Your React Components
 
-* Build Complex React Components
+* 7. Build Complex React Components
 
-* Test Your React Application With Jest
+* 8. Test Your React Application With Jest
 
-* Supercharge Your React Architecture With Flux
+** TODO Install Jest 0.4
 
-* Prepare Your React Application for Painless Maintenance with Flux
+- See [[https://github.com/fedosejev/react-essentials/blob/master/updates.md#chapter-8-page-6][Errata]]
+  : npm install --save-dev jest-cli@^0.4
 
+* 9. Supercharge Your React Architecture With Flux
+
+* 10. Prepare Your React Application for Painless Maintenance with Flux
+
+** TODO Fix Tweet commands
+
+- See [[https://github.com/fedosejev/react-essentials/blob/master/updates.md#chapter-10-page-29][Errata]]
+  Use these:
+  : <Tweet tweet={this.props.tweet} onImageClick={this.props.onAddTweetToCollection} />
+  : <Tweet tweet={this.props.tweet} onImageClick={this.addTweetToCollection} />
 * React.js
 :PROPERTIES:
 :APPENDIX: t
