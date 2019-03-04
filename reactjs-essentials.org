@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-03 Sun 12:26>
+#+DATE: <2019-03-03 Sun 16:32>
 
 #+TEXINFO: @insertcopying
 
@@ -898,9 +898,10 @@ gulp.task('default', function() {
 #+CINDEX:Babelify
 #+CINDEX:install @file{babelify} module
 <<install-Browserify>>We have already installed the ~browserify~ module, so now
-let's install the ~babelify~ module[fn::See [[https://github.com/fedosejev/react-essentials/blob/master/updates.md#chapter-1-page-14][errata]]; The book uses babelify
+let's install ([[*Install Babelify][install Babelify]]) the [[https://www.npmjs.com/package/babelify][~babelify~ module]][fn::See [[https://github.com/fedosejev/react-essentials/blob/master/updates.md#chapter-1-page-14][errata]]; The book uses babelify
 version 6.  Version 7 introduced some [[https://github.com/fedosejev/react-essentials#i-get-syntaxerror-appjs-unexpected-token-when-i-run-gulp-command-what-should-i-do][breaking changes]];  to use Version 7, see
-[[https://github.com/fedosejev/react-essentials/issues/21#issuecomment-160316774][this comment]].]:
+[[https://github.com/fedosejev/react-essentials/issues/21#issuecomment-160316774][this comment]].][[fn::The current version is now =10.0.0=.]:
+
 : npm install --save-dev babelify@^6.2.0
 
 #+CINDEX:JSX
@@ -911,10 +912,11 @@ the next chapter.
 
 #+CINDEX:Vinyl Source Stream module
 #+CINDEX:Browserify and Gulp
-<<install-Vinyl-Source-Stream>>Why do we need the ~vinyl-source-stream~ module?
+<<install-Vinyl-Source-Stream>>Why do we need the [[https://www.npmjs.com/package/vinyl-source-stream][~vinyl-source-stream~ module]]?
 It allows us to use Browserify and Gulp together.  For more details on why this
 works, go to [[https://www.npmjs.com/package/vinyl-source-stream][Vinyl-Source-Stream]].  Let's install the ~vinyl-source-stream~
 dependency module:
+
 : npm install --save-dev vinyl-source-stream
 
 **** Test Default Gulp Task
@@ -1614,6 +1616,58 @@ You can configure Snapkite Engine by editing config.json.
 *** MongoDB
 
 https://github.com/snapkite/snapkite-engine#mongodb
+
+* Babelify
+:PROPERTIES:
+:APPENDIX: t
+:END:
+
+[[https://github.com/babel/babel][Babel browserify]] transform.
+
+- [[https://www.npmjs.com/package/babelify][Babelify on npm]]
+- [[https://babeljs.io/][Babel]]
+- [[https://github.com/babel/babel][Babel on Github]]
+
+Babel is a compiler for writing next generation JavaScript. 
+
+** Installation
+
+{{{heading(Babel 7)}}}
+
+: $ npm install --save-dev babelify @babel/core
+
+{{{heading(Babel 6)}}}
+
+: $ npm install --save-dev babelify@6 babel-core
+
+** Usage
+
+{{{heading(Presets and Plugins)}}}
+
+NOTE: Presets and plugins need to be installed as separate modules. For the
+examples to work, you'd need to also install ~@babel/preset-env~ and
+~@babel/preset-react~:
+
+{{{subheading(CLI)}}}
+
+: $ browserify script.js -o bundle.js -t [ babelify \
+: --presets [ @babel/preset-env @babel/preset-react ] \
+: --plugins [ @babel/plugin-transform-class-properties ] ]
+
+{{{subheading(Node)}}}
+
+#+BEGIN_SRC js :eval never
+var fs = require("fs");
+var browserify = require("browserify");
+browserify("./script.js")
+  .transform("babelify", {presets: ["@babel/preset-env", "@babel/preset-react"]})
+  .bundle()
+  .pipe(fs.createWriteStream("bundle.js"));
+#+END_SRC
+
+{{{subheading(Options)}}}
+
+See the babel docs for the complete list of [[http://babeljs.io/docs/usage/options/][options]].
 
 * Listings
 :PROPERTIES:
