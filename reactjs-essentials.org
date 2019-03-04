@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-03 Sun 16:32>
+#+DATE: <2019-03-03 Sun 19:17>
 
 #+TEXINFO: @insertcopying
 
@@ -444,10 +444,11 @@ steps:
 
    #+CINDEX:Twitter app, create
 2. <<create-twitter-app>>Create a new Twitter App by navigating to
-   https://apps.twitter.com and click on {{{key(Create New App)}}}.  You will
-   need to fill in the *Application Details* form, agree with the *Developer
-   Agreement*, and click on *Create your Twitter application*.  Now you should
-   see your application's page.
+   https://developer.twitter.com/en/apps[fn::https://apps.twitter.com has been
+   sunsetted] and click on {{{key(Create New App)}}}.  You will need to fill in
+   the *Application Details* form, agree with the *Developer Agreement*, and
+   click on *Create your Twitter application*.  Now you should see your
+   application's page.
 
 
 {{{subheading(Get Twitter Keys)}}}
@@ -638,7 +639,7 @@ that socket connection and process tweets as they arrive.
     "filters": [
         "snapkite-filter-is-possibly-sensitive",
         "snapkite-filter-has-mobile-photo",
-        "snapkit-filter-is-retweet",
+        "snapkite-filter-is-retweet",
         "snapkite-filter-has-text"
     ]
     #+END_SRC
@@ -648,11 +649,11 @@ that socket connection and process tweets as they arrive.
 <<test-Snapkite-Engine>>With that you have successfully installed Snapkite
 Engine with a number of Snapkite Filters.  Now let's check if we can run it.
 Navigate to ~<dir>/snapkite-engine~ and run:
-: npm start
-
+: $ npm start
+: [Snapkite][Socket] Listening on port 3000
 
 You should see no error messages.  If you do and you are not sure how to fix
-them, go to https://github.com/fedosejev/react-essentias/issues, create a new
+them, go to https://github.com/fedosejev/react-essentials/issues, create a new
 issue and copy/paste the error message that you get.
 
 ** Creating the Project Structure
@@ -832,7 +833,7 @@ The Node.js ecosystem has a great tool for automating our build process,
 #+CINDEX:Gulp.js installation
 Let's install it.
 : npm install --save-dev gulp
-: npm install --global gulp
+: npm install --global gulp-cli
 
 {{{subheading(An Example ~gulpfile.js~)}}}
 
@@ -840,16 +841,18 @@ Let's install it.
 #+CINDEX:@file{gulpfile.js}
 <<example-gulpfile.js>>What is a /gulpfile/?  It's a file where we describe our
 build process.  Create ~gulpfile.js~ in your ~<dir>/snapterest/~ directory and
-add the following content to it:
+add the following content to it[fn::from
+https://gulpjs.com/docs/en/getting-started/quick-start#create-a-gulpfile]:
 
 #+NAME:example-gulpfile.js
 #+CAPTION:Example of a ~gulpfile.js~
 #+BEGIN_SRC js :eval never
-var gulp = require('gulp');
+function defaultTask(cb) {
+  console.log("I am about to learn the essentials of React.js");
+  cb();
+}
 
-gulp.task('default', function() {
-    console.log('I am about to learn the essentials of React.js');
-});
+exports.default = defaultTask;
 #+END_SRC
 
 #+CINDEX:@command{gulp} command
@@ -863,7 +866,7 @@ I am about to learn the essentials of React.js
 Finished 'default' after 62 us
 #+END_EXAMPLE
 
-{{{subheading(Creating a Default Gulp Task)}}}
+*** Creating a Default Gulp Task
 
 #+CINDEX:@samp{default} task
 #+CINDEX:Gulp.js build system
@@ -884,12 +887,13 @@ var browserify = require('browserify');
 var babelify = require('babelify');
 var source = require('vinyl-source-stream');
 
-gulp.task('default', function() {
+gulp.task('default', function(cb) {
     return browserify('./source/app.js')
         .transform(babelify)
         .bundle()
         .pipe(source('snapterest.js'))
         .pipe(gulp.dest('./build/'));
+        cb();
 });
 #+END_SRC
 
@@ -923,14 +927,12 @@ dependency module:
 
 #+CINDEX:gulp default task
 <<test-gulp-default-task>>Now we're ready to test our ~default~ task.  Run:
-: gulp
-
-The output should look something like:
 
 #+BEGIN_EXAMPLE
-Using gulpfile <dir>/snapterest/gulpfile.js
-Starting 'default'...
-Finished 'default' after 48 ms
+$ gulp
+[19:06:03] Using gulpfile ~/Dev/Programming/WebDev/React/ReactJS-Essentials/snapterest/gulpfile.js
+[19:06:03] Starting 'default'...
+[19:06:03] Finished 'default' after 40 ms
 #+END_EXAMPLE
 
 #+CINDEX:@file{build} directory
@@ -951,7 +953,7 @@ with a link to our ~snapterest.js~ script.  Create the ~index.html~ file in the
 
 #+NAME:index.html
 #+CAPTION:Project Snapterest ~index.html~
-#+BEGIN_SRC html :eval never
+#+BEGIN_SRC html :eval never :tangle snapterest/build/index.html
 <!doctype html>
 <html lang="en">
   <head>
