@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-03 Sun 19:17>
+#+DATE: <2019-03-03 Sun 21:02>
 
 #+TEXINFO: @insertcopying
 
@@ -1032,6 +1032,295 @@ React.js.''
   + [[open-index.html][Open ~index.html~]]
 
 * 2. Create Your First React Element
+
+Creating a simple web application today involves writing the HTML, CSS, and
+JavaScript code.  The reason we use three different technologies is because we
+want to separate three different concerns:
+
+- Content (HTML)
+- Styling (CSS)
+- Logic (JavaScript)
+
+
+#+CINDEX:Single Page Application (SPA)
+#+CINDEX:SPA, Single Page Application
+We don't think of a website as a collection of web pages anymore.  Instead, we
+build web applications that might have only one web page, and that web page
+does not represent the layout for out content---it represents a /container/ for
+our web application.  Such a web application with a single web page is called a
+{{{dfn(Single Page Application (SPA))}}}.
+
+How do we represent the rest of the content in a SPA?  Surely, we need to
+create an additional layout using HTML tags.  Otherwise, how does a web browser
+know what to render?
+
+These are valid questions.  Let's take a look at how it works.
+
+  #+CINDEX:Document Object Model (DOM)
+  #+CINDEX:DOM, Document Object Model
+- Once you load your web page in a web browser, it creates a {{{dfn(Document
+  Object Model (DOM))}}} of that web page.  A DOM represents your web page in a
+  tree structure, and at this point, it reflects the structure of the layout
+  that you created with only HTML tags.  This is what happens regardless of
+  whether you're building a traditional web page or an SPA.  The difference
+  between the two is what happens next.
+
+- If you are building a traditional web page then you would finish creating
+  your web page's layout.
+
+  #+CINDEX:JavaScript DOM API
+  #+CINDEX:DOM API, JavaScript
+- On the other hand, if you are building a SPA, then you would need to start
+  creating additional elements by manipulating the DOM with JavaScript.  A web
+  browser provides you with the {{{dfn(JavaScript DOM API)}}} to do this.  You
+  can learn more about it at:
+  - [[https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model][Document Object Model]]
+
+- However, manipulating (or mutating) the DOM with JavaScript has two issues:
+
+     #+CINDEX:imperative programming style
+     #+CINDEX:programming style, imperative
+     #+CINDEX:style, imperative programming
+  1. Your programming style will be /imperative/ if you decide to use the
+     JavaScript DOM API directly.  This programming style leads to a code base
+     that is harder to maintain.
+
+     #+CINDEX:DOM mutations
+  2. DOM mutations are slow because they cannot be optimized for speed, unlike
+     other JavaScript code.
+
+  React solves both these problems for us.
+
+** Understanding the Virtual DOM
+
+Why do we need to manipulate the DOM in the first place?  Because our web
+applications are not static.  They have /state/ represented by the {{{dfn(user
+interface (UI))}}} that a web browser renders, and that state can be changed
+when an event occurs.  What kind of events are we talking about?  There are two
+types of events that we're interested in:
+
+#+ATTR_TEXINFO: :indic b
+- User events :: When a user types, clicks, scrolls, resizes, and so on
+- Server events :: When an application receives data or an error from the
+                   server
+
+
+#+CINDEX:syncing states
+What happens while handling these events?  Usually, we update the data that our
+application depends on, and that data represents a state of our data model.  In
+turn, when a state of our data model changes, we might want to reflect this
+change by updating a state of our UI.  Looks like what we want is a way of
+syncing the two states: the UI state and the data model state.  We want one to
+react to the changes in the other and vice versa.
+
+#+CINDEX:two-way data binding
+#+CINDEX:key-value observing (KVO)
+#+CINDEX:KVO, key-value observing
+#+CINDEX:Ember.js
+#+CINDEX:Knockout
+#+CINDEX:Backbone
+#+CINDEX:iOS
+#+CINDEX:Angular
+#+CINDEX:dirty checking
+One of the ways to sync your application's UI state with an underlying data
+model's state is {{{dfn(two-way data binding)}}}.  There are different types of
+two-way data binding.  One of them is {{{dfn(key-value observing (KVO))}}},
+which is used in *Ember.js*, *Knockout*, *Backbone*, and *iOS*, among others.
+Another one is dirty checking, which is used in *Angular*.
+
+#+CINDEX:virtual DOM
+#+CINDEX:reactive
+Instead of two-way data binding, React offers a different solution called the
+{{{dfn(virtual DOM)}}}.  The virtual DOM is a fast, in-memory representation of
+the real DOM, and it's an abstraction that allows us to treat JavaScript and
+DOM as if they were reactive.
+
+Here is how it works:
+
+1. Whenever the state of your data model changes, the virtual DOM and React
+   will rerender your UI to a virtual DOM representation.
+
+2. React then calculates the difference between the two virtual DOM
+   representations: the previous virtual DOM representation that was computed
+   before the data was changed and the current virtual DOM representation that
+   was computed after the data was changed.  This difference between the two
+   virtual DOM representations is what actually needs to be changed in the real
+   DOM.
+
+3. React updates only what needs to be updated in the real DOM.
+
+
+The process of finding a difference between the two representations of the
+virtual DOM and rerendering only the updated patches in a real DOM is fast.
+Aslo, the best part is, as a React developer, that you don't need to worry
+about what actually needs to be rerendered.,  React allows you to write your
+code as if you were rerendering the entire DOM every time your application's
+state changes.
+
+You would like to learn more about the virtual DOM, the rationale behind it,
+and how it can be compared to data binding, then watch this talk by Pete Hunt
+from Facebook at https://www.youtube.com/watch?v=-DX3vJiqxm4.  See also [[https://www.youtube.com/watch?v=d7pyEDqBDeE][Tech
+Talk: What is the Virtual DOM?]]
+
+** Installing React
+
+To start using the React library, we need to first install it.  I am going to
+show you two ways of doing this: the simplest one and the one using the
+{{{command(npm install)}}} command.
+
+{{{heading(Using a <Script> Tag)}}}
+
+The simplest way is to add the ~<script>~ tag to your
+~/snapterest/build/index.html~ file.
+
+- For the development version of React, add the following command:
+
+  : <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.0-beta3/react.js"></script>
+
+- For the production version of React, add the following command:
+
+  : script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.0-beta3/react.min.js"></script>
+
+
+There is a difference between the two that we'll learn about in the later
+chapters of this book.  For our project, we'll be using the development of
+React.
+
+At the time of this writing, the latest version of React library is
+0.14.0-beta3.  Over time, React gets updated, so make sure you use the latest
+version that is available to you, unless it introduces breaking changes that
+are incompatible with the code samples provided in this book.  Visit
+https://github.com/fedosejev/react-essentials to learn about any compatibility
+issues between the codce samples and the latest version of React.
+
+{{{heading(Importing React from npm)}}}
+
+You learned about *Browserify* that allows us to import all the dependency
+modules for our application using the ~require()~ function.  We'll be using
+~require()~ to import the React library as well, which means that, instead of
+adding a ~<script>~ tag to our ~index.html~, we'll be using the {{{command(npm
+install)}}} to install React:
+
+1. Navigate to the ~<dir>/snapterest/~ directory and run this command:
+
+   : npm install --save react@0.14.8 react-dom@0.14.8
+
+2. Then, open the ~<dir>/snapterest/source/app.js~ file in your text editor and
+   import the React and ReactDOM libraries to the ~React~ and ~ReactDOM~
+   variables, respectively:
+
+   : var React = require('react');
+   : var ReactDOM = require('react-dom');
+
+
+The ~react~ package contains methods that are concerned with the key idea
+behind React, that is, describing what you want to render in a declarative way.
+On the other hand, the ~react-dom~ package offers methods that are responsible
+for rendering to the DOM.  You can read more about why developers at Facebook,
+think it's a good idea to separate the React library into two packages at
+https://facebook.github.io/react/blog/2015/07/03/react-v0.14-beta-1.html#two-packages.
+
+Now we're ready to start using the React library in our project.  Next, let's
+create our first React Element.
+
+** Creating React Elements with JavaScript
+
+We'll start by familiarizing ourselves with a fundamental React terminology.
+It will help us build a clear picture of what the React library is made of.
+This terminology will most likely update over time, so keep an eye on the
+official documentation at https://reactjs.org/docs/glossary.html.
+
+Just like the DOM is a tree of nodes, React's virtual DOM is a tree of React
+nodes.  One of the core types in React is called =ReactNode=.  It's a building
+block for a virtual DOM, and it can be any one of these core types:
+
+- =ReactElement=: ::
+
+     This is the primary type in React.  It's a light, stateless, immutable,
+     virtual representation of a DOM =Element=.
+
+- =ReactText=: ::
+                  This is a string or a number.  It represents textual content
+                  and it's a virtual representation of a Text Node in the DOM.
+
+
+=ReactElement='s and =ReactText='s are =ReactNode='s.  An array of
+=ReactNode='s is called a =ReactFragment=.  You will see examples of all these
+in this chapter.
+
+** Example =ReactElement=
+
+Let's start with an example of a =ReactElement=:
+
+1. Add the following code to your ~<dir>/snapterest/source/app.js~ file:
+
+   #+BEGIN_SRC js :eval never
+   var reactElement = React.createElement('h1');
+   ReactDOM.render(reactElement, document.getElementById('react-application'));
+   #+END_SRC
+
+2. Now your ~app.js~ file should look exactly like this:
+
+   #+BEGIN_SRC js :eval never
+   var React = require('react');
+   var ReactDOM = require('react-dom');
+
+   var reactElement = React.createElement('h1');
+   ReactDOM.render(reactElement, document.getElementById('react-application'));
+   #+END_SRC
+
+3. Navigate to the ~<dir>/snapterest/~ directory and run Gulp's =default= task:
+
+   #+BEGIN_EXAMPLE
+   $ gulp
+   [20:28:44] Using gulpfile <dir>/snapterest/gulpfile.js
+   [20:28:44] Starting 'default'...
+   [20:28:45] Finished 'default' after 988 ms
+   #+END_EXAMPLE
+
+4. Navigate to the ~<dir>/build/~ directory, and open ~index.html~ in a web
+   browser.  You will see a blank web page.  Open *Developer Tools* in your web
+   browser and inspect the HTML markup for your blank web page.  You should see
+   this line among others:
+   : <h1 data-reactid=".0"></h1>
+
+   #+BEGIN_SRC html :eval never
+   <html lang="en">
+     <head>
+       <meta charset="utf-8">
+       <meta http-equiv="x-ua-compatible" content="ie-edge, chrome=1">
+       <title>Snapterest</title>
+       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+     </head>
+     <body>
+        <div id="react-application">
+          <h1 data-reactid=".0"></h1>
+        </div>
+        <script src="./snapterest.js"></script>
+      </body>
+    </html>
+    #+END_SRC
+
+
+We've just created your first React element.
+
+** The Three Parameters of ~React.createElement()~
+
+The entry point to the React library is the =React= object.  This object has a
+method called ~createElement()~ that takes three parameters:
+
+1. =type=
+2. =props=
+3. =children=
+: React.createElement(type, props, children);
+
+Let's take a look at each parameter in more detail.
+
+*** The =type= Parameter
+
+*** The =props= Parameter
+
+*** The =children= Parameter
 
 * 3. Create Your First React Component
 
