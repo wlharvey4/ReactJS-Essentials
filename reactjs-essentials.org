@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-03 Sun 21:02>
+#+DATE: <2019-03-04 Mon 09:35>
 
 #+TEXINFO: @insertcopying
 
@@ -1306,6 +1306,12 @@ We've just created your first React element.
 
 ** The Three Parameters of ~React.createElement()~
 
+#+CINDEX:React object
+#+CINDEX:@code{React.createElement()} method
+#+CINDEX:parameters to @code{React.createElement()}
+#+CINDEX:@code{type} parameter
+#+CINDEX:@code{props} parameter
+#+CINDEX:@code{children} parameter
 The entry point to the React library is the =React= object.  This object has a
 method called ~createElement()~ that takes three parameters:
 
@@ -1316,13 +1322,239 @@ method called ~createElement()~ that takes three parameters:
 
 Let's take a look at each parameter in more detail.
 
+#+CINDEX:type parameter
 *** The =type= Parameter
 
+The =type= parameter can be either a string or a ~ReactClass~:
+
+- A string could be an HTML tg name such as `div', `p', `h1', and so on.  React
+  supports all the common HTML tags and attributes.  For a complete list of
+  HTML tags and attributes supported by React, refer to:
+  - [[https://reactjs.org/docs/dom-elements.html][DOM Elements]]
+
+- A ~ReactClass~ is created via the ~React.createClass()~ method.  This will be
+  introduced in more detail in [[#Chapter 3][Chapter 3]].
+
+
+The =type= parameter describes how an HTML tag or a ~ReactClass~ is going to be
+rendered.  In our example, we're rendering the ~h1~ HTML tag.
+
+#+CINDEX:@code{props} parameter
 *** The =props= Parameter
 
+The =props= parameter is a JavaScript object passed from a parent element to a
+child element (and not the other way around) with some properties that are
+considered immutable, that is, those that should not be changed.
+
+#+CINDEX:HTML attributes as @code{props}
+While creating DOM elements with React, we can pass the =props= object with
+properties that represent HTML attributes such as =class=, =style=, and so on.
+For example, run the following commands:
+
+#+BEGIN_SRC js :eval never
+var React = require ('react');
+var ReactDOM = require('react-dom');
+var reactElement = React.createElement('h1', { className: 'header' });
+ReactDOM.render(reactElement, document.getElementById('react-application');
+#+END_SRC
+
+The preceding code will create an ~h1~ HTML element with a =class= attribute
+set to =header=:
+: <h1 class="header" data-reactid=".0"></h1>
+
+#+CINDEX:@code{className} attribute
+Notice that we name our property =className= rather than =class=.  The reason
+is that the =class= keyword is reserved in JavaScript.  If you use =class= as a
+property name, it will be ignored by React, and a helpful warning message will
+be printed on the web browser's console.:
+: Warning: Unknown DOM property class.  Did you mean className?
+: Use className instead.
+
+#+CINDEX:@code{data-reactid=".0"} attribute
+What is this =data-reactid=".0" attribute doing in the ~h1~ tag?  It is added
+and used by React to track the DOM nodes; it might be removed in a future
+version of React.[fn::It has been.]
+
+#+CINDEX:@code{children} parameter
 *** The =children= Parameter
 
+#+CINDEX:child elements
+#+CINDEX:@code{ReactNode}
+The =children= parameter describes what child elements this element should
+have, if any.  A child element can be any type of ~ReactNode~: a virtual DOM
+element represented by a ~ReactElement~, a string or a number represented by
+~ReactText~, or an array of other ~ReactNode~'s which is also called a
+~ReactFragment~.
+
+Here is an example:
+
+#+BEGIN_SRC js :eval never :tangle snapterest/source/app.js
+var React = require('react');
+var ReactDOM = require('react-dom');
+var reactElement = React.createElement('h1', { className: 'header' }, 'This is React.');
+ReactDOM.render(reactElement, document.getElementById('react-application'));
+#+END_SRC
+
+#+NAME:ch2-ReactElement-children-param
+#+CAPTION:Example of ~children~ Parameter with a ~ReactText~ Element
+[[file:img/ch2-ReactElement-children-param-50.png]]
+
+This code will create an ~h1~ HTML element with a =class= attribute and a text
+node, {{{samp(This is React.)}}}:
+: <h1 class="header" data-reactid=".0">This is React.</h1>
+
+The ~h1~ tag is represented by a ~ReactElement~, while the {{{samp(This is
+React.)}}} string is represented by a ~ReactText~.
+
+*** The =children= Parameter with Multiple React Elements as Children
+
+Next, create a React element with a number of other React elements as it's
+children:
+
+#+BEGIN_SRC js :eval never :tangle snapterest/source/app.js
+var React = require('react');
+var ReactDOM = require('react-dom');
+
+var h1 = React.createElement('h1', { className: 'header', key: 'header' }, 'This is React.');
+var p = React.createElement('p', { className: 'content', key: 'content' }, "And that's how it works.");
+var reactFragment = [h1, p];
+var section = React.createElement('section', { className: 'container' }, reactFragment);
+
+ReactDOM.render(section, document.getElementById('react-application'));
+#+END_SRC
+
+#+NAME:ch2-ReactElement-children-param-section
+#+CAPTION:The ~children~ Parameter with an Array of ReactElements
+[[file:img/ch2-ReactElement-children-param-section-50.png]]
+
+We've created three React elements: ~h1~, ~p~, and ~section~.  ~h1~ and ~p~
+both have child text nodes, {{{samp(This is React.)}}} and {{{samp(And that's
+how it works.)}}}, respectively.  The ~section~ has a child that is an array of
+two ~ReactElement~'s, ~h1~ and ~p~, called ~reactFragment~.  This is also an
+array of ~ReactNode~'s.  Each ~ReactElement~ in the ~reactFragment~ array must
+have a =key= property that helps React to identify that ~ReactElement~.  As a
+result, we get the following HTML markup:
+
+#+BEGIN_SRC html :eval never
+<section class="container" data-reactid=".0">
+  <h1 class="header" data-reactid=".0.$header">This is React.</h1>
+  <p class="content" data-reactid=".0.$content">And that's how it works.</p>
+</section>
+#+END_SRC
+
+*** React's Factory Function ~React.CreateFactory()~
+
+#+CINDEX:factory function
+#+CINDEX:@code{React.createFactory()} method
+Now we understand how to create React elements.  What if we wanted to create a
+number of React elements of the same type?  Does it mean that we need to call
+~React.createElement('type') over and over again for each element of the same
+type?  We can, but we don't need to because React provides us with a factory
+function called ~React.createFactory()~.  A {{{dfn(factory function)}}} is a
+function that creates other functions.  This is exactly what
+~React.createFactory('type')~ does: it creates a function that produces a
+~ReactElement~ of a given type.
+
+Consider the following example:
+
+#+BEGIN_SRC js :eval never :tangle snapterest/source/app.js
+var React = require('react');
+var ReactDOM = require('react-dom');
+
+var listItemElement1 = React.createElement('li', { className: 'item-1', key: 'item-1' }, 'Item 1');
+var listItemElement2 = React.createElement('li', { className: 'item-2', key: 'item-2' }, 'Item 2');
+var listItemElement3 = React.createElement('li', { className: 'item-3', key: 'item-3' }, 'Item 3');
+
+var reactFragment = [ listItemElement1, listItemElement2, listItemElement3 ];
+var listOfItems = React.createElement('u1', { className: 'list-of-items' }, reactFragment);
+
+ReactDOM.render(listOfItems, document.getElementById('react-application'));
+#+END_SRC
+
+The preceeding example produces this HTML:
+
+#+BEGIN_SRC html :eval never
+<ul class="list-of-items" data-reactid=".0">
+  <li class="item-1" data-reactid=".0.$item-1">Item 1</li>
+  <li class="item-2" data-reactid=".0.$item-2">Item 1</li>
+  <li class="item-3" data-reactid=".0.$item-3">Item 1</li>
+</ul>
+#+END_SRC
+
+#+CINDEX:factory function
+We can simplify it by first creating a factory function:
+
+#+BEGIN_SRC js :eval never :tangle snapterest/source/app.js
+var React = require('react');
+var ReactDOM = require('react-dom');
+
+var createListItemElement = React.createFactory('li');
+
+var listItemElement1 = createListItemElement({ className: 'item-1', key: 'item-1' }, 'Item 1');
+var listItemElement2 = createListItemElement({ className: 'item-2', key: 'item-2' }, 'Item 2');
+var listItemElement3 = createListItemElement({ className: 'item-3', key: 'item-3' }, 'Item 3');
+
+var reactFragment = [ listItemElement1, listItemElement2, listItemElement3 ];
+var listOfItems = React.createElement('ul', { className: 'list-of-items' }, reactFragment);
+
+ReactDOM.render(listOfItems, document.getElementById('react-application'));
+#+END_SRC
+
+#+NAME:ch2-ReactElement-children-factory-function
+#+CAPTION:Creating Children with a Factory Function
+[[file:img/ch2-ReactElement-children-factory-function-50.png]]
+
+#+CINDEX:@code{React.createFactory()} method
+In the preceding example, we're first called the ~React.createFactory()~
+function and passing a ~li~ tag name as a =type= parameter.  Then, the
+~React.createFactory()~ function returns a new function that we can use as a
+convenient shorthand to create elements of type ~li~.  We store a reference to
+this function in a variable called ~createListItemElement~.  Then we call this
+function three times, and each time we only pass the =props= and =childre=
+parameters, which are unique for each element.  Notice that
+~React.createElement()~ and ~React.createFactory()~ both expect the HTML tag
+name string (such as ~li~) or the ~ReactClass~ object as a type parameter.
+
+*** React's Built-in Factory Functions
+
+#+CINDEX:factory functions, built-in to React
+#+CINDEX:@code{React.DOM.#} methods
+React provides a number of built-in factory functions to create the common HTML
+tags.  You can call them from the ~React.DOM~ object; for example:
+- ~React.DOM.ul()~
+- ~React.DOM.li()~
+- ~React.DOM.div()~
+
+
+and so on.  Using them, we can simplify our previous example even further:
+
+#+BEGIN_SRC js :eval never :tangle snapterest/source/app.js
+var React = require('react');
+var ReactDOM = require('react-dom');
+
+var listItemElement1 = React.DOM.li({ className: 'itemDOM-1', key: 'item-1' }, 'Item 1');
+var listItemElement2 = React.DOM.li({ className: 'itemDOM-2', key: 'item-2' }, 'Item 2');
+var listItemElement3 = React.DOM.li({ className: 'itemDOM-3', key: 'item-3' }, 'Item 3');
+
+var reactFragment = [ listItemElement1, listItemElement2, listItemElement3 ];
+var listOfItems = React.DOM.ul({ className: 'list-of-items' }, reactFragment);
+
+ReactDOM.render(listOfItems, document.getElementById('react-application'));
+#+END_SRC
+
+#+CINDEX:tree of @code{ReactNode}s
+Now we know how to create a tree of ~ReactNode~'s.  However, there is one
+important line of code that we need to discuss before we can progress further:
+
+: ReactDOM.render(listOfItems, document.getElementById('react-application'));
+
+It renders our ~ReactNode~ tree to the DOM.  Let's take a closer look at how it
+works.
+
 * 3. Create Your First React Component
+:PROPERTIES:
+:CUSTOM_ID: Chapter 3
+:END:
 
 * 4. Make Your React Component Reactive
 
