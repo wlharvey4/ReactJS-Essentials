@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-04 Mon 21:13>
+#+DATE: <2019-03-04 Mon 21:22>
 
 #+TEXINFO: @insertcopying
 
@@ -947,6 +947,8 @@ application with some Node.js modules that are ready to run in a web browser.
 :END:
 
 #+CINDEX:@file{index.html} file
+#+CINDEX:@file{snapterest.js} file
+#+CINDEX:@file{snapterest/build} directory
 <<create-index.html>>All that is left to do is to create the ~index.html~ file
 with a link to our ~snapterest.js~ script.  Create the ~index.html~ file in the
 ~<dir>/snapterest/build/~ directory.  Add the following HTML markup to it:
