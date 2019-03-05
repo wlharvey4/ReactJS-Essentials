@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-04 Mon 09:35>
+#+DATE: <2019-03-04 Mon 21:13>
 
 #+TEXINFO: @insertcopying
 
@@ -879,7 +879,7 @@ tht will package our source and dependency modules using Browserify.
 <<default-gulpfile.js>>Replace the contents of your ~gulpfile.js~ with the
 following code:
 
-#+NAME:default-gulp-task
+#+NAME:default-task-gulpfile.js
 #+CAPTION:A default ~gulpfile.js~ that will package source and dependency modules using Browserify
 #+BEGIN_SRC js :eval never
 var gulp = require('gulp');
@@ -1528,6 +1528,8 @@ tags.  You can call them from the ~React.DOM~ object; for example:
 
 and so on.  Using them, we can simplify our previous example even further:
 
+#+NAME:built-in-factory-function-app.js
+#+CAPTION:Creating a DOM Structure Using Built-in Factory Functions
 #+BEGIN_SRC js :eval never :tangle snapterest/source/app.js
 var React = require('react');
 var ReactDOM = require('react-dom');
@@ -1550,6 +1552,169 @@ important line of code that we need to discuss before we can progress further:
 
 It renders our ~ReactNode~ tree to the DOM.  Let's take a closer look at how it
 works.
+
+** Rendering React Elements
+
+{{{subheading(Parameters to ~ReactDOM.render()~)}}}
+
+#+CINDEX:@code{ReactDOM.render()} method, parameters
+The ~ReactDOM.render()~ method takes three parameters:
+
+   #+CINDEX:@code{ReactElement}
+1. ~ReactElement : A root element in the tree of ~ReactNodes~ that you have
+   created
+   #+CINDEX:@code{DOMElement}
+2. ~DOMElement~ : A container DOM node for that tree.
+   #+CINDEX:callback function
+3. callback function : A function executed after the tree is rendered or
+   updated.
+
+
+: ReactDOM.render(ReactElement, DOMElement, callback);
+
+#+CINDEX:@code{ReactElement}
+It is important to note that if this ~ReactElement~ was previously rendered to
+a parent DOM ~Element~, then ~ReactDOM.render()~ will perform an /update/ on
+the already rendered DOM tree and only /mutate/ the DOM as it is necessary to
+reflect the latest version of the ~ReactElement~.  This is why a virtual DOM
+requires fewer DOM mutations.
+
+{{{heading(Creating Static Web Content on a Server)}}}
+
+#+CINDEX:initial page load
+Can you think of a case when rendering a user interface on a client would be
+slow?  The initial page load.  The problem with the initial page load is the
+one mentioned at the beginning of this chapter---we're not creating static web
+pages anymore.  Instead, when a web browser loads our web application, it
+receives only the bare minimum HTML markup that is usually used as a container
+or a parent element for our web application.  Then, our JavaScript code creates
+the rest of the DOM, but in order for it to do so it often needs to request
+extra data from the server.  However, getting this data takes time.  Once this
+data is received, our JavaScript code starts to mutate the DOM.  We know that
+DOM mutations are slow.  How can we solve this problem?
+
+#+CINDEX:static web pages
+#+CINDEX:mutate DOM in a server
+The solution is instead of mutating the DOM in a web browser, we mutate it on a
+server, just like we would with our static web pages.  A web browser will then
+receive an HTML that fully represents a user interface of our web application
+at the time of the initial page load.  But we can't mutate the DOM on a server
+because it doesn't exist outside a web browser.
+
+#+CINDEX:virtual DOM on a server
+#+CINDEX:@code{ReactNode} tree
+We have a virtual DOM that is just a JavaScript, and as you know using Node.js,
+we can run JavaScript on a server.  So technically, we can use the React
+library on a server, and we can create our ~ReactNode~ tree on a server.  The
+question is how can we render it to a string that we can send to a client?
+
+{{{subheading(ReactDOMServer.renderToString())}}} Method
+
+#+CINDEX:@code{ReactDOMServer.renderToString()} method
+React has a method called ~ReactDOMServer.renderToString()~ for just this
+purpose.
+
+: var ReactDOMServer = require('react-dom/server');
+: ReactDOMServer.renderToString(ReactElement);
+
+It takes a ~ReactElement~ as a parameter and renders it to its initial HTML.
+Not only is this faster than mutating a DOM on a client, but it also improves
+the *Search Engine Optimization (SEO)* of your web application.
+
+{{{subheading(ReactDOMServer.renderToStaticMarkup())}}} Method
+
+#+CINDEX:@code{ReactDOMServer.renderToStaticMarkup()} method
+React can also generate static web pages:
+
+: var ReactDOMServer = require('react-dom/server');
+: ReactDOMServer.renderToStaticMarkup(ReactElement);
+
+Similar to ~ReactDOMServer.renderToString()~, this method also takes a
+~ReactElement~ as a parameter and outputs an HTML string.  However, it doesn't
+create the extra DOM attributes that React uses internally; rather, it produces
+shorter HTML strings that we can transfer to the wire quickly.
+
+Now you know not only how to create a virtual DOM tree using React Elements,
+but you also know how to render it to a client and server.  Our next question
+is whether we can do it quickly and in a more visual manner.
+
+** Creating React Elements With JSX
+
+When we build our virtual DOM by constantly calling the ~React.createElement()~
+method, it becomes quite hard to visually translate these multiple function
+calls into a hierarchy of HTML tags.  Don't forget that, even though we're
+working with a virtual DOM, we're still creating a structure layout for our
+content and user interface.  Wouldn't it be great to be able to visualize that
+layout easily by simply looking at our React code?
+
+#+CINDEX:JSX
+{{{dfn(JSX)}}} is an optional HTML-like syntax that allows us to create a
+virtual DOM tree without using the ~React.creatElement()~ method.
+
+Let's [[built-in-factory-function-app.js]], which was created without using JSX.
+
+Translate this to one using JSX:
+
+#+NAME:jsx-app.js
+#+CAPTION:Coding With JSX
+#+BEGIN_SRC js :eval never :tangle snapterest/source/app.js
+var React = require('react');
+var ReactDOM = require('react-dom');
+
+var listOfItems =
+<ul className="list-of-items">
+    <li className="jsx-item-1">Item 1</li>
+    <li className="jsx-item-2">Item 2</li>
+    <li className="jsx-item-3">Item 3</li>
+</ul>;
+
+ReactDOM.render(listOfItems, document.getElementById('react-application'));
+#+END_SRC
+
+JSX allows us to write HTML-like syntax in our JavaScript code.  More
+importantly, we can now clearly see what our HTML layout will look like once
+its rendered.  JSX is a convenience tool and it comes with a price in the form
+of an additional transformation step.  Transformation of the JSX syntax into
+valid JavaScript syntax must happen before our ``invalid'' JavaScript code is
+interpreted.
+
+#+CINDEX:@file{babelify} module
+#+CINDEX:gulp default task
+#+CINDEX:@file{gulpfile.js}
+#+CINDEX:@command{.transform(babelify)} function call
+In the previous chapter, we installed the ~babelify~ module that transforms our
+JSX syntax into a JavaScript one.  This transformation happens every time we
+run our =default= task from the {{{file(gulpfile.js)}}}
+([[default-task-gulpfile.js]]).  The ~.transform(babelify)~ function call
+transforms JSX into JavaScript before bundling it with the other JavaScript
+code.
+
+To test our transformation, run this command:
+: $ gulp
+
+Then navigate to the ~<dir>/snapterest/build/~ directory, and open ~index.html~
+in a web browser.  You will see a list of three items.
+
+#+NAME:children-using-jsx
+#+CAPTION:Creating a List of Items Using JSX
+[[file:img/ch2-ReactElement-children-jsx-50.png]]
+
+{{{heading(Online JSX Compiler)}}}
+
+The React team has built an online JSX Compiler that you can use to test your
+understanding of how JSX works.[fn::This tool has been removed as
+JSXTransformer has been deprecated.]
+
+** Summary
+
+We started this chapter by discussing the issues with single web page
+applications and how they can be addressed.  Then, we learned what a virtual
+DOM is and how React allows us to build it.  We also installed React and
+created our first React element using only JavaScript.  Then we also learned
+how to render React elements in a web browser and on a server.  Finally, we
+looked at a simpler way of creating React elements with JSX.
+
+In the next chapter we'll dive deeper into the world of React components.
 
 * 3. Create Your First React Component
 :PROPERTIES:
