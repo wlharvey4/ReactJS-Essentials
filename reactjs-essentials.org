@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-04 Mon 21:22>
+#+DATE: <2019-03-05 Tue 18:50>
 
 #+TEXINFO: @insertcopying
 
@@ -1722,6 +1722,109 @@ In the next chapter we'll dive deeper into the world of React components.
 :PROPERTIES:
 :CUSTOM_ID: Chapter 3
 :END:
+
+
+In the previous chapter, we learned how to create /React elements/ and how to
+use them to render HTML markup.  We learned how easy it is to produce React
+elements using /JSX/.  At this point, you know enough about React in order to
+create the static web pages that we discussed in Chapter 2.  You want to build
+interactive user interfaces that react to user and server events.  What does it
+mean to react to an event?  How can a static HTML element /react/?   How can a
+React element react?  In this chapter we'll answer these questions and many
+other questions while introducing ourselves to /React components/.
+
+** Stateless Version Stateful
+
+#+CINDEX:react
+#+CINDEX:state, switch
+#+CINDEX:virtual DOM elements
+#+CINDEX:benefit of React library, easy to reason about
+To {{{dfn(react)}}} means to switch from one state to another.  This means that
+you need to have a state in the first place and the ability to change state.
+Have we mentioned a state or the ability to change that state in React
+elements?  No.  They are stateless.  Their sole purpose is to construct and
+render virtual DOM elements.  In fact, we want them to render in the exact same
+way, given that we provide them the exact same set of parameters.  We want them
+to be consistent because it makes it easy for us to reason about them.  That's
+one of the key benefits of using the React library---the ease of reasoning how
+our web application works.
+
+#+CINDEX:React Component
+#+CINDEX:Component
+#+CINDEX:state machine, component
+How can we add a state to our stateless React elements?  If we can't
+encapsulate a state in React elementsm, then *we should encapsulate React
+elements in something that already has a state.*  Think of a simple state
+machine that represents a user interface.  Every user action triggers a change
+of a state in that state machine.  Every state is represented by a different
+React element.  In the React library, this state machine is called a
+{{{dfn(React Component)}}}.
+
+** Creating Your First Stateless React Component
+
+Let's take a look at the following example of how to create a React component:
+
+#+NAME:first-stateless-component
+#+CAPTION:A First Stateless React Component
+#+BEGIN_SRC js :eval never
+var React = require('react');
+var ReactDOM = require('react-dom');
+
+var ReactClass = React.createClass({
+    render: function () {
+        return React.createElement('h1',
+                                   { className: 'header' },
+                                   'React Component');
+    }
+});
+
+var reactComponentElement = React.createElement(ReactClass);
+var reactComponent = ReactDOM.render(reactComponentElement,
+                                     document.getElementById('react-application'));
+#+END_SRC
+
+The new portions of this code can be broken down into three steps:
+
+1. Creating a React class.
+2. Creating a React component element.
+3. Creating a React component.
+
+{{{heading(Create a React Component)}}}
+
+#+CINDEX:React component, create
+Let's take a closer look at how to create a React component.
+
+   #+CINDEX:@code{React.createClass()} function
+   #+CINDEX:@code{ReactClass}
+   #+CINDEX:specification object
+1. Create a ~ReactClass~ by calling the ~React.createClass()~ function and
+   providing a specification object as its parameter.  In this chapter we'll
+   focus on learning about the specification objects in more detail.
+
+   #+CINDEX:@code{ReactComponentElement}
+   #+CINDEX:@code{React.createElement()} function
+   #+CINDEX:~ReactClass~ as @samp{type} parameterx
+2. Create a ~ReactComponentElement~ by calling the ~React.createElement()~
+   function and providing our ~ReactClass~ as its =type= parameter.  In Chapter
+   2, we learned that the =type= parameter can be either a string or a
+   ~ReactClass~.  In this chapter, you'll learn more about the latter.
+
+   #+CINDEX:@code{ReactComponent}
+   #+CINDEX:@code{ReactDOM.render()} function
+3. Create a ~ReactComponent~ by calling the ~ReactDOM.render()~ function and
+   providing our ~ReactComponentElement~ as its =element= parameter.
+
+
+#+CINDEX:specification object
+The /specification object/ that you pass as a parameter to
+~React.createClass()~ is where your component's look and feel is defined.
+Specification is the definition of your React component.  From now on, in this
+chapter, we'll refer to a specification object as a React component, and in the
+rest of the chapter we will learn about this very important concept.
+
+** Creating Your First Stateful Component
+
+** Summary
 
 * 4. Make Your React Component Reactive
 
