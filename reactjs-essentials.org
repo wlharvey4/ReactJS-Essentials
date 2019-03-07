@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-06 Wed 19:24>
+#+DATE: <2019-03-06 Wed 19:52>
 
 #+TEXINFO: @insertcopying
 
@@ -2231,8 +2231,8 @@ component that reacts to a user event:
 
     handleClick: function () {
         this.setState({
-            isHeaderHidden: !this.state.isHidden		(ref:setState)
-        )};
+            isHeaderHidden: !this.state.isHeaderHidden		(ref:setState)
+        });
     },
 
     render: function () {
@@ -2368,8 +2368,8 @@ button.  The component will still work as expected:
 
     handleClick: function () {
         this.setState({
-            isHeaderHidden: !this.state.isHidden
-        )};
+            isHeaderHidden: !this.state.isHeaderHidden
+        });
     },
 
     render: function () {
@@ -2381,7 +2381,7 @@ button.  The component will still work as expected:
         var buttonElement = React.createElement('button',	(ref:createElement)
                                                 { className: 'btn btn-default',
                                                   onClick: this.handleClick,
-                                                  key: 'button'},
+                                                  key: 'button' },
                                                 'Toggle header');
         if (this.state.isHeaderHidden) {
             return React.createElement('div', null, [ buttonElement ]);
@@ -2419,6 +2419,54 @@ them in React.
 In the next chapter, we'll be planning our Snapterest web application.  You'll
 learn how to solve a problem with React and how to create composable React
 components.
+
+** Stateful React Component
+
+#+NAME:stateful-component
+#+CAPTION:An Example of a Lean Stateful Component
+#+BEGIN_SRC js -n :eval never :tangle snapterest/source/app.js
+var React = require('react');
+var ReactDOM = require('react-dom');
+
+var ReactClass = React.createClass({
+    getInitialState: function () {
+        return ({
+            isHeaderHidden: false
+        })
+    },
+
+    handleClick: function () {
+        this.setState({
+            isHeaderHidden: !this.state.isHeaderHidden
+        });
+    },
+
+    render: function () {
+        var title = 'Stateful React Component';
+        var headerElement = React.createElement('h1',
+                                                { className: 'header',
+                                                  key: 'header' },
+                                                title);
+        var buttonElement = React.createElement('button',
+                                                { className: 'btn btn-default',
+                                                  key: 'button',
+                                                  onClick: this.handleClick },
+                                                'Toggle header');
+
+        if (this.state.isHeaderHidden) {
+            return (React.createElement('div', null, [ buttonElement ]));
+        }
+        return (React.createElement('div', null, [ buttonElement, headerElement ]));
+    }
+});
+
+var reactComponentElement = React.createElement(ReactClass);
+
+var ReactComponent = ReactDOM.render(
+    reactComponentElement,
+    document.getElementById('react-application'));
+
+#+END_SRC
 
 * 4. Make Your React Component Reactive
 
