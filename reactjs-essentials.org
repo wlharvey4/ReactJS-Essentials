@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-06 Wed 10:23>
+#+DATE: <2019-03-06 Wed 19:24>
 
 #+TEXINFO: @insertcopying
 
@@ -1326,12 +1326,15 @@ Let's take a look at each parameter in more detail.
 
 #+CINDEX:type parameter
 *** The =type= Parameter
+:PROPERTIES:
+:CUSTOM_ID: createElement type parameter
+:END:
 
 The =type= parameter can be either a string or a ~ReactClass~:
 
-- A string could be an HTML tg name such as `div', `p', `h1', and so on.  React
-  supports all the common HTML tags and attributes.  For a complete list of
-  HTML tags and attributes supported by React, refer to:
+- A string could be an HTML tag name such as `div', `p', `h1', and so on.
+  React supports all the common HTML tags and attributes.  For a complete list
+  of HTML tags and attributes supported by React, refer to:
   - [[https://reactjs.org/docs/dom-elements.html][DOM Elements]]
 
 - A ~ReactClass~ is created via the ~React.createClass()~ method.  This will be
@@ -1343,6 +1346,9 @@ rendered.  In our example, we're rendering the ~h1~ HTML tag.
 
 #+CINDEX:@code{props} parameter
 *** The =props= Parameter
+:PROPERTIES:
+:CUSTOM_ID: props parameter
+:END:
 
 The =props= parameter is a JavaScript object passed from a parent element to a
 child element (and not the other way around) with some properties that are
@@ -1762,9 +1768,12 @@ React element.  In the React library, this state machine is called a
 
 ** Creating Your First Stateless React Component
 
-Let's take a look at the following example of how to create a React component:
+#+CINDEX:component, create
+#+CINDEX:@code{React.createClass()} method
+Let's take a look at the following example of how to create a React
+/component/ (using the ~React.createClass()~ method):
 
-#+NAME:first-stateless-component
+#+NAME:stateless-component
 #+CAPTION:A First Stateless React Component
 #+BEGIN_SRC js :eval never
 var React = require('react');
@@ -1772,24 +1781,24 @@ var ReactDOM = require('react-dom');
 
 var ReactClass = React.createClass({			(ref:1 class)
     render: function () {
-        return React.createElement('h1',			(ref:2 element)
+        return React.createElement('h1',
                                    { className: 'header' },
                                    'React Component');
     }
 });
 
-var reactComponentElement = React.createElement(ReactClass); (ref:3 component)
-var reactComponent = ReactDOM.render(reactComponentElement,
+var reactComponentElement = React.createElement(ReactClass); (ref:2 element)
+var reactComponent = ReactDOM.render(reactComponentElement,	 (ref:3 component)
                                      document.getElementById('react-application'));
 #+END_SRC
 
 The new portions of this code can be broken down into three steps:
 
 1. Creating a React class. [[(1 class)]]
-2. Creating a React component element. [[(2 element)]]
-3. Creating a React component. [[(3 component)]]
+2. Creating a React component element (using the class). [[(2 element)]]
+3. Creating a React component (using the element). [[(3 component)]]
 
-{{{heading(Create a React Component)}}}
+{{{heading(How to Create a React Component)}}}
 
 #+CINDEX:React component, create
 Let's take a closer look at how to create a React component.
@@ -1797,41 +1806,46 @@ Let's take a closer look at how to create a React component.
    #+CINDEX:@code{React.createClass()} function
    #+CINDEX:@code{ReactClass}
    #+CINDEX:specification object
-1. Create a ~ReactClass~ by calling the ~React.createClass()~ function and
+1. Create a ~ReactClass~ by calling the ~React.createClass()~ method and
    providing a /specification object/ as its parameter.  In this chapter we'll
    focus on learning about the specification objects in more detail.
 
    #+CINDEX:@code{ReactComponentElement}
-   #+CINDEX:@code{React.createElement()} function
+   #+CINDEX:@code{React.createElement()} method
    #+CINDEX:~ReactClass~ as @samp{type} parameterx
 2. Create a ~ReactComponentElement~ by calling the ~React.createElement()~
-   function and providing our ~ReactClass~ as its =type= parameter.  In Chapter
+   method and providing our ~ReactClass~ as its =type= parameter.  In Chapter
    2, we learned that the =type= parameter can be either a string or a
-   ~ReactClass~.  In this chapter, you'll learn more about the latter.
+   ~ReactClass~ ([[#createElement type parameter][The ~type~ Parameter]]).  In this chapter, you'll learn more
+   about the latter.
 
    #+CINDEX:@code{ReactComponent}
-   #+CINDEX:@code{ReactDOM.render()} function
-3. Create a ~ReactComponent~ by calling the ~ReactDOM.render()~ function and
+   #+CINDEX:@code{ReactDOM.render()} method
+3. Create a ~ReactComponent~ by calling the ~ReactDOM.render()~ method and
    providing our ~ReactComponentElement~ as its =element= parameter.
 
+*** The Specification Object
 
 #+CINDEX:specification object
 #+CINDEX:look and feel
 The {{{dfn(specification object)}}} that you pass as a parameter to
-~React.createClass()~ is where your component's look and feel is defined.
+~React.createClass()~ is where your component's ``look and feel'' is defined.
 *Specification* is the definition of your React component.  From now on, in
 this chapter, we'll refer to a /specification object/ as a React component, and
 in the rest of the chapter we will learn about this very important concept.
 
-{{{heading(Specification Object)}}}
-
 #+CINDEX:state, specification object
 #+CINDEX:rendered, component by specification object
 #+CINDEX:@code{render()} method
-The /specification object/ 1) encapsulates a component's state and 2) describes
-how a component is rendered.  At the very minimum, the React component needs to
-have a ~render()~ method so that it returns at least =null= or =false=.  Here
-is an example of a specification object in its simplest form:
+The /specification object/:
+
+1) encapsulates a component's /state/ and
+2) describes how a component is /rendered/.
+
+At the very minimum, the React component needs to have a ~render()~ method that
+returns at least =null= or =false=.
+
+Here is an example of a specification object in its simplest form:
 
 #+NAME:simplest-specification-object
 #+CAPTIONS:An Example of the Simplest Specification Object
@@ -1843,7 +1857,8 @@ is an example of a specification object in its simplest form:
 }
 #+END_SRC
 
-The ~render()~ function is responsible for telling React how to render your
+    #+CINDEX:@code{render()} method
+The ~render()~ method is responsible for telling React how to render your
 React component.  It can return =null=, and nothing will be rendered.  Or it
 can return a ~ReactElement~ that we learned how to create in Chapter 2.
 
@@ -1859,8 +1874,8 @@ can return a ~ReactElement~ that we learned how to create in Chapter 2.
 }
 #+END_SRC
 
-This example shows how we can encapsulate our Reacxt element inside our React
-component.  We create a ~ReactElement~ of type =h1= with the properties object
+This example shows how we can encapsulate our React element inside our React
+component.  We create a ~ReactElement~ of type =h1= with a =properties= object
 and a ~ReactText~ as its only child.  Then, we return it when the ~render()~
 method of our React component is called.  The fact that we encapsulated our
 React element inside a React component doesn't affect how it will be rendered.
@@ -1869,14 +1884,16 @@ React element inside a React component doesn't affect how it will be rendered.
 
 The produced HTML markup is identical to the one we created in Chapter 2
 without using the React component.  In this case, you might be wondering what's
-the benefit of having a ~render()~ function if we can render the exact same
-markup without it?
+the benefit of having a ~render()~ method if we can render the exact same
+markup without it?  The advantage of having a ~render()~ method is that, as
+with any other function, before it returns a value, it can choose what value to
+return.
 
-The advantage of having a ~render()~ function is that, was with any other
-function, before it returns a value, it can choose what value to return.  So
-far, you've seen two examples of the ~render()~ method: one that returns =null=
-and one that returns a React element.  We can merge the two and add a condition
-that decides what to render:
+*** Adding State and Conditional to a Component
+
+So far, you've seen two examples of the ~render()~ method: one that returns
+=null= and one that returns a React element.  We can merge the two and add a
+condition that decides what to render:
 
 #+NAME:simple-component-with-state
 #+CAPTION:A Simple Specification Object with State and a Conditional
@@ -1914,28 +1931,32 @@ render something else.  Our ~render()~ method is not aware of all these events
 and it shouldn't be because its sole purpose is to return a React element based
 on the data that we pass to it.  How do we pass data to it?
 
-{{{heading(Passing Data to a React Component)}}}
+*** Passing Data to a Component
 
+    #+CINDEX:data, passing to a component
 There are two ways to pass data to a ~render()~ method using the React API:
 
-1. ~this.props~
-2. ~this.state~
+       #+CINDEX:@code{this.props}
+1. Using the =properties= object: ~this.props~
+       #+CINDEX:@code{this.state}
+2. Using the =state= object: ~this.state~
 
 {{{subheading(The ~props~ Parameter)}}}
 
 #+CINDEX:@samp{props} parameter
-#+CINDEX:attributes to HML elements
+#+CINDEX:attributes to HTML elements
 We learned that the ~React.createElement()~ method accepts the =props=
-parameter.  We used it to pass attributes to our HTML elements, but we didn't
-discuss what happens behind the scenes and why attributes passed to the =props=
-object get rendered.
+parameter ([[#props parameter][The =props= Parameter]]).  We used it to pass attributes to our HTML
+elements, but we didn't discuss what happens behind the scenes and why
+attributes passed to the =props= object get rendered.
 
 #+CINDEX:@code{this.props}
 #+CINDEX:data with @samp{props} parameter
+    #+CINDEX:accessing data in a component, @code{this.props}
 Any data that you put in the =props= object and pass to the
-~React.createElement()~ function can be accessed inside the ~render()~ method
-of ~ReactComponent~ via ~this.props~.  Once you have accessed data from
-~this.props~, you can render it:
+~React.createElement()~ method can be accessed inside the ~render()~ method of
+~ReactComponent~ via the ~this.props~ reference.  Once you have accessed data
+from ~this.props~, you can render it:
 
 #+NAME:component-using-props
 #+CAPTION:Passing Props to a Component
@@ -1946,28 +1967,30 @@ of ~ReactComponent~ via ~this.props~.  Once you have accessed data from
             isHidden: true
         };
         if (elementState.isHidden) {
-            return nhull;
+            return null;
         }
         return React.createElement('h1',
                                    { className: 'header' },
-                                   this.props.header);
+                                   this.props.header);		(ref:props)
     }
 }
 #+END_SRC
 
-In this example, we're using ~this.props~ insider our ~render()~ method to
-access the =header= property.  We're then passing ~this.props.header~ directly
-to the ~React.createElement()~ method as a child string element.
+In this example, we're using ~this.props~ insider our ~render()~ method
+([[(props)]]) to access the =header= property.  We're then passing
+~this.props.header~ directly to the ~React.createElement()~ method as a child
+string element.
 
 In the preceding example, we can pass the value of ~isHidden~ as another
-property of the ~this.state~ object:
+property of the ~this.props~ object (see [[(props-isHidden)]] (instead of
+hard-coding ~isHidden~):
 
 #+NAME:passing-props-to-component
 #+CAPTION:Example of Passing ~props~ to the ~render()~ Method
 #+BEGIN_SRC js :eval never
 {
     render: function () {
-        if (this.props.isHidden) {
+        if (this.props.isHidden) {			(ref:props-isHidden)
             return null;
         }
         return React.createElement('h1',
@@ -1977,7 +2000,8 @@ property of the ~this.state~ object:
 }
 #+END_SRC
 
-We can also use ~this.props~ to compute data that needs to be rendered:
+We can also use ~this.props~ to compute data that needs to be rendered (see
+[[(props-to-render)]]):
 
 #+NAME:use-props-to-compute
 #+CAPTION:Example of Using ~props~ to Compute a Value
@@ -1987,10 +2011,10 @@ We can also use ~this.props~ to compute data that needs to be rendered:
         if (this.props.isHidden) {
             return null;
         }
-        var header = this.props.tweets.length + ' Latest Tweets';
+        var header = this.props.tweets.length + ' Latest Tweets'; (ref:props-to-render)
         return React.createElement('h1',
                                    { className: 'header' },
-                                   header);
+                                   this.props.header);
     }
 }
 #+END_SRC
@@ -1999,6 +2023,8 @@ We are accessing an array of tweets via ~this.props.tweets~ and getting its
 ~length~ property.  Then, we're concatenating a string ' Latest Tweets' to it.
 The resulting string is stored in a ~header~ variable, and this is our computed
 child string element that we're passing to the ~React.createElement()~ method.
+
+{{{subheading(Pure Functions)}}}
 
 #+CINDEX:pure function
 Notice that in our previous example, instead of storing ~isHidden~ in a
@@ -2010,8 +2036,10 @@ web browser.  Remember that we might want to use React on a server, where we
 have no web browser, and we should expect the ~render()~ method to produce the
 same result regardless of the environment.
 
-{{{heading(Managing State)}}}
+*** Managing State
 
+    #+CINDEX:manage state
+    #+CINDEX:state management
 If our ~render()~ method doesn't manage the state, then how do we manage it?
 How do we set the state, and how do we update it while handling user or browser
 events in React?
@@ -2035,7 +2063,7 @@ practice to keep as many React components stateless as possible.
 React components are /composable/.  As a result, we can have a hierarchy of
 React components.  Imagine that we have a parent React component that has two
 child components, and each of them in turn has another two child components.
-All the components are stateful and they can mnanage their own state.
+All the components are stateful and they can manage their own state.
 
 #+CINDEX:separation of concerns
 #+CINDEX:user interface
@@ -2043,8 +2071,11 @@ All the components are stateful and they can mnanage their own state.
 How easy will it be to figure out what the last child component in the
 hierarchy will render if the top component in the hierarchy updates its state?
 Not easy.  There is a design pattern that removes this unnecessary complexity.
-The idea is to separate your components into two concerns: how to handle the
-user interface interaction logic and how to render data.
+The idea is to separate your components into two concerns:
+
+- how to handle the user interface interaction logic and
+- how to render data.
+
 
 - The minority of your React components are stateful.  They should be at the
   top of your component's hierarchy.  They encapsulate all of the interaction
@@ -2065,15 +2096,19 @@ Next, let's create our first stateful component.
 #+CINDEX:stateful components
 #+CINDEX:interaction logic
 #+CINDEX:manage state
-Statefule components arre the most appropriate place for you application to
+Stateful components arre the most appropriate place for you application to
 handle the interaction logic and manage the state.  They make it easier for you
 to reason out how your application works.  This reasoning plays a key role in
 buidling maintainable web applications.
 
+{{{subheading(Setting Initial State with ~getInitialState()~)}}}
+
+#+CINDEX:@code{this.state} property
+#+CINDEX:@code{getInitialState()} method
 React stores the component's state in ~this.state~, and it sets the initial
 value of ~this.state~ to the value returned by the ~getInitialState()~ method.
 However, it's up to us to tell React what the ~getInitialState()~ method will
-return.  Let's add this function to our React component:
+return.  Let's add this method to our React component:
 
 #+NAME:component-getInitialState
 #+CAPTION:Simple Component Using ~getInitialState()~ Method
@@ -2101,6 +2136,10 @@ In this example, our ~getInitialState()~ method returns an object with a single
 React component and our user interface.  Notice that in our ~render()~ method
 we're now referring to ~this.state.isHidden~ instead of ~this.props.isHidden~.
 
+{{{subheading(Difference Between ~this.props~ and ~this.state~)}}}
+
+#+CINDEX:props vs. state, difference
+#+CINDEX:state vs. props, difference
 Earlier in this chapter, you learned that we can pass data to the component's
 ~render()~ method via ~this.props~.  So, what's the difference between the two?
 
@@ -2113,21 +2152,29 @@ Earlier in this chapter, you learned that we can pass data to the component's
   updated.
 
 
+{{{subheading(Setting State with ~setState()~)}}}
+
+#+CINDEX:@code{setState()} method
 How do we update a component's state?  There is a common way of informing React
 of a state change using ~setState(DATA, CALLBACK)~.  This method takes two
 parameters:
 
+  #+CINDEX:@code{data} object to @code{setState()}
 - The ~data~ object that represents the next state
 
+  #+CINDEX:@code{callback} function to @code{setState()}
 - The ~callback~ function, which you will rarely need to use because React
   keeps your user interface up-to-date for you.
 
+
+*** Keeping the Interface Up-To-Date
 
 How does React keep your user interface up-to-date?  It calls the component's
 ~render()~ method every time you update the component's state, including any
 child components which are rendered as well.  In fact, it rerenders the entire
 virtual DOM every time our ~render()~ method is called.
 
+#+CINDEX:merge state
 When you call the ~this.setState()~ method and pass it a data object that
 represents the next state, React will merge that next state with the current
 state.  During the merge, React will overwrite the current state with the next
@@ -2163,10 +2210,15 @@ React will merge the two states into a new one:
 The ~isHidden~ property is updated and the ~title~ property is not deleted or
 updated in any way.
 
+*** Creating a Component That Reacts to User Events
+
+#+CINDEX:stateful component
+#+CINDEX:react to user event
+#+CINDEX:user event, reacting to
 Now that we know how to update our component's state, let's create a stateful
 component that reacts to a user event:
 
-#+NAME:stateful-component-reacts
+#+NAME:component-reacts-to-user-event
 #+CAPTION:A stateful component that reacts to a user event
 #+BEGIN_SRC js :eval never
 {
@@ -2189,7 +2241,7 @@ component that reacts to a user event:
                                                 this.state.title);
         var buttonElement = React.createElement('button',	(ref:createElement)
                                                 { className: 'btn btn-default',
-                                                  onClick: this.handleClick,
+                                                  onClick: this.handleClick,		(ref:onClick)
                                                   key: 'button'},
                                                 'Toggle header');
         if (this.state.isHeaderHidden) {
@@ -2201,26 +2253,31 @@ component that reacts to a user event:
 #+END_SRC
 
 In this example, we're creating a toggle button that shows and hides a header.
-The first thing wedo is set our initial state object by returning it from the
+The first thing we do is set our initial state object by returning it from the
 ~getInitialState()~ method.  Our initial state has two properties:
 ~isHeaderHidden~ that is set to =false= and ~title~ that is set to =Stateful
-React Component=.  Now we can access this state4 object in our ~render()~
-method via ~this.state~.  Inside our ~render()~ method, we create three React
+React Component=.  Now we can access this state object in our ~render()~ method
+via ~this.state~.  Inside our ~render()~ method, we create three React
 elements: =hi=, =button=, and =div=.  Our =div= element acts as a parent
 element for our =h1= and =button= elements.  However, in one case we create our
 =div= element with two children, ~headerElement~ and ~buttonElement~, and in
 another case we create it with only one child, ~buttonElement~.  The case we
-choose depends on the valuer of ~this.state.isHeaderHidden~.  The current state
-of our component directly affects what the ~render()~ function will render.
+choose depends on the value of ~this.state.isHeaderHidden~.  The current state
+of our component directly affects what the ~render()~ method will render.
 While this should look familiar to you, there is something new in this example
 that we haven't seen before.
 
+{{{subheading(Handling Events with Custom Component Properties)}}}
+
+#+CINDEX:@code{handleClick()} method
+#+CINDEX:@code{onClick} events
+#+CINDEX:properties on component
 Notice that we introduced a new property on our ~ReactComponent~ object, called
 ~handleClick()~, which is a method that has no special meaning to React.  It's
 part of our application logic, and we use it to handle the ~onClick~ events.
 You can add your own properties to the ~ReactComponent~ object.  All of these
 will be available via a ~this~ reference, which you can access from any other
-function that itself is a property of the component object.  For example, we
+method that itself is a property of the component object.  For example, we
 are accessing a state object via ~this.state~ in both the ~render()~ and
 ~handleClick()~ methods.
 
@@ -2228,24 +2285,36 @@ What does our ~handleClick()~ method do?  It updates our component's state by
 setting the new value of this ~isHeaderHidden~ property to the opposite of the
 existing one that it accesses via ~this.state.isHeaderHidden~ (see [[(setState)]]).
 
+{{{subheading(Event Handlers in the =props= Parameter)}}}
+
+#+CINDEX:event handler
+#+CINDEX:attach event handler
 Our ~handleClick()~ method reacts to a user interaction with our user
 interface.  Our user interface is a =button= element that a user can click on,
 and we can attach an event handler to.  In React, you can attach event handlers
 to a React element by passing them to the ~props~ parameter in the
-~createElement()~ method (see [[(createElement)]]).
+~createElement()~ method (see [[(onClick)]]).
 
+#+CINDEX:CamelCase
+#+CINDEX:events, list of supported
 React uses the *CamelCase* naming convention for event handlers; for example,
 ~onClick~.  You can find a list of all the supported events at
 https://reactjs.org/docs/events.html#supported-events.
 
+#+CINDEX:bubble phase
+#+CINDEX:capture phase
+#+CINDEX:trigger event handlers
 By default, React triggers the event handlers in the /bubble phase/, but you
 can tell React to trigger them in the /capture phase/ by appending =Capture= to
 the event name, for example, ~onClickCapture~.
 
+#+CINDEX:@code{SyntheticEvent} object
 React wraps a browser's native events into the ~SyntheticEvent~ object to
 ensure that all the supported events behave identically in Internet Exploror 8
 and above.
 
+#+CINDEX:@code{nativeEvent} property
+#+CINDEX:@code{initializeTouchEvents()} method
 The ~SyntheticEvent~ object provides the same API as the native browser's
 event, which means that you can use the ~stopPropogation()~ and
 ~preventDefault()~ methods as usual.  If for some reason, you need to access
@@ -2253,7 +2322,8 @@ the native browser's event, then you can do this via the ~nativeEvent~
 property.  To enable touch-event handling, simply call
 ~React.initializeTouchEvents(TRUE)~.
 
-Notice that passing the ~onClick~ property to our ~createElement()~ function in
+#+CINDEX:inline event handler, none
+Notice that passing the ~onClick~ property to our ~createElement()~ method in
 the previous example does not create an inline event handler in the rendered
 HTML markup.
 
@@ -2261,15 +2331,18 @@ HTML markup.
 :    Toggle header
 : </button<>
 
+#+CINDEX:listen for events, at top level
 This is because React doesn't actually attach event handlers to the DOM nodes
 themselves.  Instead, React listens for all the events at the top level using a
-single event listenerm, and delegates them to their appropriate event handlers.
+single event listener, and delegates them to their appropriate event handlers.
+
+*** Keeping State Lean
 
 In the previous example, you learned how to create a stateful React component
 that a user can interact with and change its state.  We created and attached an
-event handler to the ~click~ event that updates the value of the
+event handler to the ~onClick~ event that updates the value of the
 ~isHeaderHidden~ property.  But have you noticed that the user interaction does
-not update the value of another property that we store in our state, ~titler~?
+not update the value of another property that we store in our state, ~title~?
 Does thst seem odd to you?  We have data in our state that doesn't ever get
 changed.  This observation raises an important question: what should we /not/
 put in our state?
@@ -2329,7 +2402,7 @@ This is an anti-pattern.  Remember this rule of thumb:
 A component's state should store data that a component's event handlers may
 change over time in order to rerender a component's user interface and keep it
 up to date.  Keep the minimal possible representation of a component's state in
-a ~state~ object, and compute the rest of the data based on whast's in ~state~
+a ~state~ object, and compute the rest of the data based on what's in ~state~
 and ~props~ inside a component's ~render()~ method.  Anything you put in
 ~state~, you'll need to update yourself.  Anything you put in ~render()~ will
 automatically get updated by React.  Take advantage of React.
