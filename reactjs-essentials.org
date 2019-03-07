@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-06 Wed 19:52>
+#+DATE: <2019-03-06 Wed 22:31>
 
 #+TEXINFO: @insertcopying
 
@@ -2468,7 +2468,562 @@ var ReactComponent = ReactDOM.render(
 
 #+END_SRC
 
-* 4. Make Your React Component Reactive
+* 4. Make Your React Components Reactive
+
+Now that you know how to create React components with and without state, we can
+start composing React components together and build more complex user
+interfaces.  In fact, its time for us to start building our web application,
+called *Snapterest*, that we discussed in Chapter 1.  While doing this, we'll
+learn how to plan your React application and create composable React
+components.
+
+** Solving a Problem Using React
+
+#+CINDEX:define the problem
+Before you start writing code for your web application, you need to think about
+the problems that your web application is going to solve.  It's very important
+to understand that defining the problem as clearly and as early as possible is
+the most important step toward a successful solution---a useful web
+application.  If you fail to define your problem early in your development
+process, or you define it inaccurately, then later on you'll have to stop,
+rethink about what you're doing, throw away a piece of the code that you have
+already written, and write a new one.  This is a wasteful approach, and as a
+professional software developer your time is very valuable, not only to you,
+but also to your organization, so it's in your best interests to invest it
+wisely.  Earlier in this book, I stressed on the fact that one of the benefits
+of using Reacgt is code reuse, which means that you'll be able to do more in
+less time.  However, before we take a look at the React code, let's first
+discuss the problem, keeping React in mind.
+
+{{{heading(Snapterest Description)}}}
+
+#+CINDEX:Snapterest description
+#+CINDEX:Snapkite Engine server
+We'll be building Snapterest---a web application that receives tweets from a
+Snapkite Engine server in a real-time manner and displays them one at a time to
+a user.  We don't actually know when Snapterest will receive a new tweet, but
+when it does, it will display that new tweet for at least 1.5 seconds so that
+the user has enought time to look at it and click on it.  Clicking on a tweet
+will add it to an existing collection of tweets or create a new one.  Finally,
+users will be able to export their collection to an HTML markup code.
+
+{{{subheading(List of Smaller Tasks)}}}
+
+#+CINDEX:task
+This is a very high-level description of what we're going to build.  Let's
+break it down into a list of smaller tasks:
+
+#+BEGIN_EXAMPLE
+Snapkite Engine
+|
+|
+V
+Receive Tweet               Remove Tweet from Collection
+|                           ^
+|                           |
+V                           |
+Display Tweet               Export Collection
+|                           ^
+|                           |
+V                           |
+Add Tweet to Collection --> Display Collection
+#+END_EXAMPLE
+
+1. Receive tweets from the Snapkite Engine server in real time
+2. Display one tweet at a time for at least 1.5 seconds
+3. Add tweets to a collection on a user click event
+4. Display a list of tweets in a collection
+5. Create an HTML markup code for a collection and export it
+6. Remove tweetsw from a collection on a user event
+
+
+{{{subheading(Using React to Solve Problems)}}}
+
+#+CINDEX:solving tasks using React
+Can you identify which tasks can be solved using React?  Remember that React is
+a user interface library, so anything that describes the user interface and
+interactions with that user interface can be addressed with React.  In the
+preceding list, React can take care of all the tasks excdept for the first one
+because it describes data fetching and not the user interface in any way.
+
+Task 1 will be solved with another library that we'll discuss in the next
+chapter.
+
+#+CINDEX:display data
+Tasks 2 and 4 describe something that needs to be displayed.  They are perfect
+condidates for React components.
+
+#+CINDEX:user events
+Tasks 3 and 6 describe the user events, and as we've seen in Chapter 3, user
+eventws handling can be encapsulated in React components as well.
+
+#+CINDEX:@code{ReactDOMServer.renderToStaticMarkup()} method
+#+CINDEX:static HTML markup
+Can you think of how task 5 can be solved with React?  Remember in Chapter 2 we
+discussed the ~ReactDomServer.renderToStaticMarkup()~ method that renders the
+React element to a static HTML markup string.  That's exactly what we need in
+order to solve task 5.
+
+{{{subheading(Putting It All Together)}}}
+
+Now that we've identified a potential solution for each individual task, let's
+think about how we are going to put them together and create a fully functional
+web application.
+
+#+CINDEX:composable React application, building
+There are two ways to build composable React applications:
+
+1. You can start by building individual React components and then compose them
+   together into higher-level React components, moving up the component hierarchy.
+
+2. You can start from the topmost React element and then implement its child
+   components, moving down the component hierarchy.
+
+
+The second strategy has the advantage of seeing and understanding the big
+picture of your application's architecture.  I think it's important to
+understand how everthing fits together before we can think of how individual
+pieces of functionality are implemented.
+
+** Planning Your React Application
+
+There are two simple guidelines we need to follow when planning your React
+application:
+
+1. Each React component should represent a single user interface element in
+   your web application.  It should encapsulate the smallest element possible
+   that can potentially be reused.
+
+2. Multiple React components should be composed into a single React component.
+   Ultimately, your entire user interface should be encapsulated in one React
+   component.
+
+
+#+BEGIN_EXAMPLE
+Application --> Stream
+                --> Header  --> StreamTweet
+                                --> Header --> Tweet
+--> Collection
+    --> TweetList  --> Header --> CollectionControls
+        --> Tweet                      --> Header  --> Button
+                                  --> CollectionRenameForm  --> CollectionExportForm
+                                      --> Header  --> Button
+#+END_EXAMPLE
+
+{{{heading(Application)}}}
+
+#+CINDEX:@code{Application} component
+#+CINDEX:@code{Stream} component
+#+CINDEX:@code{Collection} component
+We'll begin with our topmost React component, ~Application~.  It will
+encapsulate our entire React application, and it will have two child
+components: the ~Stream~ and ~Collection~ components.
+
+{{{subheading(Stream)}}}
+
+#+CINDEX:@code{Stream} component
+The ~Stream~ component will be responsible for connecting to a stream of
+tweets, and receiving  and displaying the latest tweet.  The ~Stream~ component
+will have two child components: ~StreamTweet~ and ~Header~.
+
+#+CINDEX:@code{StreamTweet} component
+#+CINDEX:@code{Header} component
+#+CINDEX:@code{Tweet} component
+The ~StreamTweet~ component will be responsible for displaying the latest
+tweet.  It will be composed of the ~Header~ and ~Tweet~ components.
+
+#+CINDEX:@code{Header} component
+#+CINDEX:@code{Tweet} component
+A ~Header~ component will render a header.  It will have no child components.
+A ~Tweet~ component will render an image from a tweet.
+
+Notice how we're planning to reuse the ~Header~ component twice already.
+
+{{{subheading(Collection)}}}
+
+#+CINDEX:@code{Collection} component
+#+CINDEX:@code{CollectionControls} component
+#+CINDEX:@code{TweetList} component
+The ~Collection~ component will be responsible for displaying the collection
+controls and a list of tweets.  It will have two child components:
+~CollectionControls~ and ~TweetList~.
+
+#+CINDEX:codepen
+#+CINDEX:@code{CollectionControls} component
+#+CINDEX:@code{CollectionRenameForm} component
+#+CINDEX:@code{CollectionExportForm} component
+The ~CollectionControls~ will have two child components: the
+~CollectionRenameForm~ component that will render a form to rename a
+collection, and the ~CollectionExportForm~ component that will render a form to
+export a collection tto a service called *CodePen*, which is an HTML, CSS, and
+JavaScript playground website.  You can learn more about CodePen at
+https://codepen.io.
+
+#+CINDEX:@code{Header} component
+#+CINDEX:@code{Button} component
+#+CINDEX:@code{CollectionRenameForm} component
+#+CINDEX:@code{CollectionControls} component
+#+CINDEX:@code{TweetList} component
+#+CINDEX:@code{Tweet} component
+#+CINDEX:@code{Collection} component
+As you might have noticed, we'll reuse the ~Header~ and ~Button~ components in
+the ~CollectionRenameForm~ and ~CollectionControls~ components.  Our
+~TweetList~ component will render a list of Tweets.  Each tweet will be
+rendered by a ~Tweet~ component.  We'll be reusing the ~Header~ component once
+again in our ~Collection~ component.  In fact, we'll be reusing the ~Header~
+component five times.  That's a win for us.
+
+{{{heading(State)}}}
+
+#+CINDEX:stateless components
+#+CINDEX:stateful components
+As we discussed in the previous chapter, we should keep as many React
+components stateless as possible.  So, only 5 out of 11 components will store
+the state, which are:
+
+- ~Application~
+- ~CollectionControls~
+- ~CollectionRenameForm~
+- ~Stream~
+- ~StreamTweet~
+
+
+Now that we have a plan, we can start implementing.
+
+** Creating a Container React Component
+
+{{{heading(Root Application File)}}}
+
+#+CINDEX:main application file, @file{app.js}
+#+CINDEX:@file{app.js}
+Let's start by editing our application's main JavaScript file.  Replace the
+contents of the ~<dir>/snapterest/source/app.js~ file with the following code
+snippet:
+
+#+NAME:react-application-container
+#+CAPTION:The React Application Root Container File
+#+BEGIN_SRC js :eval never snapterest/source/app.js
+var React = require('react');
+var ReactDOM = require('react-dom');
+var Application = require('./components/Application.react');
+
+ReactDOM.render(<Application />, document.getDocumentById('react-application');
+#+END_SRC
+
+There are only four lines of code in this face, and as you can guess, they
+provide ~document.getElementById('react-application') as a deployment target
+for the ~<Application />~ component and render ~<Application />~ to the DOM.
+The whole user interface for our web application will be encapsulated in one
+React component, ~Application~.
+
+** Creating the React Application Component
+
+#+CINDEX:@file{Application.react.js} file
+#+CINDEX:React Application component
+Next, navigate to ~<dir>/snapterest/source/components/~ and create the
+~Application.react.js~ file inside this directory.  All of our React components
+will have their filenames ending with ~react.js~.  This convention allows us to
+easily distinguish between React and non-React source JavaScript files.
+
+Let's take a look at the contents of the ~Application.react.js~ file:
+
+#+NAME:react-application
+#+CAPTION:The React Application File
+#+BEGIN_SRC js :eval never snapterest/source/components/application.react.js
+var React      = require('react');
+var Stream     = require('./Stream.react');
+var Collection = require('./Collection.react');
+
+var Application = React.createClass({
+    getInitialState: function () {
+        return {
+            collectionTweets: {}
+        }
+    },
+
+    addTweetToCollection: function (tweet) {
+        var collectionTweets = this.state.collectionTweets;
+        collectionTweets[tweet.id] = tweet;
+        this.setState({
+            collectionTweets: collectionTweets
+        });
+    },
+
+    removeTweetFromCollection: function (tweet) {
+        var collectionTweets = this.state.collectionTweets;
+        delete collectionTweets[tweet.id];
+        this.setState({
+            collectionTweets: collectionTweets
+        });
+    },
+
+    removeAllTweetsFromCollection: function () {
+        this.setState ({
+            collectionTweets: {}
+        });
+    },
+
+    render: function () {
+        return (
+            <div className="container-fluid">
+                <div className="row">
+                    <div className="col-md-4 text-center">
+                        <Stream onAddTweetToCollection={this.addTweetToCollection} />
+                    </div>
+                    <div className="col-md-8">
+                        <Collection
+                            tweets={this.state.collectionTweets}
+                            onRemoveTweetFromCollection={this.removeTweetFromCollection}
+                            onRemoveAllTweetsFromCollection={this.removeAllTweetsFromCollection}
+                        />
+                    </div>
+                </div>
+            </div>
+        );
+    }
+});
+
+module.exports = Application;
+#+END_SRC
+
+This code has significantly more code than our ~app.js~ file, but this code can
+be easily divided into three logical parts:
+
+1. Importing dependency modules
+2. Defining React components
+3. Exporting a React component as a module
+
+
+#+CINDEX:CommonJS
+You will see this logical separation in most of our React components because
+they are wrapped into the *CommonJS* module pattern that allows us to easily
+require them with Browserify.  In fact, the first and the third parts of this
+source file are related to how CommonJS works and have nothing to do with how
+React works.  The purpose of using this module pattern is to break our
+application into modules that can be easily reused.  Because the React
+component and CommonJS module pattern both encapsulate the code and mnake it
+portable, they naturally work great together.  So, we end up encapsulating our
+user interface logic in a React component and then encapsulate that React
+component in the CommonJS module.  It then can be used in any other module that
+wants to reuse this encapsulated React component.
+
+*** Importing Dependency Modules
+
+#+CINDEX:import dependencies
+In our first logical part of the ~Application.react.js~ file, we're importing
+the dependency modules using the ~require()~ function.
+
+Our ~Application~ component will have two child components that we need to
+import:
+
+1. The ~Stream~ component will render a stream section of our user interface
+2. The ~Collection~ component will render a collection section of our user
+   interface
+
+
+We also need to import the ~React~ library as another module.  Notice that this
+code is still part of the CommonJS module pattern, not React.
+
+*** Creating React Components
+
+#+CINDEX:create components
+The second logical part of the ~Application.react.js~ file creates the React
+~Application~ component with the following methods:
+
+- ~getInitialState()~
+- ~addTweetToCollection()~
+- ~removeTweetFromCollection()~
+- ~removeAllTweetsFromCollection()~
+- ~render()~
+
+
+#+CINDEX:@code{getInitialState()} React method
+#+CINDEX:@code{render()} React method
+#+CINDEX:application logic
+Only the ~getInitialState()~ and ~render()~ methods are part of the React API.
+All the other methods are part of our application logic that this component
+encapsulates.  We'll take a closer look at each of them right after we discuss
+what this component renders inside its ~render()~ method.
+
+#+CINDEX:Bootstrap
+It defines the layout of our web page using the Bootstrap framework.  if you're
+not familiar with Boostrap, I strongly recommend that you visit
+https://getbootstrap.com/ and read the documentation.  Learning this framework
+will empower you to prototype user interfaces in a fast and easy way.
+
+Even if you don't know Bootstrap, it's quite easy to understand what's going
+on.  We're dividing our web page into two columns: a smaller one and a larger
+one.  The smaller one contains our ~Stream~ React component and the larger one
+contains our ~Collection~ component.  You can imagine that our web page is
+divided into two unequal parts and both of them contain the React components.
+
+**** The Stream Component
+
+#+CINDEX:@code{Stream} component
+This is how we're using our ~Stream~ component:
+
+: <Stream onAddTweetToCollection={this.addTweetToCollection} />
+
+#+CINDEX:@code{onAddTweetToCollection} property
+#+CINDEX:@code{addTweetToCollection()} method
+The ~Stream~ component has an ~onAddTweetToCollection~ property, and our
+~Application~ component passes its own ~addTweetToCollection()~ method as a
+value for this property.  ~addTweetToCollection()~ adds a tweet to a
+collection.  It's one of the custom methods that we define in our ~Application~
+component, and we can refer to it using ~this~ keyword.
+
+#+CINDEX:@code{CollectionTweets}
+Let's take a look at what the ~addTweetToCollection()~ method does.  This
+method references ~CollectionTweets~ that are stored in the current state, adds
+a new tweet to a ~collectionTweets~ object, and updates the state by calling
+the ~setState()~ method.  A new tweet is passed as an argument when the
+~addTweetToCollection()~ method is called inside a ~Stream~ component.  This is
+an example of how a child component can update its parent component's state.
+
+This is an important mechanism in React and it works as follows:
+
+1. A parent component passes a callback function as a property to its child
+   component.  A child component can access this callback function via the
+   ~this.props~ variable.
+
+2. Whenever a child component wants to update the parent component's state, it
+   calls that callback function and passes all the necessary data to a new
+   parent component's state.
+
+3. A parent component updates its state, and as you already know, this state
+   updates and triggers the ~render()~ function that re-renders all the child
+   components as necessary.
+
+
+This is how a child component interacts with a parent component.  This
+interaction allows a child component to delegate the application's state
+management to its parent component, and it is only concerned with how to render
+itself.  Now, when you've learned this pattern, you will be using it again and
+again because most of your React components should stay stateless.  This best
+practice allows us to logically group React components by the two different
+concerns they address:
+
+- Manage the application's state and render
+
+- Only render and delegate the application's state management to a parent
+  component
+
+**** The Collection Component
+
+#+CINDEX:@code{Collection} component
+Our ~Application~ component has a second child component, ~Collection~.  This
+component has a number of properties:
+
+  #+CINDEX:@code{tweets}
+- ~tweets~ : This refers to our current collection of tweets
+
+  #+CINDEX:@code{onRemoveTweetFromCollection}
+- ~onRemoveTweetFromCollection~ : This refers to a function that removes a
+  particular tweet from our collection
+
+  #+CINDEX:@code{onRemoveAllTweetsFromCollection}
+- ~onRemoveAllTweetsFromCollection~ : This refers to a function that removes
+  all the tweets from our collection
+
+
+You can see that the ~Collection~ component's properties are only concerned
+about how to:
+
+- Access the application's state
+- Mutate the application's state
+
+
+The ~onRemoveTweetFromCollection~ and ~onRemoveAllTweetsFromCollection~
+functions allow the ~Collection~ component to mutate the ~Application~
+component's state.  On the other hand, the ~tweets~ property propogates the
+~Application~ component's state to the ~Collection~ component so that it can
+gain a read-only access to the state.
+
+*** Data Flow
+
+#+CINDEX:data flow
+Can you recognize the single direction of data flow between the ~Application~
+and ~Collection~ components?  Here's how it works:
+
+1. The ~collectionTweets~ data is initialized in the ~Application~ component's
+   ~getInitialState()~ method
+
+2. The ~collectionTweets~ data is passed to the ~Collection~ component as the
+   ~tweets~ property.
+
+3. The ~Collection~ component calls the ~removeTweetFromCollection~ and
+   ~removeAllTweetsFromCollection~ functions that update the ~collectionTweets~
+   data in the ~Application~ component, and the cycle starts again.
+
+
+Notice that the ~Collection~ component cannott directly mutate the
+~Application~ component's state.  The ~Collection~ component has read-only
+access to that state via ~this.props~ object, and the only way to update the
+parent component's state is to call the callback functions that are passed by
+the parent component.  In the ~Collection~ component, these callback functions
+are ~this.props.onRemoveTweetFromCollection~ and
+~this.props.onRemoveAllTweetsFromCollection~.
+
+This simple mental model of how data flows in our React component hierarchy
+will help us increase the number of components we use, without increasing the
+complexity of how our user interface works.  For example, it can have 10 levels
+of nested React components, as follows:
+
+#+BEGIN_EXAMPLE
+Component A -->
+  Component B -->
+    Component C -->
+      Component D -->
+        Component E -->
+          Component F -->
+            Component G
+#+END_EXAMPLE
+
+If ~Component G~ wants to mutate the state of root ~Component A~, it would do
+it in the exact same way that ~Component B~, or ~Component F~, or any other
+component in this hierarchy would.  However, in React, you shouldn't pass data
+from ~Component A~ directly to ~Component G~.  Instead, you should pass it to
+~Component B~, then to ~Component C~, then to ~Component D~, and so on until
+you finally reach ~Component G~.  ~Component B~ to ~Component F~ will have to
+carry some ``transit'' properties that are actually meant for ~Component G~.
+This might look like a waste of time, but this design makes it easy for us to
+debug our application and be able to reason out how it works.  There are always
+stragegies to optimize your application's architecture.  One of them is to use
+*Flux*, which we'll discuss later in this book.
+
+*** Mutating Data
+
+#+CINDEX:mutate data
+Before we finish discussing our Application component, let's take a look at the
+two methods that mutate its state:
+
+- ~removeTweetFromCollection()~
+- ~removeAllTweetsFromCollection()~
+
+
+The first removes a tweet from a collection of tweets that we store in the
+~Application~ component's state.  It takes the current ~collectionTweets~
+object from the component's state, deletes a tweet with a given ID from that
+objectm and updates the component's state with an updated ~collectionTweets~
+object.
+
+On the other hand, the second method removes all the tweets from the
+component's state.
+
+Both of these methods are called from a child's ~Collection~ component because
+that component has no other way to mutate the ~Application~ component's state.
+
+** Summary
+
+In this chapter we learned how to solve a problem with React.  We started by
+breaking down the problem into smaller individual problems and then discussed
+how we can address them using React.  Then, we created a list of React
+components that we needed to implement.  Finally, we created our first
+composable React component and learned how a parent component interacts with
+its child components.
+
+In the next chapter, we'll implement our child components and learn about
+React's lifecycle methods.
 
 * 5. Use Your React Components With Another Library
 
