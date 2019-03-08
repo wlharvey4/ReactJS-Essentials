@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-08 Fri 10:57>
+#+DATE: <2019-03-08 Fri 11:02>
 
 #+TEXINFO: @insertcopying
 
@@ -3377,6 +3377,7 @@ var StreamTweet = React.createClass({
     <<getInitialState>>
     <<componentWillMount>>
     <<componentDidMount>>
+    <<componentWillReceiveProps>>
     <<componentWillUnmount>>
 
     render: function () {
@@ -3813,6 +3814,7 @@ componentWillReceiveProps: function (nextProps) {
 
     window.snapterest.numberOfReceivedTweets++;
 },
+
 #+END_SRC
 
 {{{heading(Explanation of ~componentWillReceiveProps()~)}}}
