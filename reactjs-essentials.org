@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-08 Fri 10:21>
+#+DATE: <2019-03-08 Fri 10:57>
 
 #+TEXINFO: @insertcopying
 
@@ -3736,6 +3736,149 @@ In our next chapter, we'll take a look at the component lifecycle's updating
 methods.  We'll also implement our ~Header~ and ~Tweet~ components, and learn
 how to set the component's default properties.
 * 6. Update Your React Components
+
+In the previous chapter we learned that a React component can go through three
+phases:
+
+1. Mounting
+
+2. Updating
+
+3. Unmounting
+
+
+We've already discussed the mounting and unmounting phases.  In this chapter,
+we're going to focus on the updating phase.  During this phase, a React
+component is already inserted into the DOM.  This DOM represents a component's
+current state, and when the state changes, React needs to evaluate how a new
+state is going to mutate the previously rendered DOM.
+
+React provides us with methods to influence what is going to be rendered during
+an update as well as to make us aware of when an update happens.  These methods
+allow us to control the transition from the current component's state to the
+next component's state.  Let's learn more about the powerful nature of the
+React component's updating methods.
+
+** Understanding Component Lifecycle's Updating Methods
+
+#+CINDEX:update phase of component
+#+CINDEX:component's update phase
+#+CINDEX:lifecycle methods of update phase
+#+CINDEX:@code{componentWillReceiveProps()}
+#+CINDEX:@code{shouldComponentUpdate()}
+#+CINDEX:@code{componentWillUpdate()}
+#+CINDEX:@code{render()}
+#+CINDEX:@code{componentDidUpdate()}
+A React component has *five lifecycle methods* that belong to a component's
+/updating/ phase:
+
+1. ~componentWillReceiveProps()~
+2. ~shouldComponentUpdate()~
+3. ~componentWillUpdate()~
+4. ~render()~
+5. ~componentDidUpdate()~
+
+
+*** The ~componentWillReceiveProps()~ Method
+
+We'll start with the ~componentWillReceiveProps()~ method in the ~StreamTweet~
+component.  Add the following code after the ~componentDidMount()~ method in
+~StreamTweet.react.js~ file:
+
+#+NAME:componentWillReceiveProps
+#+CAPTION[componentWillReceiveProps]:The ~componentWillReceivePropse()~ Method in ~StreamTweet~ Component
+#+BEGIN_SRC js
+// componentWillReceiveProps() Method
+componentWillReceiveProps: function (nextProps) {
+    console.log('[Snapterest] StreamTweet: 4. Running componentWillReceiveProps()');
+
+    var currentTweetLength = this.props.tweet.text.length;
+    var nextTweetLength = nextProps.tweet.text.length;
+    var isNumberOfCharactersIncreasing = (nextTweetLength > currentTweetLength);
+    var headerText;
+
+    this.setState({
+        numberOfCharactersIsIncreasing: isNumberOfCharactersIncreasing
+    });
+
+    if (isNumberOfCharactersIncreasing) {
+        headerText = 'Number of characters is increasing';
+    } else {
+        headerText = 'Latest public photo from Twitter';
+    }
+
+    this.setState({
+        headerText: headerText
+    });
+
+    window.snapterest.numberOfReceivedTweets++;
+},
+#+END_SRC
+
+{{{heading(Explanation of ~componentWillReceiveProps()~)}}}
+
+#+CINDEX:@code{componentWillReceiveProps()} update phase
+This method is invoked first in the component's lifecycle's updating phase.  It
+is called when a component receives new properties from its parent component.
+
+{{{subheading(Using ~nextProps~ Object)}}}
+
+#+CINDEX:@code{nextProps} object
+This method is an opportunity for us to compare the current component's
+properties using the ~this.props~ object with the next component's properties
+using the ~nextProps~ object.  Based on this comparison, we can choose to
+update the component's state using the ~this.setState()~ method, which will not
+trigger an additional render in this scenario.
+
+{{{subheading(Comparing the Lengths of the Tweets)}}}
+
+We first get the lengths of the current tweet and the next tweet.  The current
+one is available via ~this.props.tweet~ and the next one via
+~nextProps.tweet~.  We then compare their lengths by checking whether the next
+tweet is longer than the current one.  The result of the comparison is stored
+in the ~isNumberOfCharactersIncreasing~ variable.  Finally, we update the
+component's state by setting the ~numberOfCharactersIsIncreasing~ property to
+the value of our ~isNumberOfCharactersIncreasing~ variable.
+
+{{{subheading(Setting the ~headerText~ Property)}}}
+
+We then set our header text.  If the next tweet is longer, we set the header
+text to `Number of characters is increasing', or else we set it to `Latest
+public photo from Twitter'.  We then update our component's state once more by
+setting the ~headerText~ property to the value of our ~headerText~ variable.
+
+{{{subheading(Batching State Updates)}}}
+
+Notice that we call the ~this.setState()~ function twice in our
+~componentWillReceiveProps()~ method.  This is to illustrate the point that no
+matter how many times you call ~this.setState()~ in the
+~componentWillReceiveProps()~ method, it won't trigger any additional renders
+of that component.  React does an internal optimization where it batches the
+state updates together.
+
+{{{subheading(Counting Total Tweets Received)}}}
+
+Since the ~componentWillReceiveProps()~ method will be called once for each new
+tweet taht our ~StreamTweet~ component will receive, it makes it a good place
+to count the total number of received tweets.
+
+Now we know how to check whether the next tweet is longer than the tweet we're
+currently displaying, but how can we choose not to render the next tweet at
+all?
+
+*** The ~shouldComponentUpdate()~ Method
+
+*** The ~componentWillUpdate()~ Method
+
+*** The ~componentDidUpdate()~ Method
+
+** Setting Default React Component Property
+
+** Validating React Component Properties
+
+** Creating a Collection Component
+
+** Summary
 
 * 7. Build Complex React Components
 
