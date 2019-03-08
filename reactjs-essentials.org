@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-07 Thu 10:06>
+#+DATE: <2019-03-08 Fri 10:21>
 
 #+TEXINFO: @insertcopying
 
@@ -635,7 +635,7 @@ that socket connection and process tweets as they arrive.
 
     #+NAME:config.json
     #+CAPTION:Snapkite Engine ~config.json~
-    #+BEGIN_SRC js :eval never
+    #+BEGIN_SRC js
     "filters": [
         "snapkite-filter-is-possibly-sensitive",
         "snapkite-filter-has-mobile-photo",
@@ -846,7 +846,7 @@ https://gulpjs.com/docs/en/getting-started/quick-start#create-a-gulpfile]:
 
 #+NAME:example-gulpfile.js
 #+CAPTION:Example of a ~gulpfile.js~
-#+BEGIN_SRC js :eval never
+#+BEGIN_SRC js
 function defaultTask(cb) {
   console.log("I am about to learn the essentials of React.js");
   cb();
@@ -881,7 +881,7 @@ following code:
 
 #+NAME:default-task-gulpfile.js
 #+CAPTION:A default ~gulpfile.js~ that will package source and dependency modules using Browserify
-#+BEGIN_SRC js :eval never
+#+BEGIN_SRC js
 var gulp = require('gulp');
 var browserify = require('browserify');
 var babelify = require('babelify');
@@ -955,7 +955,7 @@ with a link to our ~snapterest.js~ script.  Create the ~index.html~ file in the
 
 #+NAME:index.html
 #+CAPTION:Project Snapterest ~index.html~
-#+BEGIN_SRC html :eval never :tangle snapterest/build/index.html
+#+BEGIN_SRC html :tangle snapterest/build/index.html
 <!doctype html>
 <html lang="en">
   <head>
@@ -1256,14 +1256,14 @@ Let's start with an example of a =ReactElement=:
 
 1. Add the following code to your ~<dir>/snapterest/source/app.js~ file:
 
-   #+BEGIN_SRC js :eval never
+   #+BEGIN_SRC js
    var reactElement = React.createElement('h1');
    ReactDOM.render(reactElement, document.getElementById('react-application'));
    #+END_SRC
 
 2. Now your ~app.js~ file should look exactly like this:
 
-   #+BEGIN_SRC js :eval never
+   #+BEGIN_SRC js
    var React = require('react');
    var ReactDOM = require('react-dom');
 
@@ -1286,7 +1286,7 @@ Let's start with an example of a =ReactElement=:
    this line among others:
    : <h1 data-reactid=".0"></h1>
 
-   #+BEGIN_SRC html :eval never
+   #+BEGIN_SRC html
    <html lang="en">
      <head>
        <meta charset="utf-8">
@@ -1359,7 +1359,7 @@ While creating DOM elements with React, we can pass the =props= object with
 properties that represent HTML attributes such as =class=, =style=, and so on.
 For example, run the following commands:
 
-#+BEGIN_SRC js :eval never
+#+BEGIN_SRC js
 var React = require ('react');
 var ReactDOM = require('react-dom');
 var reactElement = React.createElement('h1', { className: 'header' });
@@ -1396,7 +1396,7 @@ element represented by a ~ReactElement~, a string or a number represented by
 
 Here is an example:
 
-#+BEGIN_SRC js :eval never :tangle snapterest/source/app.js
+#+BEGIN_SRC js :tangle snapterest/source/app.js
 var React = require('react');
 var ReactDOM = require('react-dom');
 var reactElement = React.createElement('h1', { className: 'header' }, 'This is React.');
@@ -1419,7 +1419,7 @@ React.)}}} string is represented by a ~ReactText~.
 Next, create a React element with a number of other React elements as it's
 children:
 
-#+BEGIN_SRC js :eval never :tangle snapterest/source/app.js
+#+BEGIN_SRC js :tangle snapterest/source/app.js
 var React = require('react');
 var ReactDOM = require('react-dom');
 
@@ -1443,7 +1443,7 @@ array of ~ReactNode~'s.  Each ~ReactElement~ in the ~reactFragment~ array must
 have a =key= property that helps React to identify that ~ReactElement~.  As a
 result, we get the following HTML markup:
 
-#+BEGIN_SRC html :eval never
+#+BEGIN_SRC html
 <section class="container" data-reactid=".0">
   <h1 class="header" data-reactid=".0.$header">This is React.</h1>
   <p class="content" data-reactid=".0.$content">And that's how it works.</p>
@@ -1465,7 +1465,7 @@ function that creates other functions.  This is exactly what
 
 Consider the following example:
 
-#+BEGIN_SRC js :eval never :tangle snapterest/source/app.js
+#+BEGIN_SRC js :tangle snapterest/source/app.js
 var React = require('react');
 var ReactDOM = require('react-dom');
 
@@ -1481,7 +1481,7 @@ ReactDOM.render(listOfItems, document.getElementById('react-application'));
 
 The preceeding example produces this HTML:
 
-#+BEGIN_SRC html :eval never
+#+BEGIN_SRC html
 <ul class="list-of-items" data-reactid=".0">
   <li class="item-1" data-reactid=".0.$item-1">Item 1</li>
   <li class="item-2" data-reactid=".0.$item-2">Item 1</li>
@@ -1492,7 +1492,7 @@ The preceeding example produces this HTML:
 #+CINDEX:factory function
 We can simplify it by first creating a factory function:
 
-#+BEGIN_SRC js :eval never :tangle snapterest/source/app.js
+#+BEGIN_SRC js :tangle snapterest/source/app.js
 var React = require('react');
 var ReactDOM = require('react-dom');
 
@@ -1538,7 +1538,7 @@ and so on.  Using them, we can simplify our previous example even further:
 
 #+NAME:built-in-factory-function-app.js
 #+CAPTION:Creating a DOM Structure Using Built-in Factory Functions
-#+BEGIN_SRC js :eval never :tangle snapterest/source/app.js
+#+BEGIN_SRC js :tangle snapterest/source/app.js
 var React = require('react');
 var ReactDOM = require('react-dom');
 
@@ -1665,7 +1665,7 @@ Translate this to one using JSX:
 
 #+NAME:jsx-app.js
 #+CAPTION:Coding With JSX
-#+BEGIN_SRC js :eval never :tangle snapterest/source/app.js
+#+BEGIN_SRC js :tangle snapterest/source/app.js
 var React = require('react');
 var ReactDOM = require('react-dom');
 
@@ -1775,7 +1775,7 @@ Let's take a look at the following example of how to create a React
 
 #+NAME:stateless-component
 #+CAPTION:A First Stateless React Component
-#+BEGIN_SRC js :eval never
+#+BEGIN_SRC js
 var React = require('react');
 var ReactDOM = require('react-dom');
 
@@ -1849,7 +1849,7 @@ Here is an example of a specification object in its simplest form:
 
 #+NAME:simplest-specification-object
 #+CAPTIONS:An Example of the Simplest Specification Object
-#+BEGIN_SRC js :eval never
+#+BEGIN_SRC js
 {
     render: function () {
         return null;
@@ -1864,7 +1864,7 @@ can return a ~ReactElement~ that we learned how to create in Chapter 2.
 
 #+NAME:simple-specification-object
 #+CAPTION:A Simple Specification Object Returning a ~ReactElement~
-#+BEGIN_SRC js :eval never
+#+BEGIN_SRC js
 {
     render: function () {
         return React.createElement('h1',
@@ -1897,7 +1897,7 @@ condition that decides what to render:
 
 #+NAME:simple-component-with-state
 #+CAPTION:A Simple Specification Object with State and a Conditional
-#+BEGIN_SRC js :eval never
+#+BEGIN_SRC js
 {
     render: function () {
         var elementState = {
@@ -1960,7 +1960,7 @@ from ~this.props~, you can render it:
 
 #+NAME:component-using-props
 #+CAPTION:Passing Props to a Component
-#+BEGIN_SRC js :eval never
+#+BEGIN_SRC js
 {
     render: function () {
         var elementState = {
@@ -1987,7 +1987,7 @@ hard-coding ~isHidden~):
 
 #+NAME:passing-props-to-component
 #+CAPTION:Example of Passing ~props~ to the ~render()~ Method
-#+BEGIN_SRC js :eval never
+#+BEGIN_SRC js
 {
     render: function () {
         if (this.props.isHidden) {			(ref:props-isHidden)
@@ -2005,7 +2005,7 @@ We can also use ~this.props~ to compute data that needs to be rendered (see
 
 #+NAME:use-props-to-compute
 #+CAPTION:Example of Using ~props~ to Compute a Value
-#+BEGIN_SRC js :eval never
+#+BEGIN_SRC js
 {
     render: function () {
         if (this.props.isHidden) {
@@ -2112,7 +2112,7 @@ return.  Let's add this method to our React component:
 
 #+NAME:component-getInitialState
 #+CAPTION:Simple Component Using ~getInitialState()~ Method
-#+BEGIN_SRC js :eval never
+#+BEGIN_SRC js
 {
     getInitialState: function () {
         return {
@@ -2183,7 +2183,7 @@ part of the next state.
 
 Image that this is our current state:
 
-#+BEGIN_SRC js :eval never
+#+BEGIN_SRC js
 {
     isHidden: true,
     title: 'Stateful React Component'
@@ -2192,7 +2192,7 @@ Image that this is our current state:
 
 We call ~this.setState(nextState)~, where ~nextState~ is as follows:
 
-#+BEGIN_SRC js :eval never
+#+BEGIN_SRC js
 {
     isHidden: false
 }
@@ -2200,7 +2200,7 @@ We call ~this.setState(nextState)~, where ~nextState~ is as follows:
 
 React will merge the two states into a new one:
 
-#+BEGIN_SRC js :eval never
+#+BEGIN_SRC js
 {
     isHidden: false,
     title: 'Stateful React Component'
@@ -2220,7 +2220,7 @@ component that reacts to a user event:
 
 #+NAME:component-reacts-to-user-event
 #+CAPTION:A stateful component that reacts to a user event
-#+BEGIN_SRC js :eval never
+#+BEGIN_SRC js
 {
     getInitialState: function () {
         return {
@@ -2358,7 +2358,7 @@ button.  The component will still work as expected:
 
 #+NAME:stateful-component-no-title
 #+CAPTION:A stateful component that reacts with minimal state
-#+BEGIN_SRC js :eval never
+#+BEGIN_SRC js
 {
     getInitialState: function () {
         return {
@@ -2424,7 +2424,7 @@ components.
 
 #+NAME:stateful-component
 #+CAPTION:An Example of a Lean Stateful Component
-#+BEGIN_SRC js -n :eval never :tangle snapterest/source/app.js
+#+BEGIN_SRC js -n :tangle snapterest/source/app.js
 var React = require('react');
 var ReactDOM = require('react-dom');
 
@@ -2702,7 +2702,7 @@ snippet:
 
 #+NAME:react-application-container
 #+CAPTION:The React Application Root Container File
-#+BEGIN_SRC js :eval never snapterest/source/app.js
+#+BEGIN_SRC js snapterest/source/app.js
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Application = require('./components/Application.react');
@@ -2729,7 +2729,7 @@ Let's take a look at the contents of the ~Application.react.js~ file:
 
 #+NAME:react-application
 #+CAPTION:The React Application File
-#+BEGIN_SRC js :eval never snapterest/source/components/application.react.js
+#+BEGIN_SRC js snapterest/source/components/application.react.js
 var React      = require('react');
 var Stream     = require('./Stream.react');
 var Collection = require('./Collection.react');
@@ -3027,6 +3027,8 @@ React's lifecycle methods.
 
 * 5. Use Your React Components With Another Library
 
+#+CINDEX:integrate 3rd party library
+#+CINDEX:receive data, 3rd part library
 React is a great library for building user interfaces.  What if we want to
 integrate it with another library that is responsible for receiving data?  In
 the previous chapter, we outlined five tasks that our Snapterest web
@@ -3040,18 +3042,23 @@ very important task of receiving data.
 
 ** Using Another Library in Your React Component
 
+#+CINDEX:Snapkite Engine library
+#+CINDEX:Twitter Streaming API
+#+CINDEX:stream of tweets
 Our Snapterest web application will consume a live stream of tweets.  In
 Chapter 1, you installed the *Snapkite Engine* library that connects to the
 Twitter Streaming API, filters the incoming tweets, and sends them to our
 client application.  In turn, our client application needs a way of connecting
 to that live stream and listening for the new tweets.
 
+#+CINDEX:@code{snapkite-stream-client} module
 We don't need to implement this functionality outselves because we can reuse
 another Snapkite module called ~snapkite-stream-client~.  Let's install this
 module.
 
 *** Installing ~snapkite-stream-client~ Module
 
+#+CINDEX:@code{snapkite-stream-client} module, install
 Navigate to the ~<dir>/snapterest/~ directory and run the following command:
 
 : npm install --save snapkite-stream-client
@@ -3059,7 +3066,9 @@ Navigate to the ~<dir>/snapterest/~ directory and run the following command:
 It will install the ~snapkite-stream-client~ module, and add it to
 ~package.json~ as a dependency.
 
-#+BEGIN_EXAMPLE
+#+NAME:snapkite-stream-client
+#+CAPTION[snapkite-stream-client]:After Installing the ~snapkite-stream-client~ Module
+#+BEGIN_src sh
 $ yarn add snapkite-stream-client
 yarn add v1.13.0
 [1/4] 🔍  Resolving packages...
@@ -3116,13 +3125,14 @@ $ cat package.json
     "snapkite-stream-client": "^1.0.3"
   }
 }
-#+END_EXAMPLE
+#+END_SRC
 
 Now we're ready to reuse the ~snapkite-stream-client~ module in one of our
 React components.
 
 *** Creating the ~Stream~ Component with the ~snapkite-stream-client~ Module
 
+#+CINDEX:@code{Stream} component
 In the previous chapter, we created the ~Application~ component with two child
 components: ~Stream~ and ~Collection~.  In this chapter, we'll create our
 ~Stream~ component.
@@ -3130,7 +3140,10 @@ components: ~Stream~ and ~Collection~.  In this chapter, we'll create our
 Start by creating the ~<dir>/snapterest/source/components/Stream.react.js~
 file:
 
-#+BEGIN_SRC js :eval never :tangle snapterest/source/components/Stream.react.js
+#+CINDEX:@file{Stream.react.js} file
+#+NAME:Stream-component
+#+CAPTION:The ~Stream.react.js~ File
+#+BEGIN_SRC js :tangle snapterest/source/components/Stream.react.js :mkdirp yes
 var React = require('react');
 var SnapkiteStreamClient = require('snapkite-stream-clinet');
 var StreamTweet = require('./StreamTweet.react');
@@ -3174,6 +3187,9 @@ var Stream = React.createClass({
 module.exports = Stream;
 #+END_SRC
 
+#+CINDEX:@file{StreamTweet} module
+#+CINDEX:@file{Header} module
+#+CINDEX:@file{snapkite-stream-client} module
 We first import the modules that our ~Stream~ component depends on:
 
 - ~React~: React library
@@ -3181,6 +3197,11 @@ We first import the modules that our ~Stream~ component depends on:
 - ~snapkite-stream-client~: a utility library
 
 
+#+CINDEX:@code{getInitialState()}
+#+CINDEX:@code{componentDidMount()}
+#+CINDEX:@code{componentWillUnmount()}
+#+CINDEX:@code{handleNewTweet()}
+#+CINDEX:@code{render()}
 Then we define our React component.  Here are the methods that our ~Stream~
 component implements:
 
@@ -3193,6 +3214,7 @@ component implements:
 
 **** ~Stream~'s ~render()~ Method
 
+#+CINDEX:@code{render()} method, in @file{Stream}
 We are already familiar with the ~getInitialState()~ and ~render()~ mnethods;
 they are part of React's API.  You already know that any React component must
 implement at least the ~render()~ method.  Let's take a look at the ~render()~
@@ -3222,6 +3244,7 @@ React components as ~Views~, then our ~Stream~ component is a ~ControllerView~.
 Now that we know what a ~Stream~ component renders, let's discuss it in the
 other methods.
 
+#+CINDEX:@code{getInitialState()} in @file{Stream} component
 The ~getInitialState()~ method returns the initial state object with a ~tweet~
 property, which is set to =null=.  Our ~Stream~ component will receive an
 endless stream of new tweets, and it needs to re-render its child components
@@ -3230,12 +3253,17 @@ the current tweet in the component's state.  Once we update its state, React
 will call its ~render()~ method and re-render all of its child components.  For
 this purpose, we will implement the ~handleNewTweet()~ method.
 
+#+CINDEX:@code{handleNewTweet()} in @file{Stream} component
 The ~handleNewTweet()~ method takes a ~tweet~ object, and sets it as a new
 value for the component state's ~tweet~ property.
 
+#+CINDEX:@code{componentDidMount()} in @file{Stream} component
 Where does the new tweet come from and when does it come?  Let's take a look at
 our ~componentDidMount()~ method.
 
+#+CINDEX:@code{initializeStream()} method in @file{Stream} component
+#+CINDEX:@file{SnapkiteStreamClient} object in @file{Stream} component
+#+CINDEX:@code{handleNewTweet} callback
 This function calls the ~initialzeStream()~ method of the
 ~SnapkiteStreamClient~ object, and passes a ~this.handleNewTweet~ callback
 function as its argument.  ~SnapkiteStreamClient~ is an external library with
@@ -3256,6 +3284,10 @@ external ~SnapkiteStreamClient~ library.
 
 **** Cleaning Up
 
+#+CINDEX:uninitialize
+#+CINDEX:@code{componentWillUnmount()} method
+#+CINDEX:component, unmount
+#+CINDEX:unmount component
 Now we know when to initialize the external JavaScript libraries in our React
 components, but what about the reverse process---when should we uninitialize
 and clean up everything that we've done in the ~componentDidMount()~ method?
@@ -3263,6 +3295,8 @@ It's a good idea to clean up everything before we unmount our components.  For
 this purpose, React API offers us another component lifecycle
 method---~componentWillUnmount()~.
 
+#+CINDEX:@code{destroyStream()} method
+#+CINDEX:@file{Stream} component, unmount
 The ~componentWillUnmount()~ method is called by React just before React
 unmounts the component.  As you can see in the ~componentWillUnmount()~ method,
 you're calling the ~destroyStream()~ method in the ~SnapkiteStreamClient~
@@ -3271,12 +3305,14 @@ and we can safekly unmount our ~Stream~ component.
 
 ** Understanding React Component's Lifecycle Methods
 
+#+CINDEX:lifecycles of React components
 Think about what a React component does.  It describes what to render.  We know
 that it uses the ~render()~ method for this.  However, sometimes, having only
 the ~render()~ method is not enough because what if we want to do something
 before or after the component has rendered?  What if we want to be able to
 decide whether a component's ~render()~ method should be called at all?
 
+#+CINDEX:component lifecycles, methods
 Looks like what we're describing is a process during which the React component
 is rendered.  This process has various stages, for example, before render,
 render, after render, and so on.  In React, this process is called the
@@ -3290,6 +3326,11 @@ methods)}}}.  They are called in a predictable order.
 
 All the React component's lifecycle methods can be grouped into three phases:
 
+#+CINDEX:mounting phase
+#+CINDEX:updating phase
+#+CINDEX:unmounting phase
+#+CINDEX:lifecycle phases
+#+CINDEX:phases, React component's lifecycle methods
 #+ATTR_TEXINFO: :indic b
 - Mounting ::
 
@@ -3306,9 +3347,13 @@ All the React component's lifecycle methods can be grouped into three phases:
                 DOM
 
 
+#+CINDEX:mounting a component
+#+CINDEX:unmounting a component
 In React's terminology, inserting a component into the DOM is called
 {{{dfn(mounting)}}}, whereas removing a component from the DOM is called
 {{{dfn(unnounting)}}}.
+
+*** Creating the ~StreamTweet~ Component
 
 The best way to learn about the React component's lifecycle methods is to see
 them in action.  Let's create our ~StreamTweet~ component that we discussed
@@ -3318,7 +3363,9 @@ lifecycle methods.
 Navigate to ~<dir>/snapterest/source/components/~ and create the
 ~StreamTweet.react.js~ file:
 
-#+BEGIN_SRC js :eval never :tangle snapterest/source/components/StreamTweet.react.js :noweb tangle :mkdirp yes
+#+NAME:StreamTweet
+#+CAPTION:Creating the ~StreamTweet.react.js~ File
+#+BEGIN_SRC js :tangle snapterest/source/components/StreamTweet.react.js :noweb tangle :mkdirp yes
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Header = require('./Header.react');
@@ -3353,9 +3400,14 @@ module.exports = StreamTweet;
 The ~StreamTweet~ component has no lifecycle methods yet, other than
 ~render()~.  We'll create and discuss them one by one as we move ahead.
 
+#+CINDEX:mounting phase, methods called during
 The four methods are called during a component's /mounting/ phase, as shown in
 the following:
 
+#+CINDEX:@code{getInitialState()}
+#+CINDEX:@code{componentWillMount()}
+#+CINDEX:@code{render()}
+#+CINDEX:@code{componentDidMount()}
 #+BEGIN_EXAMPLE
 getInitialState()
 |
@@ -3375,10 +3427,12 @@ DOM.  Let's take a closer look at each of them.
 
 *** Mounting Methods
 
+#+CINDEX:mounting methods of a component
 Now let's check out some of the useful mounting methods.
 
 **** The ~getInitialState()~ Method
 
+#+CINDEX:@code{getInitialState()} mounting method
 The ~getInitialState()~ method is invoked first.  It is invoked /before/ React
 inserts a component into the DOM.  If you want your component to have a state,
 then use this method to return the initial component's state.  In your
@@ -3386,7 +3440,7 @@ then use this method to return the initial component's state.  In your
 
 #+NAME:getInitialState
 #+CAPTION:StreamTweet's ~getInitialState()~ Method
-#+BEGIN_SRC js :eval never
+#+BEGIN_SRC js
 // getInitialState() method
 getInitialState: function () {
     console.log('[Snapterest] StreamTweet: 1. Running getInitialState()');
@@ -3405,6 +3459,8 @@ the following steps:
 1. Log the following message in a web browser's console:
    : [Snapterest] StreamTweet: 1. Running getInitialState().
 
+   #+CINDEX:@code{numberOfCharactersIsIncrease()} property
+   #+CINDEX:@code{headerText()} property
 2. Return an object with the ~numberOfCharactersIsIncreasing~ and ~headerText~
    properties set to =null=.
 
@@ -3421,13 +3477,14 @@ As with all the mounting methods, ~getInitialState()~ will be called only once.
 
 **** The ~componentWillMount()~ Method
 
+#+CINDEX:@code{componentWillMount()} mounting method
 The ~componentWillMount()~ method is invoked second.  It is invoked
 /immediately before/ React inserts a component into the DOM.  Add this code
 right after the ~getInitialState()~ method in your ~StreamTweet~ component.
 
 #+NAME:componentWillMount
 #+CAPTION:StreamTweet's ~componentWillMount()~ Method
-#+BEGIN_SRC js :eval never
+#+BEGIN_SRC js
 // componentWillMount method
 componentWillMount: function () {
     console.log('[Snapterest] StreamTweet: 2. Running componentWillMount()');
@@ -3453,6 +3510,8 @@ log messages printed in the expected ascending order.
 
 Next, we update the component's state using the ~this.setState()~ method:
 
+  #+CINDEX:@code{numberOfCharactersIsIncreasing} property, set
+  #+CINDEX:@code{headerText} property, set
 - Set the ~numberOfCharactersIsIncreasing~ property to =true=
 - Set the ~headerText~ property to 'Latest public photo from Twitter'
 
@@ -3463,27 +3522,37 @@ number of characters in that first tweet.  Hence, we set it to =true=.  We also
 assign the default text to our header.
 
 
+#+CINDEX:@code{setState()} method
 As you know, calling the ~this.setState()~ method should trigger the
 component's ~render()~ method, so it seems like ~render()~ will be called twice
 during the component's mounting phase.  However, in this case, React knows that
 nothing has been rendered yet, so it will call the ~render()~ method only once.
 
+#+CINDEX:@code{snapterest} global object
+#+CINDEX:global object, @code{snapterest}
+#+CINDEX:@code{window.snapterest} global object
 Finally, in this method, we define a ~snapterest~ global object with the
 following two properties:
 
+   #+CINDEX:@code{numberOfReceivedTweets} global property
 1. ~numberofReceivedTweets~: This property counts the number of all the
    received tweets
 
+   #+CINDEX:@code{numberOfDisplayedTweets} global property
 2. ~numberOfDisplayedTweets~: This property counts the number of only the
    displayed tweets
 
 
+#+CINDEX:@code{numberOfReceivedTweets}, set
+#+CINDEX:@code{numberOfDisplayedTweets}, set
 We set ~numberOfReceivedTweets~ to 1 because we know that the
 ~componentWillMount()~ method is called only once when the very first tweet is
 receivedf.  We also know taht our ~render()~ method will be called for this
 very first tweet, so we set ~numberOfDisplayedTweets~ to 1 as well.
 
 
+#+CINDEX:global object
+#+CINDEX:@code{window.snapterest} global object
 This global object is not part of React or our web application's logic; we can
 remove it and everything will still work as expected.  ~window.snpaterest~ is a
 convenience tool used to keep track of how many tweets we've processed at any
@@ -3506,6 +3575,9 @@ next component lifecycle method, we'll add more properties to our
 
 **** The ~componentDidMount()~ Method
 
+#+CINDEX:@code{componentDidMount()} mounting method
+#+CINDEX:third party libraries, integrate
+#+CINDEX:integrate third party libraries
 The ~componentDidMount()~ method is invoked third.  It is invoked /immediately
 after/ React inserts a component into the DOM.  The updated DOM is now
 available for access, which means that this method is the best place for
@@ -3521,7 +3593,7 @@ method:
 
 #+NAME:componentDidMount
 #+CAPTION: StreamTweet's ~componentDidMount()~ Method
-#+BEGIN_SRC js :eval never
+#+BEGIN_SRC js
 // componentDidMount() method
 componentDidMount: function () {
     console.log('[Snapterest] StreamTweet: 3. Running componentDidMount()');
@@ -3534,6 +3606,9 @@ componentDidMount: function () {
 
 #+END_SRC
 
+#+CINDEX:@code{ReactDOM.findDOMNode()} method
+#+CINDEX:@code{findDOMNode()} method
+#+CINDEX:@code{componentDOMRepresentation} variable
 Here, we're referencing the DOM that represents our ~StreamTweet~ component
 using the ~ReactDOM.findDOMNode()~ method.  We pass ~this~ parameter that
 references the current component (in this case, ~StreamTweet~).  The
@@ -3542,14 +3617,20 @@ traverse and access its various properties.  To get a good understanding of what
 this DOM tree looks like, let's take a closer look at the ~render()~ method of
 four ~StreamTweet~ component.
 
+#+CINDEX:JSX, benefit
 One of the greatest benefits of using JSX is that we can easily identify how
 many child elements our component will have just by looking at the component's
 ~render()~ method.  Here, we can see that a parent ~<section>~ element has two
 child components: ~<Header />~ and ~<Tweet />~.
 
+#+CINDEX:traverse the DOM
+#+CINDEX:DOM traversal
+#+CINDEX:@code{children} property of the DOM API
+#+CINDEX:DOM API, @code{children}
 So when we traverse the resulting DOM tree using the DOM API ~children~
 property, we can be sure that it will have two child elements as well:
 
+  #+CINDEX:@code{componentDOMRepresentation.children} array access
 - ~componentDOMRepresentation.children[0]~: This is our ~<Header />~ component's
   DOM representation
 
@@ -3557,10 +3638,14 @@ property, we can be sure that it will have two child elements as well:
   DOM representation
 
 
+#+CINDEX:@code{outerHTML} attribute
+#+CINDEX:@code{window.snapterest} global object
 The ~outerHTML~ attribute of each element gets the HTML string that represents
 the DOM tree of each element.  We reference this HTML string in our global
 ~window.snapterest~ object for convenience.
 
+#+CINDEX:integrate third party library
+#+CINDEX:third party library, integrate
 If you are using another JavaScript library such as *JQuery*, along with React,
 then use the ~componentDidMount()~ method as an opportunity to integrate the
 two.  If you want to send an AJAX request, or set timers using the
@@ -3568,6 +3653,8 @@ two.  If you want to send an AJAX request, or set timers using the
 method as well.  In general, ~componentDidMount()~ should be your preferred
 component lifecycle for integrating the React library with non-React libraries
 and APIs.
+
+**** Summary of Mounting Methods
 
 So far, in this chapter, we've learned about the fundamental mounting methods
 tht the React component provides us with.  We used all the three of them in our
@@ -3589,20 +3676,23 @@ Next, let's discuss the React component's /unmounting phase/.
 
 *** Unmounting Methods
 
+#+CINDEX:unmounting method
 Let's now take a look at one of the popular unmounting methods.
 
 **** The ~componentWillUnmount()~ Method
 
+#+CINDEX:@code{componentWillUnmount()} unmounting method
+#+CINDEX:clean up component
 React offers only one method for this phase, that is,
 ~componentWillUnmount()~.  It is invoked /immediately before/ React removes a
 component from the DOM and destroys it.  This method is useful for cleaning up
 any data that is created during the component's mounting or updating phases.
 That's exactly what we do in our ~StreamTweet~ component.  Add this code to
-your StreamTweet~ component after the ~compontDidMount()~ method:
+your ~StreamTweet~ component after the ~compontDidMount()~ method:
 
 #+NAME:componentWillUnmount
 #+CAPTION:StreamTweet's ~componentWillUnmount()~ Method
-#+BEGIN_SRC js :eval never
+#+BEGIN_SRC js
 // componentWillUnmount() method
 componentWillUnmount: function () {
     console.log('[Snapterest] StreamTweet: 8. Running componentWillUnmount()');
@@ -3612,6 +3702,9 @@ componentWillUnmount: function () {
 
 #+END_SRC
 
+#+CINDEX:@code{window.snapterest} global object, delete
+#+CINDEX:delete @code{window.snapterest} global object
+#+CINDEX:global object @code{window.snapterest}, delete
 In the ~componentWillUnmount()~ method, we delete our global
 ~window.snapterest~ object using the {{{command(delete)}}} operator.
 
@@ -3635,7 +3728,7 @@ That's all we need to know to efficiently unmount React components.
 
 In this chapter, we created our ~Stream~ component and learned how to integrate
 a React component with the external JavaScript library.  We also learned about
-the Ract component's lifecycle methods.  We also focused on and discussed the
+the React component's lifecycle methods.  We also focused on and discussed the
 mounting and unmounting methods in detail and started implementing the
 ~StreamTweet~ component.
 
@@ -3795,7 +3888,7 @@ Examples:
 1. When a user clicks "delete" on a completed todo a single "delete-todo"
    action is dispatched:
 
-   #+BEGIN_SRC js :eval never
+   #+BEGIN_SRC js
   {
     type: 'delete-todo',
     todoID: '1234',
@@ -4001,7 +4094,7 @@ Check out [[https://github.com/facebook/flux/blob/master/src/Dispatcher.js][Disp
 For example, consider this hypothetical flight destination form, which selects
 a default city when a country is selected:
 
-#+BEGIN_SRC js -n :eval never
+#+BEGIN_SRC js -n
 var flightDispatcher = new Dispatcher();
 
 // Keeps track of which country is selected
@@ -4016,7 +4109,7 @@ var FlightPriceStore = {price: null};
 
 When a user changes the selected city, we dispatch the payload:
 
-#+BEGIN_SRC js +n :eval never
+#+BEGIN_SRC js +n
 flightDispatcher.dispatch({
   actionType: 'city-update',
   selectedCity: 'paris'
@@ -4025,7 +4118,7 @@ flightDispatcher.dispatch({
 
 This payload is digested by CityStore:
 
-#+BEGIN_SRC js +n :eval never
+#+BEGIN_SRC js +n
 flightDispatcher.register(function(payload) {
   if (payload.actionType === 'city-update') {
     CityStore.city = payload.selectedCity;
@@ -4035,7 +4128,7 @@ flightDispatcher.register(function(payload) {
 
 When the user selects a country, we dispatch the payload:
 
-#+BEGIN_SRC js +n :eval never
+#+BEGIN_SRC js +n
 flightDispatcher.dispatch({
   actionType: 'country-update',
   selectedCountry: 'australia'
@@ -4044,7 +4137,7 @@ flightDispatcher.dispatch({
 
 This payload is digested by both stores:
 
-#+BEGIN_SRC js +n :eval never
+#+BEGIN_SRC js +n
 CountryStore.dispatchToken = flightDispatcher.register(function(payload) {
   if (payload.actionType === 'country-update') {
     CountryStore.country = payload.selectedCountry;
@@ -4057,7 +4150,7 @@ to the returned token. Using this token with ~waitFor()~, we can guarantee that
 ~CountryStore~ is updated before the callback that updates ~CityStore~ needs to
 query its data.
 
-#+BEGIN_SRC js +n :eval never
+#+BEGIN_SRC js +n
 CityStore.dispatchToken = flightDispatcher.register(function(payload) {
   if (payload.actionType === 'country-update') {
     // `CountryStore.country` may not be updated.
@@ -4072,7 +4165,7 @@ CityStore.dispatchToken = flightDispatcher.register(function(payload) {
 
 The usage of ~waitFor()~ can be chained, for example:
 
-#+BEGIN_SRC js +n :eval never
+#+BEGIN_SRC js +n
 FlightPriceStore.dispatchToken =
   flightDispatcher.register(function(payload) {
     switch (payload.actionType) {
@@ -4112,7 +4205,7 @@ These base classes can be imported from ~flux/utils~ like this:
 
 #+NAME:flux-utils.js
 #+CAPTION:Importing base classes from ~flux/utils~
-#+BEGIN_SRC js :eval never
+#+BEGIN_SRC js
 import {ReduceStore} from 'flux/utils';
 
 class CounterStore extends ReduceStore<number> {
@@ -4261,7 +4354,7 @@ examples to work, you'd need to also install ~@babel/preset-env~ and
 
 {{{subheading(Node)}}}
 
-#+BEGIN_SRC js :eval never
+#+BEGIN_SRC js
 var fs = require("fs");
 var browserify = require("browserify");
 browserify("./script.js")
@@ -4314,6 +4407,7 @@ Outline prepared by WLHarvey \copy {{{date(%F)}}}
 #+MACRO:noindent @@texinfo:@noindent @@
 #+MACRO:dfn @@texinfo:@dfn{@@$1@@texinfo:}@@
 * EXPORT SETTINGS                                                  :noexport:
+#+PROPERTY: header-args :eval never
 #+OPTIONS: h:4
 #+TEXINFO_CLASS: info
 #+TEXINFO_HEADER:
