@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-08 Fri 20:22>
+#+DATE: <2019-03-09 Sat 11:17>
 
 #+TEXINFO: @insertcopying
 
@@ -4507,6 +4507,247 @@ finish building our Snapterest application.
 
 * 7. Build Complex React Components
 
+In this chapter we'll put everything we learned so far about React components
+in action by building the most complext components in our application, that is,
+child components of our ~Collection~ component.  Our aim in this chapter is to
+gain a solid React experience and grow our React muscles.
+
+** Creating the ~TweetList~ Component
+
+#+CINDEX:@file{TweetList} component
+The ~Collection~ component has two child components:
+
+1. ~CollectionControls~
+2. ~TweetList~
+
+
+#+CINDEX:@file{TweetList} component
+First build the ~TweetList~ component.  Create the following
+~<dir>/snapterest/source/components/TweetList.react.js~ file:
+
+#+NAME:TweetList-component
+#+CAPTION[TweetList Component]:The ~TweetList~ Component of the ~Collection~ Component
+#+BEGIN_SRC js :tangle snapterest/source/components/TweetList.react.js :mkdirp yes
+var React = require('react');
+var Tweet = require('./Tweet.react');
+
+var listStyle = {
+    padding: '0'
+};
+
+var listItemStyle = {
+    display: 'inline-block',
+    listStyle: 'none'
+};
+
+var =TweetList = React.createClass({
+    getListOfTweetIds: function () {		(ref:array-of-ids)
+        return Object.keys(this.props.tweets);
+    },
+
+    getTweetElement: function (tweetId) {
+        var tweet = this.props.tweets[tweetId];
+        var handleRemoveTweetFromCollection = this.props.onRemoveTweetFromCollection;
+        var tweetElement;
+
+        if (handleRemoveTweetFromCollection) {	(ref:scenario1)
+            tweetElement = (
+                <Tweet
+                    tweet={tweet}
+                    onImageClick={handleRemoveTweetFromCollection}
+                />
+            );
+        } else {					(ref:scenario2)
+            tweetElement = <Tweet tweet={tweet} />;
+        }
+
+        return (					(ref:tweet-in-li)
+            <li style={listItemStyle} key={tweet.id} >
+                {tweetElement}
+            />
+        );
+    },
+
+    render: function () {				(ref:list-of-tweets)
+        var tweetElements = this.getListOfTweetIds().map(this.getTweetElement);
+
+        return (
+            <ul style={listStyle}>
+                {tweetElements}
+            </ul>
+        );
+    }
+});
+
+module.exports = TweetList;
+#+END_SRC
+
+#+CINDEX:list of tweets
+#+CINDEX:@code{Tweet} elements
+#+CINDEX:@file{Tweet} component
+#+CINDEX:@code{map} method
+#+CINDEX:@code{getTweetElement()} method
+The ~TweetList~ component renders a [[(list-of-tweets)][list of tweets]] using the ~render()~
+function.  First, we create a list of ~Tweet~ elements.  The
+~this.getListOfTweetIds()~ method returns an [[(array-of-ids)][array of tweet IDs]].  Then, for
+each tweet ID in that array, we create a ~Tweet~ component.  For this, we will
+call the ~map()~ method on our array of tweet IDs and pass the
+~this.getTweetElement()~ method as a callback function.
+
+{{{heading(Handling the Optional ~onImageClick~ Property)}}}
+
+#+CINDEX:@code{onImageClick} property
+The ~getTweetElement()~ method returns a ~Tweet~ element [[(tweet-in-li)][wrapped]] in the ~<li>~
+element.  The ~Tweet~ component has an optional ~onImageClick~ property.  When
+do we want to provide this optional property and when don't we?
+
+There are two scenarios.
+
+- In the [[(scenario1)][first scenario]], the user will click on a tweet image to remove it from
+  a collection of tweets.  In this scenario, our Tweet component will react to
+  a ~click~ even, so we need to provide the ~onImageClick~ property.
+
+- In the [[(scenario2)][second scenario]], the use will export a static collecton of tweets that
+  has no user interaction.  In this scenario, we don't need to provide the
+  ~onImageClick~ property.
+
+
+#+CINDEX:@code{getTweetElement()} method
+#+CINDEX:@code{tweet} variable
+#+CINDEX:@code{tweetId} argument
+#+CINDEX:@code{onRemoveTweetFromCollection} property
+That's exactly what we do in our ~getTweetElement()~ method.  We create a
+~tweet~ variable that stores a tweet with an ID that is provided by the
+~tweetId~ argument.  Then, we create a variable that stores a
+~this.props.onRemoveTweetFromCollection~ property that is passed by a parent
+~Collection~ component.
+
+#+CINDEX:@code{onImageClick} property
+Next we check whether the ~this.props.onRemoveTweetFromCollection~ property is
+provided by a ~Collection~ component.  If it is, then we create a ~Tweet~
+component with an ~onImageClick~ property.  If it isn't provided, then we
+create a ~Tweet~ component without a ~handleImageClick~ property.
+
+{{{heading(Using the ~TweetList~ Component)}}}
+
+#+CINDEX:@code{TweetList} component
+We use the ~TweetList~ component in the following two cases:
+
+  #+CINDEX:@code{onRemoveTweetFromCollection} property
+- This component is used when rendering a collection of tweets in the
+  ~Collection~ component.  In this case, the ~onRemoveTweetFromCollection~
+  property /is/ provided.
+
+- This component is used when rendering a string of HTML markup that represents
+  a collection of tweets in the ~Collection~ component.  In this case, the
+  ~onRemoveTweetFromCollection~ property /is not/ provided.
+
+
+#+CINDEX:@code{tweetElement} variable
+Once we create our ~Tweet~ element, and put it into the ~tweetElement~
+variable, we return the ~<li>~ element with an inline style.
+
+#+CINDEX:@code{key} property
+#+CINDEX:dynamic children
+Besides the =style= property, our ~<li>~ element has a =key= property.  It is
+used by React to identify each child element that is created dynamically.  I
+recommend that you read more about dynamic children at
+https://react.tips/how-to-create-components-dynamically-in-react-16/.
+
+#+CINDEX:@code{getTweetElement()} method
+That's how the ~getTweetElement()~ method works.  As a result, the ~TweetList~
+component returns an unordered list of ~Tweet~ elements.
+
+** Creating the ~CollectionControls~ Component
+
+Now, when we understand what the ~Collection~ component renders, let's discuss
+its child components.  We'll start with ~CollectionControls~.  Create the
+following ~<dir>/snapterest/source/components/CollectionControls.react.js~
+file:
+
+#+NAME:CollectionControls-component
+#+CAPTION[CollectionControls Component]:The ~CollectionControls~ Component of ~Collection~ Component
+#+BEGIN_SRC js :tangle snapterest/source/components/CollectionControls.react.js :mkdirp yes
+var React = require('react');
+var Header = require('./Header.react');
+var Button = require('./Button.react');
+var CollectionRenameForm = require('./CollectionRenameForm.react');
+var CollectionExportForm = require('./CollectionExportForm.react');
+
+var CollectionControls = React.createClass({
+    getInitialState: function () {
+        return ({
+            name: 'new',
+            isEditingName: false
+        });
+    },
+
+    getHeadText: function () {
+        var numberOfTweetsInCollection = this.props.numberOfTweetsInCollection;
+        var text = numberOfTweetsInCollection;
+
+        if (numberOfTweetsInCollection === 1) {
+            text = text + ' tweet in your';
+        } else {
+            text = text + 'tweets in your';
+        }
+
+        return (
+            <span>
+                {text} <strong>{this.state.name}</strong> collection
+            </span>
+        );
+    },
+
+    toggleEditCollectionName: function () {
+        this.setState({
+            isEditingName: !this.state.isEditingName
+        });
+    },
+
+    setCollectionNamle: function (name) {
+        this.setState({
+            name: name,
+            isEditingName: false
+        });
+    },
+
+    render: function () {
+        if (this.state.isEditingName) {
+            return (
+                <CollectionRenameForm
+                    name={this.state.name}
+                    onChangeCollectionName={this.setCollectionName}
+                    onCancelCollectionNameChange={this.toggleEditCollectionName}
+                />
+            );
+        }
+
+        return (
+            <div>
+                <Header text={this.getHeaderText()} />
+                <Button
+            	    label="Rename collection"
+            	    handleClick={this.toggleEditCollection}
+            	/>
+
+                <CollectionExportForm htmlMarkup={this.props.htmlMarkup} />
+            </div>
+        );
+    }
+});
+
+module.exports = CollectionControls;
+#+END_SRC
+
+** Creating the ~CollectionRenameForm~ Component
+
+** Creating the ~Button~ Component
+
+** Creating the ~CollectionExportForm~ Component
+
+** Summary
+
 * 8. Test Your React Application With Jest
 
 ** TODO Install Jest 0.4
@@ -5071,7 +5312,7 @@ You can configure Snapkite Engine by editing config.json.
 - ~application.twitter.api~ ::
      Twitter API keys that Twitter provides you with. You can find them [[https://apps.twitter.com/][here]].
 
-- ~application.database~ : :MongoDB connection configuration.
+- ~application.database~ :: MongoDB connection configuration.
 
 - ~application.socket~ :: Socket configuration.
 
