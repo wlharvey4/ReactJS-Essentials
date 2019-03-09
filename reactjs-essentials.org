@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-08 Fri 11:02>
+#+DATE: <2019-03-08 Fri 20:22>
 
 #+TEXINFO: @insertcopying
 
@@ -1630,6 +1630,7 @@ Not only is this faster than mutating a DOM on a client, but it also improves
 the *Search Engine Optimization (SEO)* of your web application.
 
 {{{subheading(ReactDOMServer.renderToStaticMarkup())}}} Method
+<<renderToStaticMarkup>>
 
 #+CINDEX:@code{ReactDOMServer.renderToStaticMarkup()} method
 React can also generate static web pages:
@@ -2813,8 +2814,8 @@ wants to reuse this encapsulated React component.
 In our first logical part of the ~Application.react.js~ file, we're importing
 the dependency modules using the ~require()~ function.
 
-Our ~Application~ component will have two child components that we need to
-import:
+<<two child components>>Our ~Application~ component will have two child
+components that we need to import:
 
 1. The ~Stream~ component will render a stream section of our user interface
 2. The ~Collection~ component will render a collection section of our user
@@ -2918,12 +2919,12 @@ component has a number of properties:
 - ~tweets~ : This refers to our current collection of tweets
 
   #+CINDEX:@code{onRemoveTweetFromCollection}
-- ~onRemoveTweetFromCollection~ : This refers to a function that removes a
-  particular tweet from our collection
+- ~onRemoveTweetFromCollection~ : <<removeTweet>>This refers to a function that
+  removes a particular tweet from our collection
 
   #+CINDEX:@code{onRemoveAllTweetsFromCollection}
-- ~onRemoveAllTweetsFromCollection~ : This refers to a function that removes
-  all the tweets from our collection
+- ~onRemoveAllTweetsFromCollection~ : <<removeAllTweets>>This refers to a
+  function that removes all the tweets from our collection
 
 
 You can see that the ~Collection~ component's properties are only concerned
@@ -3211,7 +3212,6 @@ component implements:
 - ~handleNewTweet()~
 - ~render()~
 
-
 **** ~Stream~'s ~render()~ Method
 
 #+CINDEX:@code{render()} method, in @file{Stream}
@@ -3378,6 +3378,9 @@ var StreamTweet = React.createClass({
     <<componentWillMount>>
     <<componentDidMount>>
     <<componentWillReceiveProps>>
+    <<shouldComponentUpdate>>
+    <<componentWillUpdate>>
+    <<componentDidUpdate>>
     <<componentWillUnmount>>
 
     render: function () {
@@ -3861,7 +3864,7 @@ state updates together.
 {{{subheading(Counting Total Tweets Received)}}}
 
 Since the ~componentWillReceiveProps()~ method will be called once for each new
-tweet taht our ~StreamTweet~ component will receive, it makes it a good place
+tweet that our ~StreamTweet~ component will receive, it makes it a good place
 to count the total number of received tweets.
 
 Now we know how to check whether the next tweet is longer than the tweet we're
@@ -3870,17 +3873,637 @@ all?
 
 *** The ~shouldComponentUpdate()~ Method
 
+#+CINDEX:@code{shouldComponentUpdate()} updating method
+The ~shouldComponentUpdate()~ method allows us to decide whether the next
+component's state should trigger the component's re-rendering or not.  This
+method returns a Boolena value, which by default is =true=, but you can return
+=false=, and the following component methods will /not/ be called:
+
+- ~componentWillUpdate()~
+- ~render()~
+- ~componentDidUpdate()~
+
+
+Skipping a call to the component's ~render()~ method will prevent that
+component from re-renderibng which in turn will improve your application's
+performance, since no addiitional DOM mutations will be made.
+
+This method is invoked second in the component lifecycle's updating phase.
+
+This method is a great place for us to prevent the next tweet with one or less
+characters from being displayed.  Add this code to the ~StreamTweet~ component
+after the ~componentWillReceiveProps()~ method:
+
+#+NAME:shouldComponentUpdate
+#+CAPTION:The ~shouldComponentUpdate()~ Method of ~StreamTweet~
+#+BEGIN_SRC js
+// shouldComponentUpdate() method
+shouldComponentUpdate: function (nextProps, nextState) {
+    console.log('[Snapterest] StreamTweet: 5. Running shouldComponentUpdate()');
+
+    return (nextProps.tweet.length > 1);
+},
+
+#+END_SRC
+
+If the next tweet's length is greater than 1, then ~shouldComponentUpdate()~
+returns =true=, and the ~StreamTweet~ component renders the next tweet.  Or
+else, it returns =false=, and the ~StreamTweet~ component doesn't render the
+next state.
+
 *** The ~componentWillUpdate()~ Method
+
+#+CINDEX:@code{componentWillUpdate()} method
+The ~componentWillUpdate()~ method is called /immediately before/ React updates
+the DOM.  It gets the following two arguments:
+
+1. ~nextProps~: The next properties object
+2. ~nextState~: The next state object
+
+
+You can use these arguments to prepare for the DOM update.  However, you cannot
+use ~this.setState()~ in the ~componentWillUpdate()~ method.  If you want to
+update the component's state in response to its properties change, then do that
+in the ~componentWillReceiveProps()~ method, which will be called by React when
+the properties change.
+
+To demonstrate when the ~componentWillUpdate()~ method is called, we need to
+log it in the ~StreamTweet~ component.  Add this code after the
+~shouldComponentUpdate()~ method:
+
+#+NAME:componentWillUpdate
+#+CAPTION:The ~componentWillUpdate()~ Method of ~StreamTweet~
+#+BEGIN_SRC js
+// componentWillUpdate Method
+componentWillUpdate: function (nextProps, nextState) {
+    console.log('[Snapterest] StreamTweet: 6. Running componentWillUpdate()');
+},
+
+#+END_SRC
 
 *** The ~componentDidUpdate()~ Method
 
-** Setting Default React Component Property
+#+CINDEX:@code{componentDidUpdate()} method
+The ~componentDidUpdate()~ method is called /immediately after/ React updates
+the DOM.  It gets these two arguments:
+
+- ~prevProps~: The previous properties object
+- ~prevState~: The previous state object
+
+
+#+CINDEX:post-render operations
+We will use this method to interact with the updated DOM or perform any
+post-render operations.  In our ~StreamTweet~ component, we'll use
+~componentDidUpdate()~ to increment the number of displayed tweets in our
+global object.  Add this code after the ~componentWillUpdate()~ method:
+
+#+NAME:componentDidUpdate
+#+CAPTION:The ~componentDidUpdate()~ Method of ~StreamTweet~
+#+BEGIN_SRC js
+// componentDidUpdate() method
+componentDidUpdate: function (prevProps, prevState) {
+    console.log('[Snapterest] StreamTweet: 7. Running componentDidUpdate()');
+
+    window.snapterest.numberOfDisplayedTweets++;
+},
+
+#+END_SRC
+
+#+CINDEX:@code{forceUpdate()} method
+After ~componentDidUpdate()~ is called, the updating cycle ends.  A new cycle
+is started when a component's state is updated or a parent component passes new
+properties.  Or when you call the ~forceUpdate()~ method, it triggers a new
+updating cycle, but skips the ~shouldComponentUpdate()~ method on a component
+that triggered the update.  However, ~shouldComponentUpdate()~ is called on all
+child components as per the usual updating phase.  Try to avoid using the
+~forceUpdate()~ method as much as possible; this will promote your
+application's maintainability.
+
+That concludes our discussion of React component lifecycle methods.
+
+** Setting Default React Component Properties
+
+Our ~StreamTweet~ component renders two child components: ~Header~ and ~Tweet~.
+
+Let's create these components.
+
+*** Creating the ~StreamTweet~ Component
+
+#+CINDEX:@file{Stream} Component
+Navigate to ~<dir>/snapterest/source/components/~ and create the
+~Header.react.js~ file:
+
+#+NAME:Header-component
+#+CAPTION[Header Component]:The ~Header~ Component in ~Header.react.js~
+#+BEGIN_SRC js :tangle snapterest/source/components/Header.react.js :mkdirp
+var React = require('react');
+
+var headerStyle = {				(ref:headerStyle)
+    fontSize: '16px',
+    fontWeight: '300',
+    display: 'inline-block',
+    margin: '20px 10px'
+};
+
+var Header = React.createClass({
+
+    getDefaultProps: function () {		(ref:getDefaultProps)
+        return ({
+            text: 'Default header'
+        });
+    },
+
+    render: function () {
+        return (
+            <h2 style={headerStyle}>		(ref:style-prop)
+                {this.props.text}
+            </h2>
+        );
+    }
+});
+
+module.exports = Header;
+#+END_SRC
+
+#+RESULTS: Header-component
+
+#+CINDEX:@code{Header} component
+#+CINDEX:stateless component, @code{Header}
+The ~Header~ component is a stateless component that renders the ~h2~ element.
+The hepader text is passed from a parent component as a ~this.props.text~
+property, which makes this component flexible in that it allows us to reuse it
+anywhere we need a header.  We'll reuse this component again later in this
+book.
+
+Notice that the ~h2~ element has a [[(style-prop)][=style= property]].
+
+#+CINDEX:style property
+#+CINDEX:inline styling
+In React, we can define the CSS rules in a JavaScript object, and then pass
+that object as a value to the React element's =style= property.  For example,
+in this component, we define the [[(headerStyle)][~headerStyle~ variable]] that references an
+object where:
+
+- Each object key is a CSS property
+- Each object value is a CSS value
+
+
+#+CINDEX:inline styling, advantages
+The advantages of defining your CSS rules inside a React component are as
+follows:
+
+#+ATTR_TEXINFO: :indic b
+- Portability: ::
+
+                 You can easily share a component together with its styling,
+                 all in one JavaScript file;
+
+- Encapsulation: ::
+
+                   Making styles inline allows you to limit the scope they
+                   affect
+
+- Flexibility: ::
+
+                 The CSS rules can be calculated using the power of JavaScript
+
+
+#+CINDEX:Content Security Policies (CSP)
+#+CINDEX:CSP
+#+CINDEX:inline styling, disadvantage
+The significant disadvantage of using this technique is the fact that
+{{{dfn(Content Security Policies (CSP))}}} can block inline styling from having
+any effect.  You can learn more about CSP at
+https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP.
+
+#+CINDEX:@code{getDefaultProps()} method
+The ~Header~ component has one method that we haven't discussed yet, that is,
+~getDefaultProps()~.  What if you forget to pass a property that a React
+component depends on?  In that case, a component can set the default properties
+using the ~getDefaultProps()~ method.
+
+[[(getDefaultProps)][In this example]], we're setting a default value of =Default header= to our
+=text= property.  If a parent component passes the ~this.props.text~ property,
+then it will overwrite the default one.
+
+*** Creating the ~Tweet~ Component
+
+#+CINDEX:@file{Tweet} component
+Next, let's create our ~Tweet~ component.  Navigate to
+~<dir>snapterest/source/components/~ and create the ~Tweet.react.js~ file:
+
+#+NAME:Tweet
+#+CAPTION:The ~Tweet~ Component in ~Tweet.react.js~
+#+BEGIN_SRC js :tangle snapterest/source/components/Tweet.react.js
+var React = require('react');
+
+var tweetStyle = {
+    position: 'relative',
+    display: 'inline-block',
+    width: '300px',
+    height: '400px'
+    margin: '10px'
+};
+
+var imageStyle = {
+    maxHeight: '400px',
+    boxShadow: '0px 1px 1px 0px #aaa',
+    border: '1px solid #fff'
+};
+
+var Tweet = React.createClass({
+
+    propTypes: {						(ref:propTypes)
+
+        tweet: function (properties, propertyName, componentName) { (ref:tweet-validator)
+            var tweet = properties[propertyName];
+
+            if (!tweet) {
+                return new Error('Tweet must be set.');
+            }
+
+            if (!tweet.media) {
+                return new Error('Tweet must have an image.');
+            }
+        },
+
+        onImageClick: React.PropTypes.func		(ref:func-validator)
+    },
+
+    handleImageClick: function () {			(ref:click-handler)
+        var tweet = this.props.tweet;
+        var onImageClick = this.props.onImageClick;
+
+        if (onImageClick) {
+            onImageClick(tweet);
+        }
+    },
+
+    render: function () {
+        var tweet = this.props.tweet;
+        var tweetMediaUrl = tweet.media[0].url;
+
+        return (
+            <div style={tweetStyle}>
+                <img src={tweetMediaUIrl}
+                 onClick={this.handleImageClick}
+                 style={imageStyle}
+                />
+            </div>
+        );
+    }
+});
+
+module.exports = Tweet;
+#+END_SRC
+
+#+RESULTS: Tweet
+
+#+CINDEX:click event handler
+This component renders a ~<div>~ element with a child ~<img>~ element.  Both
+the elements have inline styles, and the ~<img>~ element has a click event
+handler, that is, [[(click-handler)][~this.handleImageClick~]].
+
+#+CINDEX:optional property
+#+CINDEX:required property
+When a user clicks on a tweet's image, the ~Tweet~ component checks whether a
+parent component has passed a ~this.props.onImageClick~ callback function as a
+property and calls that function.  ~this.props.onImageClick~ is an optional
+~Tweet~ component's property, so we need to check whether it was passed before
+we can use it.  On the other hand, ~tweet~ is a required property.
+
+How can we ensure that a component receives all the required properties?
 
 ** Validating React Component Properties
 
+#+CINDEX:=propTypes= object
+#+CINDEX:validate component properties
+#+CINDEX:properties, validate
+In React, there is a way to validate the component properties using the
+component's =propTypes= object:
+
+#+NAME:PropTypes-object
+#+CAPTION:The =PropTypes= Object
+#+BEGIN_SRC js
+propTypes: {
+    propertyName: validator
+}
+#+END_SRC
+
+#+CINDEX:validator function
+#+CINDEX:@code{React.PropTypes} object
+#+CINDEX:predefined validators
+#+CINDEX:validators, predefined
+In this object, you need to specify a property name and a validator function
+that will determine whether a property is valid or not.  React provides some
+predefined validators for you to reuse.  That are all available in the
+=React.PropTypes= object:
+
+- ~React.PropTypes.number~: ::  This will validate whether a property is a
+     numberr or not
+
+- ~React.PropTypes.string~: :: This will validate whether a property is a
+     string or not
+
+- ~React.PropTypes.bool~: :: This will validate whether a property is a Boolean
+     or not
+
+- ~React.PropTypes.object~: :: This will validate whether a property is an
+     object or not
+
+- ~React.PropTypes.element~: :: This will validate whether a property is a
+     React element or not
+
+
+For a complete list of the =React.PropTypes= validators, you can check the docs
+at https://reactjs.org/docs/typechecking-with-proptypes.html.
+
+By default, all the properties that you validate with the =React.PropTypes=
+validators are optional.  You can chain any of them with ~isRequired~ to make
+sure that a warning message is displayed on a JavaScript console when a
+property is missing:
+
+#+NAME:PropTypes-object-isRequired
+#+CAPTION:The =PropTypes= Object with ~isRequired~
+#+BEGIN_SRC js
+propTypes: {
+    propertyName: React.PropTypes.number.isRequired
+}
+#+END_SRC
+
+#+CINDEX:custom validator function
+#+CINDEX:validator function, custom
+#+CINDEX:@code{Error} object
+You can also specify your own custom validator function tht should return an
+=Error= object if the validation fails:
+
+#+NAME:PropTypes-object-custom
+#+CAPTION:A Custom =PropTypes= Object
+#+BEGIN_SRC js
+propTypes: {
+    propertyName: function (properties, propertyName, componentName) {
+        // ... validation failed
+        return new Error('A property is not valid.');
+    }
+}
+#+END_SRC
+
+#+CINDEX:custom validator function
+Look at the [[(propTypes)][=propTypes= object]] in the ~Tweet~ component.  We're validating two
+~Tweet~ component properties: ~tweet~ and ~onImageClick~.  We use the custom
+validator function to validate the ~tweet~ property.  React passes three
+parameters to this function:
+
+1. ~properties~: This is the component properties object
+2. ~propertyName~: This is the name of the property that we're validating
+3. ~componentName~: This is the name of the Component
+
+
+We first check whether our ~Tweet~ component received the [[(tweet-validator)][~tweet~ property]].
+Then we assume that the ~tweet~ proeprty is an object, and we check whether
+that object has no ~media~ property.  Both of these checks return an =Error=
+object that will be logged in a JavaScript console.
+
+Another ~Tweet~ component's property that we will validate is [[(func-validator)][~onImageClick~]].
+We validate that the value of the ~onImageClick~ is a function.  In this case,
+we reuse a validator function provided by the =React.PropTypes= object.
+~onImageClick~ is an optional property because we didn't add ~isRequired~.
+
+Finally, for performance reasons, =propTypes= is only checked in the
+development version of React.
+
 ** Creating a Collection Component
 
+[[two child components][Recall]] that our topmost hierarchy ~Application~ component has two child
+components:
+- ~Stream~
+- ~Collection~
+
+
+#+CINDEX:~Collection~ component
+So far, we've discussed and implemented our ~Stream~ component and its child
+components.  Next, we're going to focus on our ~Collection~ component.
+
+Create the ~<dir>/snapterest/source/components/Collection.react.js~ file:
+
+#+NAME:Collection-component
+#+CAPTION:The ~Collection~ Component in ~Collection.react.js~
+#+BEGIN_SRC js :tangle snapterest/source/components/Collection.react.js :mkdirp
+var React = require('react');
+var ReactDOMServer = require('react-dom/server');
+var CollectionControls = require('./CollectionControls.react');
+var TweetList = require('./TweetList.react');
+var Header = require('./Header.react');
+
+var Collection = React.createClass({
+
+    createHtmlMarkupStringOfTweetList: function () {	(ref:htmlString)
+        var htmlString = ReactDOMServer.renderToStaticMarkup(
+            <TweetList tweets={this.props.tweets} />
+        );
+
+        var htmlMarkup = {
+            html: htmlString
+        };
+
+        return (JSON.stringify(htmlMarkup));
+    },
+
+    getListOfTweetIds: function () {
+        return (Object.keys(this,.props.tweets));
+    },
+
+    getNumberOfTweetsInCollection: function () {
+        return (this.getListOfTweetIds().length);
+    },
+
+    render: function () {				(ref:Collection-render)
+        var numberOfTweetsInCollection = this.getNumberOfTweetsInCollection();
+
+        if (numberOfTweetsInCollection > 0) {	(ref:four-variables)
+            var tweets = this.props.tweets;
+            var htmlMarkup = this.createHtmlMarkupStringOfTweetsList();
+            var removeAllTweetsFromCollection = this.props.onRemoveAllTweetsFromCollection;
+            var handleRemoveTweetFromCollection = this.props.onRemoveTweetFromCollection;
+
+            return (				(ref:Collection-notempty)
+                <div>
+                    <CollectionControls
+                        numberOfTweetsInCollection={numberOfTweetsInCollection}
+                	htmlMarkup={htmlMarkup}
+                	onRemoveAllTweetsFromCollection={removeAllTweetsFromCollection}
+                    />
+
+                    <TweetList
+                	tweets={tweets}
+                	onRemoveTweetFromCollection={handleRemoveTweetFromCollection}
+                    />
+                </div>
+            );
+        }
+
+        return (
+            <Header text='Your Collection is empty' />;
+        );
+    }
+});
+
+module.exports = Collection;
+#+END_SRC
+
+*** Collection Renders Tweets and Control Elements
+
+#+CINDEX:@file{Collection} component
+The ~Collection~ component is responsible for rendering two things:
+
+1. Tweets that a user has collected
+
+2. User interface control elements for manipulating that collection
+
+
+{{{subheading(Collection's ~render()~ Method)}}}
+
+#+CINDEX:@file{Collection} @code{render()} method
+Take a look at the component's [[(Collection-render)][~render()~ method]].
+
+#+CINDEX:@code{getNumberOfTweetsInCollection()} method
+#+CINDEX:@code{getListOfTweetIds()} method
+We first get a number of tweets in the collection using the
+~this.getNumberOfTweetsInCollection()~ method.  This method in turn uses
+another method to get a list of tweet IDs: ~getListOfTweetIds()~ method, which
+returns an array of tweet IDs, and then ~this.getNumberOfTweetsInCollection()~
+returns the length of this array.
+
+Once we know the number of tweets in our collection, we have to make a choice:
+
+  #+CINDEX:@file{CollectionControls} component
+  #+CINDEX:@file{TweetList} component
+- If the collection is /not/ empty, then render the ~CollectionControls~ and
+  ~TweetList~ components;
+
+  #+CINDEX:@file{Header} component
+- Otherwise, render the ~Header~ component;
+
+
+What do all these components render?
+
+  #+CINDEX:@file{CollectionControls} component @code{render()}
+- The ~CollectionControls~ component renders a header with a collection name
+  and a set of buttons that allow users to rename, empty, and export a
+  collection;
+
+  #+CINDEX:@file{TweetList} component @code{render()}
+- The ~TweetList~ component renders a list of tweets;
+
+  #+CINDEX:@file{Header} component @code{render()}
+- The ~Header~ component simply renders a header with a message that the
+  collection is empty;
+
+
+The idea is to only show a collection when it is not empty.  In that case,
+we're creating [[(four-variables)][four variables]]:
+
+  #+CINDEX:@code{tweets} variable
+- the ~tweets~ variable references our ~tweets~ property that is passed from a
+  parent component;
+
+  #+CINDEX:@code{htmlMarkup} variable
+- the ~htmlMarkup~ variable references a string that is returned by the
+  component's ~this.createHtmlMarkupStringOfTweetList()~ method;
+
+  #+CINDEX:@code{removeAllTweetsFromCollection} variable
+  #+CINDEX:@code{handleRemoveTweetFromCollection} variable
+- The ~removeAllTweetsFromCollection~ and ~handleRemoveTweetFromCollection~
+  variables reference functions that are passed from a parent component;
+
+
+*** HTML Markup • Flexible • JSX Syntax
+
+{{{subheading(Creating HTML Markup)}}}
+
+#+CINDEX:@code{createHtmlMarkupStringOfTweetList()} method
+#+CINDEX:@code{ReactDOMServer.renderToStaticMarkup()} method
+#+CINDEX:@code{renderToStaticMarkup()} method
+#+CINDEX:@file{TweetList} component as argument
+As the name suggests, the ~this.createHtmlMarkupStringOfTweetList()~ method
+creates a [[(htmlString)][string]] that represents the HTML markup created by rendering the
+~TweetList~ component.  This method uses the
+~ReactDOMServer.renderToStaticMarkup()~ method that we discussed in [[renderToStaticMarkup][Chapter 2]].
+We pass the ~TweetList~ component as its argument.  This ~TweetList~ component
+has a =tweets= property that references the =tweets= property passed by a
+parent component.
+
+#+CINDEX:@code{htmlString} variable
+#+CINDEX:@code{htmlMarkup} object
+#+CINDEX:@code{JSON.stringify()} function
+#+CINDEX:@code{createHtmlMarkupStringOfTweetList()} method
+The resuling HTML string produced by the
+~ReactDOMServer.renderToStaticMarkup()~ method is stored in the ~htmlString~
+variable.  Then, we create a new ~htmlMarkup~ object with the ~html~ property
+that references our ~htmlString~ variable.  Finally, we use the
+~JSON.stringify()~ function to convert our ~htmlMarkup~ JavaScript object to a
+JSON string.  The result of the ~JSON.stringify(htmlMarkup)~ call is what our
+~createHtmlMarkupStringOfTweetList()~ method returns.
+
+{{{subheading(React Components are Flexible)}}}
+
+This method demonstrates how flexible React components are; you can use the
+same React components to render the DOM elements as well as produce a string of
+HTML markup that can be passed to a third-party API.
+
+{{{subheading(JSX Syntax can be used Anywhere)}}}
+
+#+CINDEX:JSX syntax outside @code{render()} method
+Another interesting observation that one can make is the use of JSX syntax
+outside a ~render()~ method.  In fact, you can use JSX anywhere in your source
+file, even outside the ~React.createClass()~ method.
+
+*** What ~Collection~ Returns When Collection is not Empty
+
+#+CINDEX:root element, only one
+#+CINDEX:@file{CollectionControls} component
+Take a closer look at what the ~Collection~ component returns when our
+collection [[(Collection-notempty)][is /not/ empty]].  We wrap the ~CollectionControls~ and ~TweetList~
+components in the ~<div>~ element because React allows only one root element.
+Let's take a look at each component and discuss its properties.
+
+We pass the following three properties to the ~CollectionsControls~ component:
+
+   #+CINDEX:@code{numberOfTweetsInCollection} property
+1. The =numberOfTweetsInCollection= property references the current number of
+   tweets in our collection.
+
+   #+CINDEX:@code{htmlMarkup} property
+2. The =htmlMarkup= property references a string of HTML markup that we produce
+   in this component using the ~createHtmlMarkupStringOfTweetList()~ method.
+
+   #+CINDEX:@code{onRemoveAllTweetsFromCollection} property
+3. The =onRemoveAllTweetsFromCollection= property references a function that
+   removes all the tweets from our collection.  This function is implemented in
+   the ~Application~ component as discussed in [[removeAllTweets][Chapter 4]].
+
+
+#+CINDEX:@file{TweetList} component, arguments passed to
+We pass these two properties to the ~TweetList~ component:
+
+  #+CINDEX:@code{tweets} property
+- The =tweets= property references tweets passed from a parent ~Application~
+  component;
+
+  #+CINDEX:@code{onRemoveTweetFromCollection} property
+- The =onRemoveTweetFromCollection= property references a function that removes
+  a tweet from a collection of tweets tht we store in the ~Application~
+  component's state.  We've already discussed this function in [[removeTweet][Chapter 4]].
+
 ** Summary
+
+In this chapter, we learned about a component's lifecycle updating methods.  We
+also discussed how to validate the component properties and set the default
+properties.  We also made good progress with our Snapterest application; we
+created and discussed the ~Header~, ~Tweet~, and ~Collection~ components.
+
+In the next chapter we'll focus on building more complex React components and
+finish building our Snapterest application.
 
 * 7. Build Complex React Components
 
