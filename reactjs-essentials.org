@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-09 Sat 21:00>
+#+DATE: <2019-03-10 Sun 10:17>
 
 #+TEXINFO: @insertcopying
 
@@ -5261,9 +5261,154 @@ component that we reused twice in our ~CollectionRenameForm~ Component.
 
 ** Creating the ~Button~ Component
 
+#+CINDEX:@file{Button} component
+Create the following file at
+~<dir>/snapterest/source/components/Button.react.js~:
+
+#+NAME:Button Component
+#+CAPTION:The ~Button~ Component
+#+BEGIN_SRC js :tangle snapterest/source/components/Button.react.js :mkdirp yes
+var React = require('react');
+
+var buttonStyle = {
+    margin: '10px 10px 10px 0'
+};
+
+var Button = React.createClass({
+
+    render: function () {
+        return (
+            <button
+                className="btn btn-default"
+                style={buttonStyle}
+                onClick={this.props.handleClick}
+            />
+                {this.props.label}
+            </button>
+        );
+    }
+});
+
+module.exports = Button;
+#+END_SRC
+
+#+CINDEX:@code{button} element
+The ~Button~ component renders a button.  What is the benefit of creating a
+dedicated component for a button if you could just use the ~<button>~ element?
+Think of a component as a wrapper for a ~<button>~ element and something else
+that comes with it.  In our case, most ~<button>~ elements come with the same
+style, so it makes sense to encapsulate both the ~<button>~  and style objects
+inside a component and reuse that component.  Hence, the Button component.  It
+expects to receive two properties from a parent component:
+
+1. The =label= property is a label for a button
+2. The =handleClick= property is a callback function that is called when a user
+   clicks on this button
+
+
 ** Creating the ~CollectionExportForm~ Component
 
+#+CINDEX:~CollectionExportForm~ component
+Now it's time to create our ~CollectionExportForm~ component.
+
+#+CINDEX:CodePen website
+The ~CollectionExportForm~ component is responsible for exporting a collection
+to a third-party website (https://codepen.io/).  Once your collection is on
+CodePen, you can save it and share it with friends.  Let's take a look at how
+this can be done.
+
+Create the ~<dir>/snapterest/source/components/CollectionExportForm.react.js~
+file:
+
+#+NAME:CollectionExportForm Component
+#+CAPTION:The ~CollectionExportForm~ Component
+#+BEGIN_SRC js :tangle snapterest/source/components/CollectionExportForm.react.js :mkdirp yes
+var React = require('react');
+
+var formStyle = {
+    display: 'inline-block'
+};
+
+var CollectionExportForm = React.createClass({
+
+    render: function () {
+        return (
+            <form
+                action="https://codepen.io/pen/define"
+                method="POST"
+                target="_blank"
+                style={formStyle} >
+
+                <input
+                    type="hidden"
+                    name="data"
+                    value={this.props.htmlMarkup} />
+
+                <button
+                    type="submit"
+                    className="btn btn-default" >
+
+                    Export as HTML
+
+                </button>
+            </form>
+        );
+    }
+});
+
+module.exports = CollectionExportForm;
+#+END_SRC
+
+#+CINDEX:@code{input} element
+#+CINDEX:@code{button} element
+#+CINDEX:@samp{Export as HTML}
+The ~CollectionExportForm~ component renders a form with the ~<input>~ and
+~<button>~ elements.  The ~<input>~ element is hidden, and its value is set to
+an HTML markup string that is passed by a parent component.  The ~<button>~
+element is the only element in this form that is visible to a user.  When a
+user clicks on the {{{key(Export as HTML)}}} button, a collection is submitted
+to CodePen that is opened in a new window.  A user can then modify and share
+that collection.
+
+** Start Your Engine
+
+#+CINDEX:web application, fully functional
+Congratulations! At this point, we've build a fully functional web application
+with React.  Let's see how it works.
+
+#+CINDEX:Snapkite Engine, run
+First, make sure that the Snapkite Engine that we installed and configured in
+Chapter 1 is running.  Navigate to ~<dir>/snapkite-engine/~ and run the
+following command:
+: npm start
+
+Then, open a new Terminal window, navigate to ~<dir>/snapterest/~, and run this
+command:
+: gulp
+
+Now, open ~<dir>/snapterest/build/index.html~ in your web browser.  You will
+see new tweets appear.  Click on them to add them to your collection.  Click on
+them again to remove individual tweets from the collection.  Click on the
+{{{key(Empty collection)}}} button to remove all thee tweets from your
+collection.  Click on the {{{key(Rename collection)}}} button, type a new
+collection name, and click on the {{{key(Change)}}} button.  Finally, click on
+the {{{key(Export as HTML)}}} button to export your collection to CodePend.
+
+If you have any trouble with this chapter or previous chapters, then go to
+https://github.com/fedosejev/react-essentials and create a new issue.
 ** Summary
+
+In this chapter, you created the
+
+- ~TweetList~ component
+- ~CollectionControls~ component
+- ~CollectionRenameForm~ component
+- ~CollectionExportForm~ component
+- ~Button~ component
+
+
+You completed building a fully functional React applicationb.  In our next
+chapters, we'll test it with Jest and enhance it with Flux.
 
 * 8. Test Your React Application With Jest
 
