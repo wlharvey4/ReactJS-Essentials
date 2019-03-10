@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-09 Sat 19:24>
+#+DATE: <2019-03-09 Sat 20:54>
 
 #+TEXINFO: @insertcopying
 
@@ -2316,10 +2316,10 @@ and above.
 
 #+CINDEX:@code{nativeEvent} property
 #+CINDEX:@code{initializeTouchEvents()} method
-The ~SyntheticEvent~ object provides the same API as the native browser's
-event, which means that you can use the ~stopPropogation()~ and
-~preventDefault()~ methods as usual.  If for some reason, you need to access
-the native browser's event, then you can do this via the ~nativeEvent~
+<<SyntheticEvent>>The ~SyntheticEvent~ object provides the same API as the
+native browser's event, which means that you can use the ~stopPropogation()~
+and ~preventDefault()~ methods as usual.  If for some reason, you need to
+access the native browser's event, then you can do this via the ~nativeEvent~
 property.  To enable touch-event handling, simply call
 ~React.initializeTouchEvents(TRUE)~.
 
@@ -2847,10 +2847,10 @@ encapsulates.  We'll take a closer look at each of them right after we discuss
 what this component renders inside its ~render()~ method.
 
 #+CINDEX:Bootstrap
-It defines the layout of our web page using the Bootstrap framework.  if you're
-not familiar with Boostrap, I strongly recommend that you visit
-https://getbootstrap.com/ and read the documentation.  Learning this framework
-will empower you to prototype user interfaces in a fast and easy way.
+It defines the layout of our web page using the <<Bootstrap>>Bootstrap
+framework.  If you're not familiar with Boostrap, I strongly recommend that you
+visit https://getbootstrap.com/ and read the documentation.  Learning this
+framework will empower you to prototype user interfaces in a fast and easy way.
 
 Even if you don't know Bootstrap, it's quite easy to understand what's going
 on.  We're dividing our web page into two columns: a smaller one and a larger
@@ -4986,6 +4986,272 @@ Now, when we understand what the ~CollectionControls~ component will render,
 let's take a closer look at its child components.
 
 ** Creating the ~CollectionRenameForm~ Component
+
+First, let's create the
+~<dir>/snapterest/source/components/CollectionRenameForm.react.js~ file:
+
+#+CINDEX:@file{CollectionRenameForm} component
+#+NAME:CollectionRenameForm Component
+#+CAPTION:The ~CollectionRenameForm~ Component
+#+HEADER: :noweb tangle :mkdirp yes
+#+BEGIN_SRC js :tangle snapterest/source/componentsCollectionRenameForm.react.js
+var React = require('react');
+var ReactDOM = require('react-dom');
+var Header = require('./Header.react');
+var Button = require('./Button.react');
+
+var inputStyle = {
+    marginRight: '5px'
+};
+
+var CollectionRenameForm = React.createClass({
+
+    <<CollectionRenameForm getInitialState method>>
+    <<CollectionRenameForm setInputValue method>>
+    <<CollectionRenameForm handleInputValueChange method>>
+    <<CollectionRenameForm handleFormSubmit method>>
+    <<CollectionRenameForm handleFormCancel method>>
+    <<CollectionRenameForm componentDidMount method>>
+    <<CollectionRenameForm render method>>
+});
+
+module.exports = CollectionRenameForm;
+#+END_SRC
+
+*** CollectionRenameForm ~render()~ Method
+
+#+CINDEX:@code{render()} method of @file{CollectionRenameForm} component
+This component renders a form to change the collection name:
+
+#+NAME:CollectionRenameForm render method
+#+CAPTION[CollectionRenameForm render() Method]:The ~render()~ Method of ~CollectionRenameForm~ Component
+#+BEGIN_SRC js
+render: function () {
+    return (
+        <form
+            className="form-inline"
+            onSubmit={this.handleSubmit}
+        />
+
+            <Header text="Collection name:" />
+
+            <div className="form-group">
+                <input
+                    className="form-control"
+                    style={inputStyle}
+                    onChange={this.handleInputValueChange}
+                    value={this.state.inputValue}
+                    ref="collectionName"
+                />
+            </div>
+    );
+}
+#+END_SRC
+
+#+CINDEX:@code{form} element of @file{CollectionRenameForm} component
+The ~<form>~ element wraps four elements, which are as follows:
+
+- One ~Header~ component
+- One ~<input>~ element
+- Two ~Button~ components
+
+
+#+CINDEX:@file{Header} component of @file{CollectionRenameForm} component
+#+CINDEX:Bootstrap framework
+#+CINDEX:styling
+The ~Header~ component renders the ='Collection name:'= string.  The ~<input>~
+element is wrapped inside a ~<div>~ element with a =className= property set to
+=form-group=.  This name is part of the [[Bootstrap][Bootstrap framework]] that we discussed
+in Chapter 4.  It's used for layout and styling and it's not part of our React
+application's logic.
+
+#+CINDEX:@code{<input>} element of @file{CollectionRenameForm} component
+The ~<input>~ element has quite a few properties.
+
+- The =className= property is set to =form-control=.  It is another class name,
+  which is part of the Bootstrap framework.  We will use this for styling
+  purposes.
+- In addition, we apply our own style to this =input= element using the =style=
+  property that references the =inputStyle= object with a single style rule:
+  =marginRight=.
+- The =value= property is set to a current value stored in the component's
+  state, ~this.state.inputValue~.
+- The =onChange= property references a ~this.handleInputValueChange~ method
+  that is an ~onChange~ event handler.
+- =ref= is a special React property that you can attach to any component that
+  is returned by a ~render()~ method.  It allows you to refer to that component
+  outside a ~render()~ method.  Shortly, we'll see an example of this.
+
+
+#+CINDEX:@code{ref} property
+#+CINDEX:@code{value} property, changing
+Focus on the last three properties: =value=, =onChange=, and =ref=.  The
+=value= property is set to the component state's property, and the only way to
+change that value is to update its state.  On the other hand, we know that a
+user can interact with an input field and change its value.  Will this behavior
+apply to our component?  No.  Whenever a user types, our input field's value
+won't change.  This is because a component is in control of ~<input>~, not a
+user.  In our ~CollectionRenameForm~ component, the value of the ~<input>~
+always reflects the value of ~this.state.inputValue~ property, regardless of
+what the user types.  The user is not in control, but the
+~CollectionRenameForm~ component is.
+
+#+CINDEX:user input, reacting to
+#+CINDEX:reacting to user input
+Then how can we make sure that our input field reacts to a user input?  We need
+to listen to a user input, and update the state of the ~CollectionRenameForm~
+component, which in turn will re-render the input field with an updated value.
+Doing so on every inputer's ~change~ event will make our input look like it
+works as usual, and the user can freely change its value.
+
+#+CINDEX:@code{onChange} property
+#+CINDEX:@file{handleInputValueChange()} method
+For this, we provide our ~<input>~ element with the =onChange= property that
+references the component's ~this.handleInputValueChange~ method:
+
+#+NAME:CollectionRenameForm handleInputValueChange method
+#+CAPTION[CollectionRenameForm handleInputValueChange() Method]:handleInputValueChange Method
+#+BEGIN_SRC js
+handleInputValueChange: function (event) {
+    var inputValue = event.target.value
+    this.setInputValue(inputValue);
+},
+
+#+END_SRC
+
+#+CINDEX:@file{SyntheticEvent}
+#+CINDEX:event handlers
+#+CINDEX:@code{handleInputValueChange()} method
+#+CINDEX:@code{value} property
+#+CINDEX:@code{setInputValue()} method
+As we discussed in Chapter 3, React passes instances of [[SyntheticEvent][~SyntheticEvent~]] to
+event handlers.  The ~handleInputValueChange()~ method receives an =event=
+object with a =target= property that has a =value= property.  This =value=
+property stores a string that a user has typed in our input field.  We pass
+that string into our ~this.setInputValue()~ method:
+
+#+NAME:CollectionRenameForm setInputValue method
+#+CAPTION[CollectionRenameForm setInputValue]:The ~setInputValue()~ Method of ~CollectionRenameForm~ Component
+#+BEGIN_SRC js
+setInputValue: function (inputValue) {
+    this.setState({
+        inputValue: inputValue
+    });
+},
+
+#+END_SRC
+
+~setInputValue()~ is a convenience method that updates the component's state
+with a new input value.  In turn, this update will re-render the ~<input>~
+element with an updated value.
+
+What is the initial input's value when the ~CollectionRenameForm~ component is
+mounted?  Let's take a look at this:
+
+#+CINDEX:@code{getInitialState()} method
+#+NAME:CollectionRenameForm getInitialState method
+#+CAPTION[CollectionRenameForm getInitialState() Method]:The ~getInitialState()~ Method of ~CollectionRenameForm~ Component
+#+BEGIN_SRC js
+getInitialState: function () {
+    return ({
+        inputValue: this.props.name
+    });
+},
+
+#+END_SRC
+
+We pass the collection's name from a parent component, and we use it to set our
+initial input value.
+
+After we mount this component, we want to set focus on the input field so that
+the user can start editing the collection's name straightaway.  We know that
+once a component is inserted into the DOM, React calls its
+~componentDidMount()~ method.  This method is our best opportunity to set
+focus:
+
+#+CINDEX:@code{componentDidMount()} method
+#+NAME:CollectionRenameForm componentDidMount method
+#+CAPTION[CollectionRenameForm componentDidMount() Method]:The ~componentDidMount()~ Method of ~CollectionRenameForm~ Component
+#+BEGIN_SRC js
+componentDidMount: function () {
+    this.refs.collectionName.focus();
+},
+
+#+END_SRC
+
+#+CINDEX:@code{focus()} function
+To do this, we get our input element and call ~focus()~ function on it.
+
+#+CINDEX:@code{refs} object
+#+CINDEX:@code{refs.collectionName}
+How can we reference an element inside the ~componentDidMount()~ method?  We
+can use the =this.refs= object to refer to our ~input~ element.  Because we
+provided our ~input~ element with a =ref= property, which is set to
+=collectionName=, we can refer to it via ~this.refs.collectionName~.
+
+#+CINDEX:form buttons
+#+CINDEX:@code{Change} button
+#+CINDEX:@code{Cancel} button
+Finally, let's discuss our two form buttons:
+
+- The ~Change~ button submits the form and changes the collection name
+- The ~Cancel~ button submits the form but doesn't change the collection name
+
+
+We'll start with a ~Change~ button.  When a user clicks on it, the
+~this.handleFormSubmit()~ method is called:
+
+#+CINDEX:@code{handleFormSubmit()} method
+#+NAME:CollectionRenameForm handleFormSubmit method
+#+CAPTION[CollectionRenameForm handleFormSubmit Method]:The ~handleFormSubmit()~ Method of ~CollectionRenameForm~ Component
+#+BEGIN_SRC js
+handleFormSubmit: function (event) {
+    event.preventDefault();
+
+    var collectionName = this.state.inputValue;
+    this.props.onChangeCollectionName(collectionName);
+},
+
+#+END_SRC
+
+#+CINDEX:@code{props.onChangeCollectionName()} method call
+#+CINDEX:@code{onChangeCollectionName()} method
+#+CINDEX:@file{CollectionControls} component
+We cancel the ~submit~ event, then get the collection name from the component's
+state, and pass it to the ~this.props.onChangeCollectionName()~ method call.
+The ~onChangeCollectionName()~ method is passed by a parent
+~CollectionControls~ component.  Calling this method will change our
+collection's name.
+
+Now let's discuss our second form button.
+
+#+CINDEX:@code{handleFormCancel()} method
+When a user clicks on it, the ~this.handleFormCancel()~ method is called:
+
+#+NAME:CollectionRenameForm handleFormCancel method
+#+CAPTION[CollectionRenameForm handleFormCancel() Method]:The ~handleFormCancel()~ Method of ~CollectionRenameForm~ Component
+#+BEGIN_SRC js
+handleFormCancel: function (event) {
+    event.preventDefault();
+
+    var collectionName = this.props.name;
+    this.setInputValue(collectionName);
+    this.props.onCancelCollectionNameChange();
+},
+
+#+END_SRC
+
+#+CINDEX:@code{props.onCancelCollectionNameChange()} method
+#+CINDEX:@code{onCancelCollectionNameChange()} method
+#+CINDEX:@code{setInputValue()} method
+Once again, we cancel a ~submit~ event, then get the original collection name
+that is passed as a property by a parent ~CollectionControls~ component, and
+pass it to our ~this.setInputValue()~ method.  Then, we call the
+~this.props.onCancelCollectionNameChange()~ method that hides the collection
+controls.
+
+That's our ~CollectionRenameForm~ component.  Next, let's create our ~Button~
+component that we reused twice in our ~CollectionRenameForm~ Component.
 
 ** Creating the ~Button~ Component
 
