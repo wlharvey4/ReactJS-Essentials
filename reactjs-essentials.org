@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-10 Sun 12:27>
+#+DATE: <2019-03-10 Sun 12:39>
 
 #+TEXINFO: @insertcopying
 
@@ -709,6 +709,8 @@ named {{{file(snapterest/)}}} inside a directory of your choice:
 #+END_SRC
 
 #+RESULTS:
+: mkdir: created directory 'snapterest/build'
+: mkdir: created directory 'snapterest/source'
 
 ** Building the Project
 
@@ -953,9 +955,9 @@ gulp
 #+END_SRC
 
 #+RESULTS:
-: [12:20:22] Using gulpfile ~/Dev/Programming/WebDev/React/ReactJS-Essentials/snapterest/gulpfile.js
-: [12:20:22] Starting 'default'...
-: [12:20:23] Finished 'default' after 47 ms
+: [12:36:23] Using gulpfile ~/Dev/Programming/WebDev/React/ReactJS-Essentials/snapterest/gulpfile.js
+: [12:36:23] Starting 'default'...
+: [12:36:23] Finished 'default' after 44 ms
 
 #+CINDEX:@file{build} directory
 #+CINDEX:@file{snapterest.js} file
@@ -2751,7 +2753,7 @@ Let's take a look at the contents of the ~Application.react.js~ file:
 
 #+NAME:Application component
 #+CAPTION[<Application Component>]:The Application Component
-#+BEGIN_SRC js :tangle snapterest/source/components/application.react.js :mkdirp yes
+#+BEGIN_SRC js :tangle snapterest/source/components/Application.react.js :mkdirp yes
 var React      = require('react');
 var Stream     = require('./Stream.react');
 var Collection = require('./Collection.react');
@@ -5016,7 +5018,7 @@ First, let's create the
 #+NAME:CollectionRenameForm component
 #+CAPTION[<CollectionRenameForm Component>]:The ~CollectionRenameForm~ Component (~CollectionRenameForm.react.js~)
 #+HEADER: :noweb tangle :mkdirp yes
-#+BEGIN_SRC js :tangle snapterest/source/componentsCollectionRenameForm.react.js
+#+BEGIN_SRC js :tangle snapterest/source/components/CollectionRenameForm.react.js
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Header = require('./Header.react');
