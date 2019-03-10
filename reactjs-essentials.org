@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-09 Sat 11:17>
+#+DATE: <2019-03-09 Sat 19:24>
 
 #+TEXINFO: @insertcopying
 
@@ -3987,13 +3987,14 @@ Our ~StreamTweet~ component renders two child components: ~Header~ and ~Tweet~.
 
 Let's create these components.
 
-*** Creating the ~StreamTweet~ Component
+*** Creating the ~Header~ Component
 
+#+CINDEX:Header component, create
 #+CINDEX:@file{Stream} Component
 Navigate to ~<dir>/snapterest/source/components/~ and create the
 ~Header.react.js~ file:
 
-#+NAME:Header-component
+#+NAME:Header component
 #+CAPTION[Header Component]:The ~Header~ Component in ~Header.react.js~
 #+BEGIN_SRC js :tangle snapterest/source/components/Header.react.js :mkdirp
 var React = require('react');
@@ -4024,8 +4025,6 @@ var Header = React.createClass({
 
 module.exports = Header;
 #+END_SRC
-
-#+RESULTS: Header-component
 
 #+CINDEX:@code{Header} component
 #+CINDEX:stateless component, @code{Header}
@@ -4092,8 +4091,8 @@ then it will overwrite the default one.
 Next, let's create our ~Tweet~ component.  Navigate to
 ~<dir>snapterest/source/components/~ and create the ~Tweet.react.js~ file:
 
-#+NAME:Tweet
-#+CAPTION:The ~Tweet~ Component in ~Tweet.react.js~
+#+NAME:Tweet component
+#+CAPTION[Tweet Component]:The ~Tweet~ Component in ~Tweet.react.js~
 #+BEGIN_SRC js :tangle snapterest/source/components/Tweet.react.js
 var React = require('react');
 
@@ -4508,7 +4507,7 @@ finish building our Snapterest application.
 * 7. Build Complex React Components
 
 In this chapter we'll put everything we learned so far about React components
-in action by building the most complext components in our application, that is,
+in action by building the most complex components in our application, that is,
 child components of our ~Collection~ component.  Our aim in this chapter is to
 gain a solid React experience and grow our React muscles.
 
@@ -4527,7 +4526,8 @@ First build the ~TweetList~ component.  Create the following
 
 #+NAME:TweetList-component
 #+CAPTION[TweetList Component]:The ~TweetList~ Component of the ~Collection~ Component
-#+BEGIN_SRC js :tangle snapterest/source/components/TweetList.react.js :mkdirp yes
+#+HEADER: :noweb tangle :mkdirp yes
+#+BEGIN_SRC js :tangle snapterest/source/components/TweetList.react.js
 var React = require('react');
 var Tweet = require('./Tweet.react');
 
@@ -4540,47 +4540,16 @@ var listItemStyle = {
     listStyle: 'none'
 };
 
-var =TweetList = React.createClass({
-    getListOfTweetIds: function () {		(ref:array-of-ids)
-        return Object.keys(this.props.tweets);
-    },
-
-    getTweetElement: function (tweetId) {
-        var tweet = this.props.tweets[tweetId];
-        var handleRemoveTweetFromCollection = this.props.onRemoveTweetFromCollection;
-        var tweetElement;
-
-        if (handleRemoveTweetFromCollection) {	(ref:scenario1)
-            tweetElement = (
-                <Tweet
-                    tweet={tweet}
-                    onImageClick={handleRemoveTweetFromCollection}
-                />
-            );
-        } else {					(ref:scenario2)
-            tweetElement = <Tweet tweet={tweet} />;
-        }
-
-        return (					(ref:tweet-in-li)
-            <li style={listItemStyle} key={tweet.id} >
-                {tweetElement}
-            />
-        );
-    },
-
-    render: function () {				(ref:list-of-tweets)
-        var tweetElements = this.getListOfTweetIds().map(this.getTweetElement);
-
-        return (
-            <ul style={listStyle}>
-                {tweetElements}
-            </ul>
-        );
-    }
+var TweetList = React.createClass({
+    <<TweetList getListOfTweetIds method>>
+    <<TweetList getTweetElement method>>
+    <<TweetList render method>>
 });
 
 module.exports = TweetList;
 #+END_SRC
+
+*** The ~render()~ Method
 
 #+CINDEX:list of tweets
 #+CINDEX:@code{Tweet} elements
@@ -4588,13 +4557,72 @@ module.exports = TweetList;
 #+CINDEX:@code{map} method
 #+CINDEX:@code{getTweetElement()} method
 The ~TweetList~ component renders a [[(list-of-tweets)][list of tweets]] using the ~render()~
-function.  First, we create a list of ~Tweet~ elements.  The
-~this.getListOfTweetIds()~ method returns an [[(array-of-ids)][array of tweet IDs]].  Then, for
-each tweet ID in that array, we create a ~Tweet~ component.  For this, we will
-call the ~map()~ method on our array of tweet IDs and pass the
+function.
+
+#+NAME:TweetList render method
+#+CAPTION:The ~TweetList~ ~render()~ Method
+#+BEGIN_SRC js
+render: function () {				(ref:list-of-tweets)
+    var tweetElements = this.getListOfTweetIds().map(this.getTweetElement);
+
+    return (
+        <ul style={listStyle}>
+            {tweetElements}
+        </ul>
+    );
+}
+#+END_SRC
+
+First, we create a list of ~Tweet~ elements.
+
+{{{subheading(The ~getListOfTweetIds~ Method)}}}
+
+The ~this.getListOfTweetIds()~ method returns an array of tweet IDs.
+
+#+NAME:TweetList getListOfTweetIds method
+#+CAPTION:The ~getListOfTweetIds~ Method of ~TweetList~
+#+BEGIN_SRC js
+getListOfTweetIds: function () {
+    return Object.keys(this.props.tweets);
+},
+
+#+END_SRC
+
+Then, for each tweet ID in that array, we create a ~Tweet~ component.  For
+this, we will call the ~map()~ method on our array of tweet IDs and pass the
 ~this.getTweetElement()~ method as a callback function.
 
-{{{heading(Handling the Optional ~onImageClick~ Property)}}}
+{{{subheading(The ~getTweetElement~ Method)}}}
+
+#+NAME:TweetList getTweetElement method
+#+CAPTION:The ~getTweetElement~ Method of ~TweetList~
+#+BEGIN_SRC js
+getTweetElement: function (tweetId) {
+    var tweet = this.props.tweets[tweetId];
+    var handleRemoveTweetFromCollection = this.props.onRemoveTweetFromCollection;
+    var tweetElement;
+
+    if (handleRemoveTweetFromCollection) {	(ref:scenario1)
+        tweetElement = (
+            <Tweet
+                tweet={tweet}
+                onImageClick={handleRemoveTweetFromCollection}
+            />
+        );
+    } else {					(ref:scenario2)
+        tweetElement = <Tweet tweet={tweet} />;
+    }
+
+    return (					(ref:tweet-in-li)
+        <li style={listItemStyle} key={tweet.id} >
+            {tweetElement}
+        />
+    );
+},
+
+#+END_SRC
+
+*** Handling the Optional ~onImageClick~ Property
 
 #+CINDEX:@code{onImageClick} property
 The ~getTweetElement()~ method returns a ~Tweet~ element [[(tweet-in-li)][wrapped]] in the ~<li>~
@@ -4628,7 +4656,7 @@ provided by a ~Collection~ component.  If it is, then we create a ~Tweet~
 component with an ~onImageClick~ property.  If it isn't provided, then we
 create a ~Tweet~ component without a ~handleImageClick~ property.
 
-{{{heading(Using the ~TweetList~ Component)}}}
+*** Using the ~TweetList~ Component
 
 #+CINDEX:@code{TweetList} component
 We use the ~TweetList~ component in the following two cases:
@@ -4660,6 +4688,7 @@ component returns an unordered list of ~Tweet~ elements.
 
 ** Creating the ~CollectionControls~ Component
 
+#+CINDEX:child components of @file{Collection} componenet
 Now, when we understand what the ~Collection~ component renders, let's discuss
 its child components.  We'll start with ~CollectionControls~.  Create the
 following ~<dir>/snapterest/source/components/CollectionControls.react.js~
@@ -4667,7 +4696,8 @@ file:
 
 #+NAME:CollectionControls-component
 #+CAPTION[CollectionControls Component]:The ~CollectionControls~ Component of ~Collection~ Component
-#+BEGIN_SRC js :tangle snapterest/source/components/CollectionControls.react.js :mkdirp yes
+#+HEADER: :noweb tangle :mkdirp yes
+#+BEGIN_SRC js :tangle snapterest/source/components/CollectionControls.react.js
 var React = require('react');
 var Header = require('./Header.react');
 var Button = require('./Button.react');
@@ -4675,70 +4705,285 @@ var CollectionRenameForm = require('./CollectionRenameForm.react');
 var CollectionExportForm = require('./CollectionExportForm.react');
 
 var CollectionControls = React.createClass({
-    getInitialState: function () {
-        return ({
-            name: 'new',
-            isEditingName: false
-        });
-    },
+    <<CollectionControls getInitialState method>>
+    <<CollectionControls getHeaderText method>>
+    <<CollectionControls toggleEditCollectionName method>>
+    <<CollectionControls setCollectionName method>>
+    <<CollectionControls render method>>
+});
 
-    getHeadText: function () {
-        var numberOfTweetsInCollection = this.props.numberOfTweetsInCollection;
-        var text = numberOfTweetsInCollection;
+module.exports = CollectionControls;
+#+END_SRC
 
-        if (numberOfTweetsInCollection === 1) {
-            text = text + ' tweet in your';
-        } else {
-            text = text + 'tweets in your';
-        }
+#+CINDEX:@file{CollectionsControls} Component
+#+CINDEX:user interface
+#+CINDEX:collection, control
+The ~CollectionsControls~ Component renders a user interface to control a
+collection.  These controls allow the use to:
 
+- Rename a collection
+- Empty a collection
+- Export a collection
+
+
+A collection has a name.  By default this name is =new= and users can change
+it.  A collection name is displayed in a header that is rendered by the
+~CollectionControls~ component.  This component is a perfect candidate for
+storing the collection's name, and since changing a name will require a
+component re-render, we'll store that name in the component's state object:
+
+#+NAME:CollectionControls getInitialState method
+#+CAPTION[CollectionControls getInitialState()]:The ~getInitialState()~ Method of ~CollectionControls~ Component
+#+BEGIN_SRC js
+getInitialState: function () {
+    return ({
+        name: 'new',
+        isEditingName: false
+    });
+},
+
+#+END_SRC
+
+#+CINDEX:@code{isEditingName} property
+The ~CollectionControls~ component can render either collection control
+elements or a form to change the collection name.  A user can switch betweeen
+the two.  We need a way to represent these two states---we'll use the
+=isEditingName= property for that purpose.  By default, =isEditingName= is set
+to =false=; and therefore, users won't see a form to change the collection
+name, when the ~CollectionControls~ component is mounted.
+
+{{{subheading(The ~render()~ Method of ~CollectionControls~ Component)}}}
+
+#+CINDEX:@code{render} method of @file{CollectionControls} component
+Let's take a look at its ~render()~ method:
+
+#+NAME:CollectionControls render method
+#+CAPTION[CollectionControls render()]:The ~render()~ Method of ~CollectionControls~ Component
+#+BEGIN_SRC js :noweb tangle
+render: function () {
+    if (this.state.isEditingName) {
         return (
-            <span>
-                {text} <strong>{this.state.name}</strong> collection
-            </span>
+            <<CollectionControls render CollectionRenameForm>>
         );
-    },
+    }
 
-    toggleEditCollectionName: function () {
-        this.setState({
-            isEditingName: !this.state.isEditingName
-        });
-    },
+    return (
+        <div>
+            <Header text={this.getHeaderText()} />
 
-    setCollectionNamle: function (name) {
+            <<CollectionControls render Rename Button component>>
+            <<CollectionControls render Empty Button component>>
+
+            <<CollectionControls render Export component>>
+        </div>
+    );
+}
+#+END_SRC
+
+#+CINDEX:@code{isEditinName} property
+#+CINDEX:@file{CollectionRenameForm} component
+First we check whether the component state's property
+~this.state.isEditingName~ is set to =true=.  If it is, then the
+~CollectionControls~ component returns the ~CollectionRenameForm~ component
+that renders a form to change the collection name:
+
+#+NAME:CollectionControls render CollectionRenameForm
+#+CAPTION:CollectionControls render CollectionRenameForm
+#+BEGIN_SRC js
+            <CollectionRenameForm
+                name={this.state.name}
+                onChangeCollectionName={this.setCollectionName}
+                onCancelCollectionNameChange={this.toggleEditCollectionName}
+            />
+#+END_SRC
+
+The ~CollectionRenameForm~ component renders a form to change the collection
+name.  It receives three properties:
+
+- The =name= property referendes the current collection name
+- The =onChangeCollectionName= and =onCancelCollectionNameChange= properties
+  reference the component's methods
+
+
+We'll implement the ~CollectionRenameForm~ component [[*Creating the ~CollectionRenameForm~ Component][later in this chapter]].
+
+{{{subheading(The ~setCollectionName()~ Method)}}}
+
+#+CINDEX:@code{setCollectionName()} method
+Now let's take a closer look at the ~setCollectionName~ method.
+
+#+NAME:CollectionControls setCollectionName method
+#+CAPTION:The ~setCollectionName()~ Method of ~CollectionList~
+#+BEGIN_SRC js
+    setCollectionName: function (name) {
         this.setState({
             name: name,
             isEditingName: false
         });
     },
 
-    render: function () {
-        if (this.state.isEditingName) {
-            return (
-                <CollectionRenameForm
-                    name={this.state.name}
-                    onChangeCollectionName={this.setCollectionName}
-                    onCancelCollectionNameChange={this.toggleEditCollectionName}
-                />
-            );
-        }
-
-        return (
-            <div>
-                <Header text={this.getHeaderText()} />
-                <Button
-            	    label="Rename collection"
-            	    handleClick={this.toggleEditCollection}
-            	/>
-
-                <CollectionExportForm htmlMarkup={this.props.htmlMarkup} />
-            </div>
-        );
-    }
-});
-
-module.exports = CollectionControls;
 #+END_SRC
+
+The ~setCollectionName()~ method updates the collection's name and hides a form
+to edit the collection name by updating the component's state.  We'll call this
+method when the user submits a new collection name.
+
+{{{subheading(The ~toggleCollectionName()~ Method)}}}
+
+#+CINDEX:@code{toggleEditCollectionName()} method
+Now, let's take a look at the ~toggleEditCollectionName()~ method.
+
+#+NAME:CollectionControls toggleEditCollectionName method
+#+CAPTION:The ~toggleEditCollectionName()~ Method
+#+BEGIN_SRC js
+toggleEditCollectionName: function () {
+    this.setState({
+        isEditingName: !this.state.isEditingName
+    });
+},
+
+#+END_SRC
+
+#+CINDEX:@code{isEditingName} property
+#+CINDEX:@key{Rename collection} button
+#+CINDEX:@key{Cancel} button
+It shows or hides the collection's name editing form by setting the
+=isEditingName= property to the opposite of its current Boolean value using the
+=!= operator.  We'll call this method when the user clicks on the {{{key(Rename
+collection)}}} or {{{key(Cancel)}}} buttons, that is, show or hide the
+collection name change form.
+
+#+CINDEX:collection controls
+If the ~CollectionControls~ component state's property
+=this.state.isEditingName= is set to =false=, then it returns collection
+controls.  [[CollectionControls render method]].
+
+#+CINDEX:@file{Header} component
+#+CINDEX:@file{CollectionExportForm} component
+#+CINDEX:@code{getHeaderText()} method
+We wrap the ~Header~ component, two ~Button~ components, and the
+~CollectionExportForm~ component in a ~<div>~ element.  You're already familiar
+with a ~Header~ component from the [[Header component][previous chapter]].  It receives a =text=
+property that references a string.  However, in this case, we do not directly
+pass a string, but rather a call to the ~this.getHeaderText()~ method.
+
+#+NAME:CollectionControls getHeaderText method
+#+CAPTION[CollectionControls getHeaderText() Method]:The ~getHeaderText()~ Method of ~CollectionControls~ Component
+#+BEGIN_SRC js :noweb tangle
+getHeaderText: function () {
+    var numberOfTweetsInCollection = this.props.numberOfTweetsInCollection;
+    var text = numberOfTweetsInCollection;
+
+    if (numberOfTweetsInCollection === 1) {
+        text = text + ' tweet in your';
+    } else {
+        text = text + 'tweets in your';
+    }
+
+    <<getHeaderText return>>
+},
+
+#+END_SRC
+
+#+CINDEX:tree of React elements
+#+CINDEX:@code{numberOfTweetsInCollection} variable
+#+CINDEX:@code{text} variable
+This method generates a string for a header based on the number of tweets in
+our collection.  The important feature of this method is that it returns not
+only a string, but rather a tree of React elements that encapsulate that
+string.  First, we create the ~numberOfTweetsInCollection~ variable.  It stores
+a number of tweets in a collection.  We then create a ~text~ variable and
+assign it a number of tweets in a collection.  At this point, the ~text~
+variable stores an integer value.  Our next task is to concatenate the right
+string to it based on what that integer value is:
+
+- If ~numberOfTweetsInCollection~ is 1, then we need to concatenate ` tweet in
+  your'
+- Otherwise, we need to concatenate ` tweets in your'
+
+
+Once the header string is created, then we return the following elements:
+
+#+NAME:getHeaderText return
+#+BEGIN_SRC js
+return (
+    <span>
+        {text} <strong>{this.state.name}</strong> collection
+    </span>
+);
+
+#+END_SRC
+
+The final string encapsulated inside a ~<span>~ element consists of a value of
+a ~text~ variable, a collection name, and the =collection= keyword.  For
+example, run the following command:
+: 1 tweet in your new collection.
+
+Once this string is returned by the ~getHeaderText()~ method, it is then passed
+as a property to a ~Header~ component.
+
+*** The ~Button~ Controls
+
+#+CINDEX:@file{Button} controls
+#+CINDEX:@key{Rename collection} button
+{{{subheading(The =Rename collection= Button)}}}
+
+#+CINDEX:@code{toggleEditCollectionName} method
+#+CINDEX:@code{handleClick} property
+Our next collection control element in the ~CollectionControls~'s ~render()~
+method is ~Button~.
+
+#+NAME:CollectionControls render Rename Button component
+#+CAPTION:Rendering the Rename ~Button~ Component
+#+BEGIN_SRC js
+<Button
+     label="Rename collection"
+     handleClick={this.toggleEditCollectionName}
+/>
+
+#+END_SRC
+
+#+CINDEX:@code{toggleEditCollectionName} method
+#+CINDEX:@code{handleClick} property
+We pass the =Rename collection= string to its =label= property and the
+~this.toggleEditCollectionName~ method to its =handleClick= property.  As a
+result, this button will have the =Rename collection= label, and it will toggle
+a form to change the collection name.
+
+{{{subheading(The =Empty collection= Button)}}}
+
+#+CINDEX:@code{Empty collection} @file{Button} component
+#+CINDEX:tweets, remove all
+#+CINDEX:remove all tweets
+The next collection control element is our second ~Button~, =Empty collection=.
+It will remove all the tweets from a collection.
+
+#+NAME:CollectionControls render Empty Button component
+#+CAPTION:Rendering the Empty ~Button~ Component
+#+BEGIN_SRC js
+<Button
+     label="Empty collection"
+     handleClick={this.props.onRemoveAllTweetsFromCollection}
+/>
+#+END_SRC
+
+{{{subheading(The =CollectionExportForm= Button)}}}
+
+#+CINDEX:@file{CollectionExportForm} component, rendering to
+Our final collection control element is =CollectionExportForm=.
+
+#+NAME:CollectionControls render Export component
+#+CAPTION:Rendering the ~ExportForm~ Component
+#+BEGIN_SRC js
+<CollectionExportForm htmlMarkup={this.props.htmlMarkup} />
+#+END_SRC
+
+#+CINDEX:HTML markup string
+It receives an HTML markup string that represents our collection, and it will
+render a button.  We'll create this component [[*Creating the ~CollectionExportForm~ Component][later in this chapter]].
+
+Now, when we understand what the ~CollectionControls~ component will render,
+let's take a closer look at its child components.
 
 ** Creating the ~CollectionRenameForm~ Component
 
