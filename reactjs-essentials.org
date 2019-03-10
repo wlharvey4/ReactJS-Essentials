@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-10 Sun 11:30>
+#+DATE: <2019-03-10 Sun 12:27>
 
 #+TEXINFO: @insertcopying
 
@@ -698,6 +698,18 @@ named {{{file(snapterest/)}}} inside a directory of your choice:
      place the main application file in the ~source/~ directory.  This file
      will be the entry point to our application.  Leave it empty for now.
 
+
+*** Shell Script to Create Project Structure
+
+#+BEGIN_SRC sh :results output
+[ -d snapterest ]        || mkdir -v snapterest
+[ -d snapterest/build ]  || mkdir -v snapterest/build
+[ -d snapterest/source ] || mkdir -v snapterest/source
+[ -e snapterest/app.js ] || touch snapterest/source/app.js
+#+END_SRC
+
+#+RESULTS:
+
 ** Building the Project
 
    #+CINDEX:DRY
@@ -880,9 +892,9 @@ tht will package our source and dependency modules using Browserify.
 <<default-gulpfile.js>>Replace the contents of your ~gulpfile.js~ with the
 following code:
 
-#+NAME:default-task-gulpfile.js
+#+NAME:default gulpfile
 #+CAPTION:A default ~gulpfile.js~ that will package source and dependency modules using Browserify
-#+BEGIN_SRC js
+#+BEGIN_SRC js :tangle snapterest/gulpfile.js
 var gulp = require('gulp');
 var browserify = require('browserify');
 var babelify = require('babelify');
@@ -935,6 +947,15 @@ $ gulp
 [19:06:03] Starting 'default'...
 [19:06:03] Finished 'default' after 40 ms
 #+END_EXAMPLE
+
+#+BEGIN_SRC sh :dir snapterest :results output :exports none
+gulp
+#+END_SRC
+
+#+RESULTS:
+: [12:20:22] Using gulpfile ~/Dev/Programming/WebDev/React/ReactJS-Essentials/snapterest/gulpfile.js
+: [12:20:22] Starting 'default'...
+: [12:20:23] Finished 'default' after 47 ms
 
 #+CINDEX:@file{build} directory
 #+CINDEX:@file{snapterest.js} file
@@ -1695,7 +1716,7 @@ interpreted.
 In the previous chapter, we installed the ~babelify~ module that transforms our
 JSX syntax into a JavaScript one.  This transformation happens every time we
 run our =default= task from the {{{file(gulpfile.js)}}}
-([[default-task-gulpfile.js]]).  The ~.transform(babelify)~ function call
+([[default gulpfile]]).  The ~.transform(babelify)~ function call
 transforms JSX into JavaScript before bundling it with the other JavaScript
 code.
 
