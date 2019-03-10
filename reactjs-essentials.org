@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-10 Sun 10:17>
+#+DATE: <2019-03-10 Sun 11:30>
 
 #+TEXINFO: @insertcopying
 
@@ -239,7 +239,7 @@ spam.)
 
 - From [[https://github.com/jmrog/react-essentials-es6-version][Jason Roger]]
 
-* 1. Installing Powerful Tools for your Project
+* Installing Powerful Tools for your Project
 
 #+CINDEX:Kettering, Charles
 #+BEGIN_QUOTE
@@ -355,10 +355,7 @@ the following core functionalities:
 When you start working on a new project, the very first thing that you do is
 get your tools ready.  For this project, we will be using a number of tools.
 
-** DONE Installing Node.js and npm
-:todo:
-:task: Check for Jest and Node.js compatibility currently
-:end:
+** Installing Node.js and npm
 
   #+CINDEX:Node.js, installation
 - [[https://nodejs.org][Node.js]] ::
@@ -432,6 +429,8 @@ version of Node.js and React.]
 <<twitter-streaming>>The data for our React application will come from Twitter.
 Twitter has the *Streaming API* that anyone can plug into to start receiving an
 endless flow of public tweets in the JSON format.
+
+{{{heading(Using the Twitter Streaming API)}}}
 
 To start using the Twitter Streaming API, you'll need to perform the following
 steps:
@@ -644,6 +643,8 @@ that socket connection and process tweets as they arrive.
     ]
     #+END_SRC
 
+
+*** Run the Snapkite Engine
 
 #+CINDEX:Snapkite Engine, test run
 <<test-Snapkite-Engine>>With that you have successfully installed Snapkite
@@ -1033,7 +1034,7 @@ React.js.''
   + [[create-index.html][Create ~index.html~]]
   + [[open-index.html][Open ~index.html~]]
 
-* 2. Create Your First React Element
+* Create Your First React Element
 
 Creating a simple web application today involves writing the HTML, CSS, and
 JavaScript code.  The reason we use three different technologies is because we
@@ -1725,11 +1726,10 @@ looked at a simpler way of creating React elements with JSX.
 
 In the next chapter we'll dive deeper into the world of React components.
 
-* 3. Create Your First React Component
+* Create Your First React Component
 :PROPERTIES:
 :CUSTOM_ID: Chapter 3
 :END:
-
 
 In the previous chapter, we learned how to create /React elements/ and how to
 use them to render HTML markup.  We learned how easy it is to produce React
@@ -1774,8 +1774,8 @@ React element.  In the React library, this state machine is called a
 Let's take a look at the following example of how to create a React
 /component/ (using the ~React.createClass()~ method):
 
-#+NAME:stateless-component
-#+CAPTION:A First Stateless React Component
+#+NAME:example stateless component
+#+CAPTION:An Example Stateless React Component
 #+BEGIN_SRC js
 var React = require('react');
 var ReactDOM = require('react-dom');
@@ -2039,8 +2039,8 @@ same result regardless of the environment.
 
 *** Managing State
 
-    #+CINDEX:manage state
-    #+CINDEX:state management
+#+CINDEX:manage state
+#+CINDEX:state management
 If our ~render()~ method doesn't manage the state, then how do we manage it?
 How do we set the state, and how do we update it while handling user or browser
 events in React?
@@ -2409,23 +2409,11 @@ and ~props~ inside a component's ~render()~ method.  Anything you put in
 automatically get updated by React.  Take advantage of React.
 #+END_cartouche
 
-** Summary
+** An Example Stateful Component
 
-In this chapter we reached an important milestone: we learned how to
-encapsulate a state and create interactive user interfaces by creating React
-components.  We discussed stateless and stateful React components, and the
-difference between them.  We talked about the browser events and how to handle
-them in React.
-
-In the next chapter, we'll be planning our Snapterest web application.  You'll
-learn how to solve a problem with React and how to create composable React
-components.
-
-** Stateful React Component
-
-#+NAME:stateful-component
-#+CAPTION:An Example of a Lean Stateful Component
-#+BEGIN_SRC js -n :tangle snapterest/source/app.js
+#+NAME:example stateful component
+#+CAPTION:An Example Stateful Component
+#+BEGIN_SRC js -n
 var React = require('react');
 var ReactDOM = require('react-dom');
 
@@ -2469,7 +2457,19 @@ var ReactComponent = ReactDOM.render(
 
 #+END_SRC
 
-* 4. Make Your React Components Reactive
+** Summary
+
+In this chapter we reached an important milestone: we learned how to
+encapsulate a state and create interactive user interfaces by creating React
+components.  We discussed stateless and stateful React components, and the
+difference between them.  We talked about the browser events and how to handle
+them in React.
+
+In the next chapter, we'll be planning our Snapterest web application.  You'll
+learn how to solve a problem with React and how to create composable React
+components.
+
+* Make Your React Components Reactive
 
 Now that you know how to create React components with and without state, we can
 start composing React components together and build more complex user
@@ -2701,9 +2701,9 @@ Let's start by editing our application's main JavaScript file.  Replace the
 contents of the ~<dir>/snapterest/source/app.js~ file with the following code
 snippet:
 
-#+NAME:react-application-container
-#+CAPTION:The React Application Root Container File
-#+BEGIN_SRC js snapterest/source/app.js
+#+NAME:app root container component
+#+CAPTION[<App Root Container>]:The React Application Root Container File
+#+BEGIN_SRC js :tangle snapterest/source/app.js :mkdirp yes
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Application = require('./components/Application.react');
@@ -2711,8 +2711,8 @@ var Application = require('./components/Application.react');
 ReactDOM.render(<Application />, document.getDocumentById('react-application');
 #+END_SRC
 
-There are only four lines of code in this face, and as you can guess, they
-provide ~document.getElementById('react-application') as a deployment target
+There are only four lines of code in this file, and as you can guess, they
+provifde ~document.getElementById('react-application')~ as a deployment target
 for the ~<Application />~ component and render ~<Application />~ to the DOM.
 The whole user interface for our web application will be encapsulated in one
 React component, ~Application~.
@@ -2728,9 +2728,9 @@ easily distinguish between React and non-React source JavaScript files.
 
 Let's take a look at the contents of the ~Application.react.js~ file:
 
-#+NAME:react-application
-#+CAPTION:The React Application File
-#+BEGIN_SRC js snapterest/source/components/application.react.js
+#+NAME:Application component
+#+CAPTION[<Application Component>]:The Application Component
+#+BEGIN_SRC js :tangle snapterest/source/components/application.react.js :mkdirp yes
 var React      = require('react');
 var Stream     = require('./Stream.react');
 var Collection = require('./Collection.react');
@@ -3026,7 +3026,7 @@ its child components.
 In the next chapter, we'll implement our child components and learn about
 React's lifecycle methods.
 
-* 5. Use Your React Components With Another Library
+* Use Your React Components With Another Library
 
 #+CINDEX:integrate 3rd party library
 #+CINDEX:receive data, 3rd part library
@@ -3142,8 +3142,8 @@ Start by creating the ~<dir>/snapterest/source/components/Stream.react.js~
 file:
 
 #+CINDEX:@file{Stream.react.js} file
-#+NAME:Stream-component
-#+CAPTION:The ~Stream.react.js~ File
+#+NAME:Stream component
+#+CAPTION[<Stream Component>]:The ~Stream~ Component (~Stream.react.js~)
 #+BEGIN_SRC js :tangle snapterest/source/components/Stream.react.js :mkdirp yes
 var React = require('react');
 var SnapkiteStreamClient = require('snapkite-stream-clinet');
@@ -3363,9 +3363,10 @@ lifecycle methods.
 Navigate to ~<dir>/snapterest/source/components/~ and create the
 ~StreamTweet.react.js~ file:
 
-#+NAME:StreamTweet
-#+CAPTION:Creating the ~StreamTweet.react.js~ File
-#+BEGIN_SRC js :tangle snapterest/source/components/StreamTweet.react.js :noweb tangle :mkdirp yes
+#+NAME:StreamTweet component
+#+CAPTION[<StreamTweet Component>]:The ~StreamTweet~ Component (~StreamTweet.react.js~)
+#+HEADER: :noweb tangle :mkdirp yes
+#+BEGIN_SRC js :tangle snapterest/source/components/StreamTweet.react.js
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Header = require('./Header.react');
@@ -3739,7 +3740,7 @@ mounting and unmounting methods in detail and started implementing the
 In our next chapter, we'll take a look at the component lifecycle's updating
 methods.  We'll also implement our ~Header~ and ~Tweet~ components, and learn
 how to set the component's default properties.
-* 6. Update Your React Components
+* Update Your React Components
 
 In the previous chapter we learned that a React component can go through three
 phases:
@@ -3995,8 +3996,8 @@ Navigate to ~<dir>/snapterest/source/components/~ and create the
 ~Header.react.js~ file:
 
 #+NAME:Header component
-#+CAPTION[Header Component]:The ~Header~ Component in ~Header.react.js~
-#+BEGIN_SRC js :tangle snapterest/source/components/Header.react.js :mkdirp
+#+CAPTION[<Header Component>]:The ~Header~ Component (~Header.react.js~)
+#+BEGIN_SRC js :tangle snapterest/source/components/Header.react.js :mkdirp yes
 var React = require('react');
 
 var headerStyle = {				(ref:headerStyle)
@@ -4092,8 +4093,8 @@ Next, let's create our ~Tweet~ component.  Navigate to
 ~<dir>snapterest/source/components/~ and create the ~Tweet.react.js~ file:
 
 #+NAME:Tweet component
-#+CAPTION[Tweet Component]:The ~Tweet~ Component in ~Tweet.react.js~
-#+BEGIN_SRC js :tangle snapterest/source/components/Tweet.react.js
+#+CAPTION[<Tweet Component>]:The ~Tweet~ Component (~Tweet.react.js~)
+#+BEGIN_SRC js :tangle snapterest/source/components/Tweet.react.js :mkdirp yes
 var React = require('react');
 
 var tweetStyle = {
@@ -4285,9 +4286,9 @@ components.  Next, we're going to focus on our ~Collection~ component.
 
 Create the ~<dir>/snapterest/source/components/Collection.react.js~ file:
 
-#+NAME:Collection-component
-#+CAPTION:The ~Collection~ Component in ~Collection.react.js~
-#+BEGIN_SRC js :tangle snapterest/source/components/Collection.react.js :mkdirp
+#+NAME:Collection component
+#+CAPTION[<Collection Component>]:The ~Collection~ Component (~Collection.react.js~)
+#+BEGIN_SRC js :tangle snapterest/source/components/Collection.react.js :mkdirp yes
 var React = require('react');
 var ReactDOMServer = require('react-dom/server');
 var CollectionControls = require('./CollectionControls.react');
@@ -4504,7 +4505,7 @@ created and discussed the ~Header~, ~Tweet~, and ~Collection~ components.
 In the next chapter we'll focus on building more complex React components and
 finish building our Snapterest application.
 
-* 7. Build Complex React Components
+* Build Complex React Components
 
 In this chapter we'll put everything we learned so far about React components
 in action by building the most complex components in our application, that is,
@@ -4524,8 +4525,8 @@ The ~Collection~ component has two child components:
 First build the ~TweetList~ component.  Create the following
 ~<dir>/snapterest/source/components/TweetList.react.js~ file:
 
-#+NAME:TweetList-component
-#+CAPTION[TweetList Component]:The ~TweetList~ Component of the ~Collection~ Component
+#+NAME:TweetList component
+#+CAPTION[<TweetList Component>]:The ~TweetList~ Component (~TweetList.react.js~)
 #+HEADER: :noweb tangle :mkdirp yes
 #+BEGIN_SRC js :tangle snapterest/source/components/TweetList.react.js
 var React = require('react');
@@ -4694,8 +4695,8 @@ its child components.  We'll start with ~CollectionControls~.  Create the
 following ~<dir>/snapterest/source/components/CollectionControls.react.js~
 file:
 
-#+NAME:CollectionControls-component
-#+CAPTION[CollectionControls Component]:The ~CollectionControls~ Component of ~Collection~ Component
+#+NAME:CollectionControls component
+#+CAPTION[<CollectionControls Component>]:The ~CollectionControls~ Component (~CollectionControls.react.js~)
 #+HEADER: :noweb tangle :mkdirp yes
 #+BEGIN_SRC js :tangle snapterest/source/components/CollectionControls.react.js
 var React = require('react');
@@ -4991,8 +4992,8 @@ First, let's create the
 ~<dir>/snapterest/source/components/CollectionRenameForm.react.js~ file:
 
 #+CINDEX:@file{CollectionRenameForm} component
-#+NAME:CollectionRenameForm Component
-#+CAPTION:The ~CollectionRenameForm~ Component
+#+NAME:CollectionRenameForm component
+#+CAPTION[<CollectionRenameForm Component>]:The ~CollectionRenameForm~ Component (~CollectionRenameForm.react.js~)
 #+HEADER: :noweb tangle :mkdirp yes
 #+BEGIN_SRC js :tangle snapterest/source/componentsCollectionRenameForm.react.js
 var React = require('react');
@@ -5265,8 +5266,8 @@ component that we reused twice in our ~CollectionRenameForm~ Component.
 Create the following file at
 ~<dir>/snapterest/source/components/Button.react.js~:
 
-#+NAME:Button Component
-#+CAPTION:The ~Button~ Component
+#+NAME:Button component
+#+CAPTION[<Button Component>]:The ~Button~ Component (~Button.react.js~)
 #+BEGIN_SRC js :tangle snapterest/source/components/Button.react.js :mkdirp yes
 var React = require('react');
 
@@ -5320,8 +5321,8 @@ this can be done.
 Create the ~<dir>/snapterest/source/components/CollectionExportForm.react.js~
 file:
 
-#+NAME:CollectionExportForm Component
-#+CAPTION:The ~CollectionExportForm~ Component
+#+NAME:CollectionExportForm component
+#+CAPTION[<CollectionExportForm Component>]:The ~CollectionExportForm~ Component (~CollectionExportForm.react.js~)
 #+BEGIN_SRC js :tangle snapterest/source/components/CollectionExportForm.react.js :mkdirp yes
 var React = require('react');
 
@@ -5378,7 +5379,7 @@ with React.  Let's see how it works.
 
 #+CINDEX:Snapkite Engine, run
 First, make sure that the Snapkite Engine that we installed and configured in
-Chapter 1 is running.  Navigate to ~<dir>/snapkite-engine/~ and run the
+Chapter 1 is [[*Run the Snapkite Engine][running]].  Navigate to ~<dir>/snapkite-engine/~ and run the
 following command:
 : npm start
 
@@ -5396,6 +5397,7 @@ the {{{key(Export as HTML)}}} button to export your collection to CodePend.
 
 If you have any trouble with this chapter or previous chapters, then go to
 https://github.com/fedosejev/react-essentials and create a new issue.
+
 ** Summary
 
 In this chapter, you created the
@@ -5410,16 +5412,16 @@ In this chapter, you created the
 You completed building a fully functional React applicationb.  In our next
 chapters, we'll test it with Jest and enhance it with Flux.
 
-* 8. Test Your React Application With Jest
+* Test Your React Application With Jest
 
 ** TODO Install Jest 0.4
 
 - See [[https://github.com/fedosejev/react-essentials/blob/master/updates.md#chapter-8-page-6][Errata]]
   : npm install --save-dev jest-cli@^0.4
 
-* 9. Supercharge Your React Architecture With Flux
+* Supercharge Your React Architecture With Flux
 
-* 10. Prepare Your React Application for Painless Maintenance with Flux
+* Prepare Your React Application for Painless Maintenance with Flux
 
 ** TODO Fix Tweet commands
 
