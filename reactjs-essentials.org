@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-09 Sat 20:54>
+#+DATE: <2019-03-09 Sat 21:00>
 
 #+TEXINFO: @insertcopying
 
@@ -5080,7 +5080,7 @@ The ~<input>~ element has quite a few properties.
   that is an ~onChange~ event handler.
 - =ref= is a special React property that you can attach to any component that
   is returned by a ~render()~ method.  It allows you to refer to that component
-  outside a ~render()~ method.  Shortly, we'll see an example of this.
+  outside a ~render()~ method.  Shortly, we'll see [[refs object][an example]] of this.
 
 
 #+CINDEX:@code{ref} property
@@ -5095,6 +5095,8 @@ user.  In our ~CollectionRenameForm~ component, the value of the ~<input>~
 always reflects the value of ~this.state.inputValue~ property, regardless of
 what the user types.  The user is not in control, but the
 ~CollectionRenameForm~ component is.
+
+*** Handle User Input
 
 #+CINDEX:user input, reacting to
 #+CINDEX:reacting to user input
@@ -5163,6 +5165,8 @@ getInitialState: function () {
 We pass the collection's name from a parent component, and we use it to set our
 initial input value.
 
+*** Set Focus
+
 After we mount this component, we want to set focus on the input field so that
 the user can start editing the collection's name straightaway.  We know that
 once a component is inserted into the DOM, React calls its
@@ -5184,10 +5188,12 @@ To do this, we get our input element and call ~focus()~ function on it.
 
 #+CINDEX:@code{refs} object
 #+CINDEX:@code{refs.collectionName}
-How can we reference an element inside the ~componentDidMount()~ method?  We
-can use the =this.refs= object to refer to our ~input~ element.  Because we
-provided our ~input~ element with a =ref= property, which is set to
+<<refs object>>How can we reference an element inside the ~componentDidMount()~
+method?  We can use the =this.refs= object to refer to our ~input~ element.
+Because we provided our ~input~ element with a =ref= property, which is set to
 =collectionName=, we can refer to it via ~this.refs.collectionName~.
+
+*** Change and Cancel Buttons
 
 #+CINDEX:form buttons
 #+CINDEX:@code{Change} button
