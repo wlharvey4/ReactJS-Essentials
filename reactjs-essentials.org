@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-10 Sun 12:39>
+#+DATE: <2019-03-11 Mon 11:17>
 
 #+TEXINFO: @insertcopying
 
@@ -979,7 +979,7 @@ with a link to our ~snapterest.js~ script.  Create the ~index.html~ file in the
 
 #+NAME:index.html
 #+CAPTION:Project Snapterest ~index.html~
-#+BEGIN_SRC html :tangle snapterest/build/index.html
+#+BEGIN_SRC html :tangle snapterest/build/index.html :mkdirp yes
 <!doctype html>
 <html lang="en">
   <head>
@@ -1420,7 +1420,7 @@ element represented by a ~ReactElement~, a string or a number represented by
 
 Here is an example:
 
-#+BEGIN_SRC js :tangle snapterest/source/app.js
+#+BEGIN_SRC js snapterest/source/app.js
 var React = require('react');
 var ReactDOM = require('react-dom');
 var reactElement = React.createElement('h1', { className: 'header' }, 'This is React.');
@@ -1443,7 +1443,7 @@ React.)}}} string is represented by a ~ReactText~.
 Next, create a React element with a number of other React elements as it's
 children:
 
-#+BEGIN_SRC js :tangle snapterest/source/app.js
+#+BEGIN_SRC js snapterest/source/app.js
 var React = require('react');
 var ReactDOM = require('react-dom');
 
@@ -1489,7 +1489,7 @@ function that creates other functions.  This is exactly what
 
 Consider the following example:
 
-#+BEGIN_SRC js :tangle snapterest/source/app.js
+#+BEGIN_SRC js snapterest/source/app.js
 var React = require('react');
 var ReactDOM = require('react-dom');
 
@@ -1516,7 +1516,7 @@ The preceeding example produces this HTML:
 #+CINDEX:factory function
 We can simplify it by first creating a factory function:
 
-#+BEGIN_SRC js :tangle snapterest/source/app.js
+#+BEGIN_SRC js snapterest/source/app.js
 var React = require('react');
 var ReactDOM = require('react-dom');
 
@@ -1562,7 +1562,7 @@ and so on.  Using them, we can simplify our previous example even further:
 
 #+NAME:built-in-factory-function-app.js
 #+CAPTION:Creating a DOM Structure Using Built-in Factory Functions
-#+BEGIN_SRC js :tangle snapterest/source/app.js
+#+BEGIN_SRC js snapterest/source/app.js
 var React = require('react');
 var ReactDOM = require('react-dom');
 
@@ -1690,7 +1690,7 @@ Translate this to one using JSX:
 
 #+NAME:jsx-app.js
 #+CAPTION:Coding With JSX
-#+BEGIN_SRC js :tangle snapterest/source/app.js
+#+BEGIN_SRC js snapterest/source/app.js
 var React = require('react');
 var ReactDOM = require('react-dom');
 
@@ -2731,7 +2731,7 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var Application = require('./components/Application.react');
 
-ReactDOM.render(<Application />, document.getDocumentById('react-application');
+ReactDOM.render(<Application />, document.getElementById('react-application'));
 #+END_SRC
 
 There are only four lines of code in this file, and as you can guess, they
@@ -3169,7 +3169,7 @@ file:
 #+CAPTION[<Stream Component>]:The ~Stream~ Component (~Stream.react.js~)
 #+BEGIN_SRC js :tangle snapterest/source/components/Stream.react.js :mkdirp yes
 var React = require('react');
-var SnapkiteStreamClient = require('snapkite-stream-clinet');
+var SnapkiteStreamClient = require('snapkite-stream-client');
 var StreamTweet = require('./StreamTweet.react');
 var Header = require('./Header.react');
 
@@ -3725,7 +3725,7 @@ your ~StreamTweet~ component after the ~compontDidMount()~ method:
 componentWillUnmount: function () {
     console.log('[Snapterest] StreamTweet: 8. Running componentWillUnmount()');
 
-    delete window.,snapterest;
+    delete window.snapterest;
 },
 
 #+END_SRC
@@ -4020,10 +4020,10 @@ Navigate to ~<dir>/snapterest/source/components/~ and create the
 
 #+NAME:Header component
 #+CAPTION[<Header Component>]:The ~Header~ Component (~Header.react.js~)
-#+BEGIN_SRC js :tangle snapterest/source/components/Header.react.js :mkdirp yes
+#+BEGIN_SRC js -r :tangle snapterest/source/components/Header.react.js :mkdirp yes
 var React = require('react');
 
-var headerStyle = {				(ref:headerStyle)
+var headerStyle = {
     fontSize: '16px',
     fontWeight: '300',
     display: 'inline-block',
@@ -4117,14 +4117,14 @@ Next, let's create our ~Tweet~ component.  Navigate to
 
 #+NAME:Tweet component
 #+CAPTION[<Tweet Component>]:The ~Tweet~ Component (~Tweet.react.js~)
-#+BEGIN_SRC js :tangle snapterest/source/components/Tweet.react.js :mkdirp yes
+#+BEGIN_SRC js -r :tangle snapterest/source/components/Tweet.react.js :mkdirp yes
 var React = require('react');
 
 var tweetStyle = {
     position: 'relative',
     display: 'inline-block',
     width: '300px',
-    height: '400px'
+    height: '400px',
     margin: '10px'
 };
 
@@ -4136,9 +4136,9 @@ var imageStyle = {
 
 var Tweet = React.createClass({
 
-    propTypes: {						(ref:propTypes)
+    propTypes: {
 
-        tweet: function (properties, propertyName, componentName) { (ref:tweet-validator)
+        tweet: function (properties, propertyName, componentName) {
             var tweet = properties[propertyName];
 
             if (!tweet) {
@@ -4333,23 +4333,23 @@ var Collection = React.createClass({
     },
 
     getListOfTweetIds: function () {
-        return (Object.keys(this,.props.tweets));
+        return (Object.keys(this.props.tweets));
     },
 
     getNumberOfTweetsInCollection: function () {
         return (this.getListOfTweetIds().length);
     },
 
-    render: function () {				(ref:Collection-render)
+    render: function () {
         var numberOfTweetsInCollection = this.getNumberOfTweetsInCollection();
 
-        if (numberOfTweetsInCollection > 0) {	(ref:four-variables)
+        if (numberOfTweetsInCollection > 0) {
             var tweets = this.props.tweets;
             var htmlMarkup = this.createHtmlMarkupStringOfTweetsList();
             var removeAllTweetsFromCollection = this.props.onRemoveAllTweetsFromCollection;
             var handleRemoveTweetFromCollection = this.props.onRemoveTweetFromCollection;
 
-            return (				(ref:Collection-notempty)
+            return (
                 <div>
                     <CollectionControls
                         numberOfTweetsInCollection={numberOfTweetsInCollection}
@@ -4366,7 +4366,7 @@ var Collection = React.createClass({
         }
 
         return (
-            <Header text='Your Collection is empty' />;
+            <Header text='Your Collection is empty' />
         );
     }
 });
@@ -4586,7 +4586,7 @@ function.
 #+NAME:TweetList render method
 #+CAPTION:The ~TweetList~ ~render()~ Method
 #+BEGIN_SRC js
-render: function () {				(ref:list-of-tweets)
+render: function () {
     var tweetElements = this.getListOfTweetIds().map(this.getTweetElement);
 
     return (
@@ -4626,21 +4626,21 @@ getTweetElement: function (tweetId) {
     var handleRemoveTweetFromCollection = this.props.onRemoveTweetFromCollection;
     var tweetElement;
 
-    if (handleRemoveTweetFromCollection) {	(ref:scenario1)
+    if (handleRemoveTweetFromCollection) {
         tweetElement = (
             <Tweet
                 tweet={tweet}
                 onImageClick={handleRemoveTweetFromCollection}
             />
         );
-    } else {					(ref:scenario2)
+    } else {
         tweetElement = <Tweet tweet={tweet} />;
     }
 
-    return (					(ref:tweet-in-li)
+    return (
         <li style={listItemStyle} key={tweet.id} >
             {tweetElement}
-        />
+        </li>
     );
 },
 
@@ -4783,7 +4783,7 @@ Let's take a look at its ~render()~ method:
 
 #+NAME:CollectionControls render method
 #+CAPTION[CollectionControls render()]:The ~render()~ Method of ~CollectionControls~ Component
-#+BEGIN_SRC js :noweb tangle
+#+BEGIN_SRC js :noweb yes
 render: function () {
     if (this.state.isEditingName) {
         return (
@@ -4893,7 +4893,7 @@ pass a string, but rather a call to the ~this.getHeaderText()~ method.
 
 #+NAME:CollectionControls getHeaderText method
 #+CAPTION[CollectionControls getHeaderText() Method]:The ~getHeaderText()~ Method of ~CollectionControls~ Component
-#+BEGIN_SRC js :noweb tangle
+#+BEGIN_SRC js :noweb yes
 getHeaderText: function () {
     var numberOfTweetsInCollection = this.props.numberOfTweetsInCollection;
     var text = numberOfTweetsInCollection;
@@ -4904,7 +4904,7 @@ getHeaderText: function () {
         text = text + 'tweets in your';
     }
 
-    <<getHeaderText return>>
+    <<getHeaderText returnText>>
 },
 
 #+END_SRC
@@ -4928,7 +4928,7 @@ string to it based on what that integer value is:
 
 Once the header string is created, then we return the following elements:
 
-#+NAME:getHeaderText return
+#+NAME:getHeaderText returnText
 #+BEGIN_SRC js
 return (
     <span>
@@ -5055,7 +5055,7 @@ render: function () {
         <form
             className="form-inline"
             onSubmit={this.handleSubmit}
-        />
+        >
 
             <Header text="Collection name:" />
 
@@ -5068,6 +5068,10 @@ render: function () {
                     ref="collectionName"
                 />
             </div>
+
+            <Button label="Change" handleClick={this.handleFormSubmit} />
+            <Button label="Cancel" handleClick={this.handleFormCancel} />
+        </form>
     );
 }
 #+END_SRC
@@ -5306,7 +5310,7 @@ var Button = React.createClass({
                 className="btn btn-default"
                 style={buttonStyle}
                 onClick={this.props.handleClick}
-            />
+            >
                 {this.props.label}
             </button>
         );
@@ -5395,6 +5399,8 @@ to CodePen that is opened in a new window.  A user can then modify and share
 that collection.
 
 ** Start Your Engine
+
+[[shell:cd snapterest && gulp]]
 
 #+CINDEX:web application, fully functional
 Congratulations! At this point, we've build a fully functional web application
