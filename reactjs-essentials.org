@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-12 Tue 12:23>
+#+DATE: <2019-03-12 Tue 13:33>
 
 #+TEXINFO: @insertcopying
 
@@ -5457,10 +5457,12 @@ for a single unit of your application.  A single unit in your application is
 often a function, which suggests that writing unit tests means writing tests
 for your functions.
 
-** TODO Install Jest 0.4                                          :noexport:
+** Install Jest 0.4                                               :noexport:
 
 - See [[https://github.com/fedosejev/react-essentials/blob/master/updates.md#chapter-8-page-6][Errata]]
   : npm install --save-dev jest-cli@^0.4
+
+- Note: Jest CLI 0.4 will not install correctly
 
 ** Why Write Unit Tests
 
@@ -5674,9 +5676,11 @@ First, let's install the Jest command-line interface *Jest CLI*.
 
 - See [[https://github.com/fedosejev/react-essentials/blob/master/updates.md#chapter-8-page-6][Errata]]
   : npm install --save-dev jest-cli@^0.4
-  : Yarn add jest-cli@^0.4 --dev
+Note that the above will not install on my machine, so try installing the
+latest and see how things go:
+  : Yarn add jest-cli --dev
 
-[[shell:cd%20snapterest%20&&%20yarn%20add%20jest-cli@^0.4%20--dev][Install Jest-CLI 0.4]]
+[[shell:cd%20snapterest%20&&%20yarn%20add%20jest-cli%20--dev][Install Latest Jest-CLI]]
 
 This command installs the Jest CLI and adds it as a development dependency to
 the ~<dir>snapterest/package.json~ file.  Next, edit the ~package.json~ file.
@@ -5689,6 +5693,58 @@ replacing it with:
      "test": "jest"
 },
 #+END_SRC
+
+#+BEGIN_SRC js :results output :dir snapterest :eval query
+var fs = require('fs');
+var p = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+console.log("Before\n", p);
+p.scripts = { "test": "jest"};
+p = JSON.stringify(p,null,2)+'\n';
+console.log("After\n", p);
+fs.writeFileSync('package.json', p);
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+Before
+ { name: 'snapterest',
+  version: '1.0.0',
+  main: 'index.js',
+  license: 'MIT',
+  devDependencies:
+   { babelify: '^6.2.0',
+     browserify: '^16.2.3',
+     gulp: '^4.0.0',
+     'jest-cli': '^24.5.0',
+     'vinyl-source-stream': '^2.0.0' },
+  dependencies:
+   { react: '0.14.8',
+     'react-dom': '0.14.8',
+     'snapkite-stream-client': '^1.0.3' } }
+After
+ {
+  "name": "snapterest",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "babelify": "^6.2.0",
+    "browserify": "^16.2.3",
+    "gulp": "^4.0.0",
+    "jest-cli": "^24.5.0",
+    "vinyl-source-stream": "^2.0.0"
+  },
+  "dependencies": {
+    "react": "0.14.8",
+    "react-dom": "0.14.8",
+    "snapkite-stream-client": "^1.0.3"
+  },
+  "scripts": {
+    "test": "jest"
+  }
+}
+
+#+end_example
 
 Now we're readty to run our test suite.  Navigate to the ~<dir>/snapterest/~
 directory, and run the following command:
@@ -6381,7 +6437,7 @@ Outline prepared by WLHarvey \copy {{{date(%F)}}}
 #+MACRO:noindent @@texinfo:@noindent @@
 #+MACRO:dfn @@texinfo:@dfn{@@$1@@texinfo:}@@
 * EXPORT SETTINGS                                                  :noexport:
-#+PROPERTY: header-args :eval never
+#+PROPERTY: header-args :eval never-export
 #+OPTIONS: h:4
 #+TEXINFO_CLASS: info
 #+TEXINFO_HEADER:
