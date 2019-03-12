@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-12 Tue 11:18>
+#+DATE: <2019-03-12 Tue 12:23>
 
 #+TEXINFO: @insertcopying
 
@@ -5500,14 +5500,12 @@ example.
 First, create the ~<dir>/snapterest/source/utils/~ directory.  Then, create a
 new ~TweetUtils.js~ file in it:
 
-#+NAME:Tweetutils module
+#+NAME:TweetUtils module
 #+CAPTION[<TweetUtils Module>]:The ~TweetUtils~ Module in ~source/utils/~
 #+BEGIN_SRC js :tangle snapterest/source/utils/TweetUtils.js :mkdirp yes
-function getListOfTweetIds(tweets) {
+exports.getListOfTweetIds = function (tweets) {
     return (Object.keys(tweets));
 }
-
-module.exports.getListOfTweetIds;
 #+END_SRC
 
 #+CINDEX:@code{getListOfTweetIds()} utility function
@@ -5676,7 +5674,7 @@ First, let's install the Jest command-line interface *Jest CLI*.
 
 - See [[https://github.com/fedosejev/react-essentials/blob/master/updates.md#chapter-8-page-6][Errata]]
   : npm install --save-dev jest-cli@^0.4
-  : yarn add jest-cli@^0.4 --dev
+  : Yarn add jest-cli@^0.4 --dev
 
 [[shell:cd%20snapterest%20&&%20yarn%20add%20jest-cli@^0.4%20--dev][Install Jest-CLI 0.4]]
 
