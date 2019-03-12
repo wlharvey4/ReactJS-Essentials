@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-11 Mon 11:17>
+#+DATE: <2019-03-12 Tue 11:18>
 
 #+TEXINFO: @insertcopying
 
@@ -5443,10 +5443,284 @@ chapters, we'll test it with Jest and enhance it with Flux.
 
 * Test Your React Application With Jest
 
-** TODO Install Jest 0.4
+By now you have created a number of React components.  Some of them are quite
+straightforward, but some are sophisticacted.  Having built both, you might
+have gained a certain confidence, which makes you believe that no matter how
+complex the user interface is, you can build it with React, without any major
+pitfalls.  This is a good confidence to have.  After all that's why we're
+investing time in learning React.  However, there is a trap that many confident
+React developers fall into: the act of not writing unit tests.
+
+#+CINDEX:unit test
+What is a unit test?  As the name suggests, a {{{dfn(unit test)}}} is a test
+for a single unit of your application.  A single unit in your application is
+often a function, which suggests that writing unit tests means writing tests
+for your functions.
+
+** TODO Install Jest 0.4                                          :noexport:
 
 - See [[https://github.com/fedosejev/react-essentials/blob/master/updates.md#chapter-8-page-6][Errata]]
   : npm install --save-dev jest-cli@^0.4
+
+** Why Write Unit Tests
+
+You might be wondering why you should write unit tests.
+
+** Creating Test Suites---Specs---Expectations
+
+#+CINDEX:test fraemwork
+#+CINDEX:Facebook test framework, Jest
+#+CINDEX:Jest, Facebook's test framework
+#+CINDEX:Jasmine
+How does one write a test for JavaScript functions?  You need a testing
+framework, and luckily Facebook has built its own unit test framework for
+JavaScript called *Jest*.  It is built on top of *Jasmine*, another well-known
+JavaScript test framework.  Jest's approach to testing is very similar
+However, I'll make no assumptions about your prior experience with testing
+frameworks and discuss the basics first.
+
+#+CINDEX:mock, mocking
+The fundamental idea of unit testing is that you test only one piece of
+functionality in your application that usually is implemented by one function.
+You test it in isolation, which means that all the other parts of your
+application that the function depends on are not used by your tests.  Instead,
+they are imitated by your tests.  To imitate a JavaScript object is to create a
+fake one that simulates the behavior of the real object.  In unit testing, the
+fake object is called a {{{dfn(mock)}}} and the process of creating it is
+called {{{dfn(mocking)}}}.
+
+Jest automatically mocks the dependencies when you're running your tests.  It
+automatically finds tests to be executed in your repository.  Here's an
+example.
+
+*** TweetUtils Example Test
+
+#+CINDEX:@file{snapterest/source/utils/} directory
+#+CINDEX:@file{TweetUtils.js} file
+First, create the ~<dir>/snapterest/source/utils/~ directory.  Then, create a
+new ~TweetUtils.js~ file in it:
+
+#+NAME:Tweetutils module
+#+CAPTION[<TweetUtils Module>]:The ~TweetUtils~ Module in ~source/utils/~
+#+BEGIN_SRC js :tangle snapterest/source/utils/TweetUtils.js :mkdirp yes
+function getListOfTweetIds(tweets) {
+    return (Object.keys(tweets));
+}
+
+module.exports.getListOfTweetIds;
+#+END_SRC
+
+#+CINDEX:@code{getListOfTweetIds()} utility function
+#+CINDEX:CommonJS module pattern
+The ~TweetUtils.js~ file is a module with the ~getListOfTweetIds()~ utility
+function for our application to use.  Given an object with tweets,
+~getListOfTweetIds()~ returns an array of tweet IDs.  Using the CommonJS module
+pattern, we export this function.
+
+*** Unit Test for TweetUtils Module
+
+Now let's write our first unit test with Jest.  We'll test our
+~getListOfTweetIds()~ function.
+
+#+CINDEX:@file{snapterest/source/utils__tests__} directory
+#+CINDEX:@file{__tests__} directory
+Create a new directory: ~<dir>/snapterest/source/utils/__tests__/~.  Jest will
+run any tests in any ~__test__~ directories that it finds in your project
+structure.  So, it's important to name your directories with ~__tests__~.
+
+#+CINDEX:@file{TweetUtils-test.js} file
+Create a ~TweetUtils-test.js~ file inside ~__tests__~.
+
+#+NAME:TweetUtils-test module
+#+CINDEX[<TweetUtils-test Module>]:The ~TweetUtils-test~ Test Module
+#+BEGIN_SRC js :tangle snapterest/source/utils/__tests__/TweetUtil-test.js :mkdirp yes
+jest.dontMock('../TweetUtils');
+
+describe ('Tweet utilities module', function () {
+    it('returns an array of tweet ids', function () {
+        var TweetUtils = require('../TweetUtils');
+        var tweetsMock = {
+            tweet1: {},
+            tweet2: {},
+            tweet3: {}
+        };
+        var expectedListOfTweetIds = [ 'tweet1', 'tweet2', 'tweet3' ];
+        var actualListOfTweetIds = TweetUtils.getListOfTweetIds(tweetsMock);
+        expect(actualListOfTweetIds).toEqual(expectedListOfTweetIds);
+    });
+});
+#+END_SRC
+
+#+CINDEX:mock @code{require}d modules automatically
+We need to tell Jest not to mock our ~TweetUtils~ module because Jest will
+/automatically/ mock modules returned by the ~require()~ function.  In our
+test, we ~require()~ the ~TweetUtils~ module.
+
+#+CINDEX:@code{jest.dontMock()} function
+Without the ~jest.dontMock('../TweetUtils')~ call, Jest would return an
+imitation of our ~TweetUtils~ module, instead of the real one.  In this case,
+we actually need the real ~TweetUtils~ module because that's what we're
+testing.
+
+*** Create a Suite of Tests using ~describe()~
+
+#+CINDEX:@code{describe()} global function
+#+CINDEX:global @code{describe} function
+#+CINDEX:suite of tests
+Next, we call a global ~describe()~ Jest function.  It's important to
+understand the concept behind it.  In our ~TweetUtils-test.js~ file, we're not
+just creating a single test; instead we're creating a suite of tests.  A suite
+is a collection of tests that collectively tests a bigger unit of
+functionality.  For example, a suite can have multiple tests, which tests all
+the individual parts of a larger module.  In our example, we have a
+~TweetUtils~ module with potentially a number of utility functions.  In this
+situation, we would create a suite for the ~TweetUtils~ module, and then create
+tests for each individual utility function, such as ~getListOfTweetIds()~.
+
+#+CINDEX:suite name parameter
+#+CINDEX:suite implemenetation parameter
+The ~describe()~ function defines a suite and takes these two parameters:
+
+- Suite name :: the title that describes what is being tested by this ~Tweet
+                  utilities module' suite
+- Suite implementation :: the function that implements this suite
+
+
+*** Create Specs using ~it()~
+
+#+CINDEX:spec
+#+CINDEX:@code{it()} global function
+#+CINDEX:global @code{it()} function
+How do you create an individual test?  In Jest, individual tests are called
+{{{dfn(specs)}}}.  They are defined by calling another global Jest function,
+~it()~.
+
+#+CINDEX:spec name parameter
+#+CINDEX:spec implementation parameter
+Just like ~describe()~, the ~it()~ function takes two parameters:
+
+- Spec name :: the title that describes what is being tested by this =returns
+               an array of tweet ids= spec;
+- Spec implementation :: the function that implements this spec;
+
+
+#+CINDEX:spec for @file{TweetUtils} module
+The spec tests whether the ~getListOfTweetIds()~ method of our ~TweetUtils~
+module returns an array of tweet IDs, when given an object with tweets.
+
+#+CINDEX:mock object for tweets object
+First, we import the ~TweetUtils~ module.  Then we create a mock object that
+simulates the real tweets object.  The only requirement for this mock object is
+to have tweet IDs as object keys.  The values are not important, so we choose
+empty objects.  The key names are not important as well, so we choose to name
+them =tweet1=, =tweet2=, and =tweet3=.  This mock object doesn't fully simulate
+the real tweet objects.  Its sole purpose is to simulate the fact that its keys
+are tweet IDs.
+
+#+CINDEX:expected list of tweet IDs
+#+CINDEX:@code{tweetsMock} object
+#+CINDEX:@code{actualListOfTweetsIds} variable
+The next step is to create an expected list of tweet IDs.  We know what tweet
+IDs to expect because we've mocked the =tweets= object.  For this, we use the
+~getListOfTweetIds()~ method that takes the =tweets= object and returns an
+array of tweet IDs.  We pass the =tweetsMock= object to that method and store
+the result in the ~actualListOfTweetIds~ variable.  The reason it's name that
+is because this list of tweet IDs is produced by the actual
+~getListOfTweetIds()~ function that we are testing.
+
+*** Test Expectations with ~expect().toEqual()~
+
+#+CINDEX:@code{expect().toEqual()} global function
+#+CINDEX:global @code{expect().toEqual()} function
+The final step will introduce us to a new important concept: the
+~expect().toEqual()~ method.  Let's think about the process of testing, that
+is, ~getListOfTweetIds()~, and match it to the expected value that we know in
+advance.  The result of that match will determine whether our test has passed
+or failed.
+
+The reson why we can guess what ~getListOfTweetIds()~ will return in advance is
+because we've prepared the input for it; that's our mock object, the
+~tweetsMock~ variable.  So, we can expect the following output by calling
+~TweetUtils.getListOfTweetIds(tweetsMock)~:
+: [ 'tweet1', 'tweet2', 'tweet3' ]
+
+#+CINDEX:expectation
+#+CINDEX:@code{expect()} function
+#+CINDEX:@code{matcher} function
+Because something can go wrong inside ~getListOfTweetIds()~, we cannot
+guarantee this result; we can only /expect/ it.  That's why we need to create
+an expectation.  In Jest, an {{{dfn(expectation)}}} is build using the
+~expect()~ function, which takes an actual value, for example, the
+=actualListOfTweetIds= object.  Then, we chain it with a {{{dfn(matcher)}}}
+function that compares the actual value with the expected value and tells Jest
+whether the expectation was met or not.
+
+#+CINDEX:@code{toEqual()} matcher function
+#+CINDEX:matcher functions, complete list
+In our example, we use the ~toEqual()~ matcher function to compare the two
+arrays.  You can find a list of all the built-in matcher functions in Jest at
+https://jestjs.io/docs/en/expect.
+
+#+CINDEX:spec, create
+#+CINDEX:expectations, in a spec
+#+CINDEX:passing spec
+#+CINDEX:failing spec
+This is how you create a spec.  A spec contains one or more expectations.  Each
+expectation tests the state of your code.  A spec can be either a /passing
+spec/ or a /failing spec/.  A spec is a passing spec only when all the
+expectations are met; otherwise, it's a failing spec.
+
+** Installing and Running Jest
+
+First, let's install the Jest command-line interface *Jest CLI*.
+
+- See [[https://github.com/fedosejev/react-essentials/blob/master/updates.md#chapter-8-page-6][Errata]]
+  : npm install --save-dev jest-cli@^0.4
+  : yarn add jest-cli@^0.4 --dev
+
+[[shell:cd%20snapterest%20&&%20yarn%20add%20jest-cli@^0.4%20--dev][Install Jest-CLI 0.4]]
+
+This command installs the Jest CLI and adds it as a development dependency to
+the ~<dir>snapterest/package.json~ file.  Next, edit the ~package.json~ file.
+Replace the existing =scripts= object[fn::My ~package.json~ does not have an
+existing =scripts= object, perhaps because it was created with Yarn?],
+replacing it with:
+
+#+BEGIN_SRC js
+"scripts": {
+     "test": "jest"
+},
+#+END_SRC
+
+Now we're readty to run our test suite.  Navigate to the ~<dir>/snapterest/~
+directory, and run the following command:
+: yarn test
+
+You should see the following message in your Terminal:
+
+#+BEGIN_EXAMPLE
+Using Jest CLI v.0.4.18
+  PASS  source/utils/__tests__/TweetUtils-test.js (0.065s)
+1 test passed (1 total)
+Run time: 0.295s
+#+END_EXAMPLE
+
+The key line in this message is as follows:
+: PASS  source/utils/__tests__/TweetUtils-test.js (0.065s)
+
+- =PASS=: tells you that your test has passed
+- ~source/utils/__tests__/TweetUtils-test.js~: tells you what test it was running
+- =(0.065s)=: tells you how long it took to run the test
+
+
+That's all it takes to write and test a tiny unit test.  Now, let's create
+another one!
+
+** Creating Multiple Specs and Expectations
+
+** Testing React Components
+
+** Summary
 
 * Supercharge Your React Architecture With Flux
 
