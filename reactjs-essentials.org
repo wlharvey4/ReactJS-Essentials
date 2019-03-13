@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-12 Tue 20:11>
+#+DATE: <2019-03-13 Wed 11:40>
 
 #+TEXINFO: @insertcopying
 
@@ -5683,10 +5683,11 @@ latest and see how things go:
 [[shell:cd%20snapterest%20&&%20yarn%20add%20jest-cli%20--dev][Install Latest Jest-CLI]]
 
 This command installs the Jest CLI and adds it as a development dependency to
-the ~<dir>snapterest/package.json~ file.  Next, edit the ~package.json~ file.
-Replace the existing =scripts= object[fn::My ~package.json~ does not have an
-existing =scripts= object, perhaps because it was created with Yarn?],
-replacing it with:
+the ~<dir>snapterest/package.json~ file.
+
+Next, edit the ~package.json~ file.  Replace the existing =scripts=
+object[fn::My ~package.json~ does not have an existing =scripts= object,
+perhaps because it was created with Yarn?], replacing it with:
 
 #+BEGIN_SRC js
 "scripts": {
@@ -5694,40 +5695,30 @@ replacing it with:
 },
 #+END_SRC
 
-#+BEGIN_SRC js :results output :dir snapterest :eval query
+#+NAME:add test script to package.json
+#+CAPTION: Adding a =test= Script Command to ~Package.json~
+#+HEADER: :eval query
+#+HEADER: :results output
+#+HEADER: :exports both
+#+HEADER: :dir snapterest
+#+BEGIN_SRC js
 var fs = require('fs');
 var p = JSON.parse(fs.readFileSync('package.json', 'utf8'));
-console.log("Before\n", p);
 p.scripts = { "test": "jest"};
-p = JSON.stringify(p,null,2)+'\n';
-console.log("After\n", p);
+p = JSON.stringify(p,null,2);
 fs.writeFileSync('package.json', p);
+console.log(p);
 #+END_SRC
 
-#+RESULTS:
+#+RESULTS: add test script to package.json
 #+begin_example
-Before
- { name: 'snapterest',
-  version: '1.0.0',
-  main: 'index.js',
-  license: 'MIT',
-  devDependencies:
-   { babelify: '^6.2.0',
-     browserify: '^16.2.3',
-     gulp: '^4.0.0',
-     'jest-cli': '^24.5.0',
-     'vinyl-source-stream': '^2.0.0' },
-  dependencies:
-   { react: '0.14.8',
-     'react-dom': '0.14.8',
-     'snapkite-stream-client': '^1.0.3' } }
-After
- {
+{
   "name": "snapterest",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
   "devDependencies": {
+    "babel-jest": "^24.5.0",
     "babelify": "^6.2.0",
     "browserify": "^16.2.3",
     "gulp": "^4.0.0",
@@ -5741,14 +5732,23 @@ After
   },
   "scripts": {
     "test": "jest"
+  },
+  "jest": {
+    "transform": {
+      ".*": "<rootDir>/node_modules/babel-jest"
+    },
+    "unmockedModulePathPatterns": [
+      "<rootDir>/node_modules/react"
+    ]
   }
 }
-
 #+end_example
 
-Now we're readty to run our test suite.  Navigate to the ~<dir>/snapterest/~
+Now we're ready to run our test suite.  Navigate to the ~<dir>/snapterest/~
 directory, and run the following command:
 : yarn test
+
+[[shell:(cd snapterest; yarn test;)][yarn test]]
 
 You should see the following message in your Terminal:
 
@@ -6030,7 +6030,353 @@ So far we've tested the utility modules, but how do you test the React
 components with Jest?  Let's find out next.
 ** Testing React Components
 
+Just like with utility modules, creating tests for React components starts with
+creating the ~__tests__~ directory.  Navigate to
+~<dir>/snapterest/source/components/~ and create the ~__tests__~ directory.
+
+#+CINDEX:@file{Header-test.js} file
+#+CINDEX:test @file{Header} component
+The first React component that we'll test will be our ~Header~ component.
+Create the ~Header-test.js~ in the
+~<dir>/snapterest/source/components/__tests__~ directory.
+
+#+NAME:Header-test file
+#+CAPTION[<Header-test File>]:The ~Header-test.js~ File
+#+BEGIN_SRC js :tangle snapterest/source/components/__tests__/Header-test.js :mkdirp yes
+jest.dontMock('../Header.react');
+
+describe('Header component', function () {
+
+    it('renders provided header text', function () {
+
+        var React = require('react');
+        var ReactDOM = require('react-dom');
+        var TestUtils = require('react-addons-test-utils');
+        var Header = require('../Header.react');
+
+        var header = TestUtils.renderIntoDocument(
+            <Header text="Testing..." />
+        );
+
+        var actualHeaderText = ReactDOM.findDomNode(header).textContent;
+
+        expect(actualHeaderText).toBe('Testing...');
+
+        var defaultHeader = TestUtils.renderIntoDocument(
+            <Header />
+        );
+
+        var actualDefaultHeaderText = ReactDOM.findDomNode(defaultHeader).textContent;
+
+        expect(actualDefaultHeaderText).toBe('Default header');
+    });
+});
+#+END_SRC
+
+By now you can recognize the structure of our test files.  First, we tell Jest
+not to mock the ~Header~ component.  Then we define our test suite, and we give
+it a name, =Header component=.  Our test suite has one spec name =renders
+provided header text=.  As the name suggests, it tests whether our ~Header~
+component renders the provided header text.  The implementation of that spec
+has a number of new things that we'll discuss.
+
+*** Importing React and TestUtils and Header
+
+#+CINDEX:@file{react-addons-test-utils}
+#+CINDEX:@file{TestUtils}
+First, we import React and ReactDOM.  Then we import one of the React add-ons,
+~react-addons-test-utils~.  ~TestUtils~ helps you test the React components
+with any test framework that you choose.  Naturally, it works great with Jest.
+Let's install it:
+: npm install --save-dev react-addons-test-utils
+
+[[shell:(cd%20snapterest;%20yarn%20add%20react-addons-test-utils%20--dev;)][Install TestUtils]]
+
+Next, in order to test our ~Header~ component, we need to import it also.
+
+*** Render the ~Header~ Component to the DOM and Get Its Text Content
+
+#+CINDEX:@code{renderIntoDocument()} function
+#+CINDEX:@code{text} property
+Our next task is to render the ~Header~ component to the DOM.  The ~TestUtils~
+add-on has a helper ~renderIntoDocument()~ function that does exactly this.  We
+pass the React ~Header~ component instance to the ~renderIntoDocument()~
+function as a parameter.  Notice that in this case, our ~Header~ component
+instance has a =text= property.  ~renderIntoDocument()~ returns a reference to
+that component.
+
+#+CINDEX:text content of @file{Header} componenet
+Now we have a reference to our ~Header~ component that is rendered to the DOM.
+Our next task is to check what header text it rendered.  This means that we
+need to perform the following steps:
+
+1. Find the conmponent's DOM node;
+2. Get the DOM node's text content.
+
+
+#+CINDEX:@code{findDOMNode()} method
+#+CINDEX:@code{textContent} property
+Do you remember what method React provides us to find the component's DOM node?
+Did you say ~ReactDOM.findDOMNode()~?  We pass ~header~ to
+~ReactDOM.findDOMNode()~ as a parameter.  As a result, ~ReactDOM.findDOMNode()~
+returns a DOM node element.  Now we can access its =textContent= property.  The
+value of the =textContent= property becomes the actual header text.
+
+*** Create Expectations and Test
+
+#+CINDEX:expectation, create
+The final step is to create an expectation and match it with the expected
+text.  We're expecting =Testing...= to be rendered as a DOM node text.
+
+Now we can test that the provided header text to the ~Header~ component
+instance is rendered to the DOM.
+
+*** Creating a Second Instance Without a Text Property
+
+What happens when we create the ~Header~ component instance without providing
+any header text?
+
+#+CINDEX:default @file{Header}
+Let's find this out by rendering another instance of the ~Header~ component to
+the DOM, only this time without giving it any =text= property.  We'll call this
+component reference ~defaultHeader~.  Let's find the ~defaultHeader~
+component's DOM node element and access its =textContent= property.  This will
+be our actual header text rendered by default by a ~Header~ component.
+
+Finally, we create an expectation and match this with the expected text.  In
+this case, ~actualDefaultHeaderText~ must be equal to =Default header=.
+
+*** Testing React Component Behavior
+
+#+CINDEX:behavior, testing
+#+CINDEX:testing behavior
+This is how you test what your React component renders.  You might be wondering
+how to test the behavior of your React component.  That's what we'll discuss
+next.
+
+{{{heading(The ~Button-test~ Test File)}}}
+
+#+CINDEX:@file{Button-test.js} test file
+Create the ~Button-test.js~ file in the
+~<dir>/snapterest/source/components/__tests__/~ directory.
+
+#+NAME:Button-test file
+#+CAPTION[<Button-test.js File>]:The ~Button-test.js~ File
+#+BEGIN_SRC js :tangle snapterest/source/components/__tests__/Button-test.js :mkdirp yes
+jest.dontMock('../Button.react');
+
+describe('Button component', function () {
+    it('calls handler function on click', function () {
+        var React = require('react');
+        var TestUtils = require('react-addons-test-utils');
+        var Button = require('../Button.react');
+        var handleClick = jest.genMockFunction();
+
+        var button = TestUtils.renderIntoDocument(
+            <Button handleClick={handleClick} />
+        );
+
+        var buttonInstance = TestUtils.findRenderedDOMComponentWithTag(button, 'button');
+
+        TestUtils.Simulate.click(buttonInstance);
+
+        expect(handleClick).toBeCalled();
+
+        var numberOfCallsMadeIntoMockFunction = handleClick.mock.calls.length;
+
+        expect(numberOfCallsMadeIntoMockFunction).toBe(1);
+    });
+});
+#+END_SRC
+
+#+CINDEX:test the @file{Button} component
+#+CINDEX:test event handler function
+The ~Button-test.js~ file will test our ~Button~ component, and specifically,
+check whether it triggers the event handler function when you click on it.
+Without further ado, let's focus on the =calls handler function on click= spec
+implementation.
+
+{{{subheading(Imports)}}}
+
+First, we're importing React with the add-ons module and our ~Button~
+component.  As usual, we tell Jest not to mock the ~Button~ component.
+
+*** Implementing the ~Button-test~ Spec
+
+Before we continue with implementing our spec, let's talk about how we're going
+to implement it.  The plan is to:
+
+   #+CINDEX:mock function
+1. Generate a mock function;
+
+2. Render the ~Button~ component instance with our mock function that imitates
+   a click handler;
+
+3. Find the instance of our rendered ~Button~ component;
+
+   #+CINDEX:simulate click event
+4. Simulate a click event on that component instance;
+
+5. Check whether a click event handler function was triggered;
+
+6. Check whether our mock function was called exactly once.
+
+
+#+CINDEX:@code{genMockFunction()} function
+#+CINDEX:mock function
+Generate a mock function using the ~genMockFunction()~ function.  This function
+returns the newly generated Jest mock function, which we name ~handleClick~.
+
+Next, we render the instance of our ~Button~ component to the DOM.  This
+~Button~ component instance receives our mock ~handleClick~ function as a
+property.
+
+#+CINDEX:@code{button} tag
+#+CINDEX:@code{findRenderedDOMComponentWithTag()} method
+Then we find the ~Button~ component instance rendered to the DOM.  The
+~TestUtils.findRenderedDOMComponentWithTag()~ method finds one instance of the
+~Button~ component that is rendered as a ~button~ tag.  We store that instance
+in the ~buttonInstance~ variable.
+
+#+CINDEX:simulate click event
+#+CINDEX:@code{Simulate.click()} method
+#+CINDEX:@code{TestUtils.Simulate} event methods
+Next, we simulate a click on that component instance using
+~TestUtils.Simulate.click()~ method, which simulates an event dispatch on a DOM
+node.  For our purposes, we need to simulate a click event dispatch.  For this,
+we need to call the above method and pass the ~buttonInstance~ as a DOM node
+element.  ~TestUtils.Simulate~ provides an event method such as ~click()~ for
+all events supported by React.
+
+*** Counting Events
+
+#+CINDEX:count events
+#+CINDEX:@code{toBeCalled()} function
+Finally, we create an expectation, ~expect(handleClick).toBeCalled()~.  We
+expect our ~handleClick~ mock function to be called at least once during our
+test.
+
+#+CINDEX:@code{mock} property
+#+CINDEX:@code{mock.calls} property
+#+CINDEX:@code{calls} property on @code{mock}
+What we also want to check is whether it's called exactly once.  How do we
+check the number of calls made into our ~handleClick~ mock function?  All the
+Jest mock functions have a special =mock= property that stores all the data
+about how the mock function was called.  We'll take a look at our ~handleClick~
+mock function's =mock= property to find out how many times ~handleClick~ was
+called: ~mock.calls.length~.  The =mock= property has the =calls= property,
+which is an array that represents all the calls that have been made into our
+~handleClick~ mock function.  The length of that array will be the number of
+calls made into ~handleClick~.  We store this number in the
+~numberOfCallsMadeIntoMockFunction~ variable and then create another
+expectation: ~toBe(1)~.  We expect the number of calls made into our mock
+function to be exactly 1.
+
+*** Adding a Babel Preprocessor
+
+#+CINDEX:JSX and Jest
+#+CINDEX:Jest and JSX
+#+CINDEX:preprocessor, Babel and Jest
+#+CINDEX:@file{babel-jst} module
+#+CINDEX:@code{jest} property, @file{package.json}
+#+CINDEX:@file{package.json}, @code{jest} property
+Right now, we've finished creating our tests.  However, we can't run them yet.
+We're testing the React components written in the JSX syntax, but Jest doesn't
+understant the JSX syntax.  So, if you run the {{{command(npm test)}}} command
+now, both the component tests will fail and report =SyntaxError=.  What we need
+to do is to configure Jest in order to use a preprocessor provided by the
+~babel-jest~ module.  Add the ~jest~ property to your
+~<dir>/snapterest/package.json~ file.[fn::Updated the property per Jest's
+warning]
+
+#+BEGIN_EXAMPLE
+jest = {
+    "transform": {".*": "<rootDir>/node_modules/babel-jest"},
+    "unmockedModulePathPatterns": [ "<rootDir>/node_modules/react" ]
+};
+#+END_EXAMPLE
+
+#+NAME:add babel preprocessor for jest to package.json
+#+CAPTION[<jest-preprocessor>]:Adding the Babel Proprocessor to Jest
+#+HEADER: :eval query
+#+HEADER: :results output
+#+HEADER: :exports both
+#+HEADER: :dir snapterest
+#+BEGIN_SRC js
+var fs = require('fs');
+var p = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+p.jest = {
+    "transform": {".*": "<rootDir>/node_modules/babel-jest"},
+    "unmockedModulePathPatterns": [ "<rootDir>/node_modules/react" ]
+};
+p = JSON.stringify(p,null,2);
+fs.writeFileSync('package.json', p);
+console.log(p);
+#+END_SRC
+
+#+RESULTS: add babel preprocessor for jest to package.json
+#+begin_example
+{
+  "name": "snapterest",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-jest": "^24.5.0",
+    "babelify": "^6.2.0",
+    "browserify": "^16.2.3",
+    "gulp": "^4.0.0",
+    "jest-cli": "^24.5.0",
+    "vinyl-source-stream": "^2.0.0"
+  },
+  "dependencies": {
+    "react": "0.14.8",
+    "react-dom": "0.14.8",
+    "snapkite-stream-client": "^1.0.3"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "jest": {
+    "transform": {
+      ".*": "<rootDir>/node_modules/babel-jest"
+    },
+    "unmockedModulePathPatterns": [
+      "<rootDir>/node_modules/react"
+    ]
+  }
+}
+#+end_example
+
+Install ~babel-jest~:
+: npm install --save-dev babel-jest
+
+[[shell:(cd%20snapterest;%20yarn%20add%20babel-jest%20--dev;)][yarn add babel-jest --dev]]
+
+#+CINDEX:@code{unmockedModulePathPatterns}
+If you are curious about what ~unmockedModulePathPatterns~ does, then go to
+https://facebook.github.io/jest/docs/api.html#config-unmockedmodulepathpatterns-array-string.
+
+*** Testing React Components
+
+Now it's time to run all our tests.  Navigate to ~<dir>/snapterest/~ and run
+the command:
+: npm test
+
+[[shell:(cd%20snapterest;%20yarn%20test;)][yarn test]]
+
+All your test suites should PASS.
+
 ** Summary
+
+Now you know how to create the React components and unit test them.
+
+In this chapter you learned the essentials of Jest; the unit testing framework
+from Facebook that works well with React.  We discussed the test suits, specs,
+expectations, and matchers.  We created mock and simulated click events.
+
+In the next chapter we'll learn the essentials of the Flux architecturem, and
+how to improve the maintainability of our React application.
 
 * Supercharge Your React Architecture With Flux
 
