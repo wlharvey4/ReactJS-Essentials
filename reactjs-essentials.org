@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-12 Tue 13:33>
+#+DATE: <2019-03-12 Tue 20:11>
 
 #+TEXINFO: @insertcopying
 
@@ -5772,6 +5772,262 @@ another one!
 
 ** Creating Multiple Specs and Expectations
 
+#+CINDEX:collection utility module
+#+CINDEX:@file{CollectionUtils.js} file
+#+CINDEX:@file{snapterest/source/utils/} directory
+This time, we'll create and test the collection utility module.  Create the
+~CollectionUtils.js~ file in the ~<dir>/snapterest/source/utils/~ directory:
+
+#+NAME:CollectionUtils module
+#+CAPTION[<CollectionUtils Module>]:The ~CollectionUtils~ Module for Testing
+#+BEGIN_SRC js :tangle snapterest/source/utils/CollectionUtils.js :mkdirp yes
+function getNumberOfTweetsInCollection (collection) {
+    var TweetUtils = require('./TweetUtils');
+    var listOfCollectionTweetIds = TweetUtils.getListOfTweetIds(collection);
+
+    return listOfCollectionTweetIds.length;
+}
+
+function isEmptyCollection (collection) {
+    return (getNumberOfTweetsInCollection(collection) === 0);
+}
+
+module.exports = {
+    getNumberOfTweetsInCollection,
+    isEmptyCollection
+};
+
+#+END_SRC
+
+#+CINDEX:@code{getNumberOfTweetsInColelction()} function
+#+CINDEX:@code{isEmptyCollection()} function
+The ~CollectionUtils~ module has two functions:
+- ~getNumberOfTweetsInCollection()~
+- ~isEmptyCollection()~
+
+{{{heading(Describing the ~getNumberOfTweetsInCollection()~ Function)}}}
+
+First, let's discuss ~getNumberOfTweetsInCollection()~.  This function requires
+the ~TweetUtils~ module as a dependency.  It then calls the
+~getListOfTweetIds()~ function and passes the =collection= object as a
+parameter.  The result return by ~getListOfTweetIds()~ is stored in the
+~listOfCollectionTweetIds~ variable, and since it's an array,
+~getNumberOfTweetsInCollection()~ returns a =length= property of that array.
+
+{{{heading(Describing the ~isEmptyCollection()~ Function)}}}
+
+Now, let's take a look at the ~isEmptyCollection()~ function.  It reuses the
+~getNumberOfTweetsInCollection()~ function that we just discussed.  It checks
+whether the result returned by a call to ~getNumberOfTweetsInCollection()~ is
+equal to zero.  Then it returns the result of that check, which is either true
+or false.
+
+Finally, we export both the functions from this module.
+
+*** Testing the ~CollectionUtils~ Module
+
+We just created our ~CollectionUtils~ module.  Our next task is to test it.
+
+#+CINDEX:@file{CollectionUtils-test.js} file
+Inside the ~<dir>/snapterest/source/utils/__tests__/~ directory, create the
+following ~CollectionUtils-test.js~ file:
+
+#+NAME:CollectionUtils-test file
+#+CAPTION[<CollectionUtils-test File>]:The ~CollectionUtils-test~ File
+#+BEGIN_SRC js :tangle snapterest/source/utils/__tests__/CollectionUtils-test.js :mkdirp yes
+jest.autoMockOff();
+
+describe('Collection utilities module', function () {
+    var CollectionUtils = require('../CollectionUtils');
+    var collectionTweetsMock = {
+        collectionTweet7: {},
+        collectionTweet8: {},
+        collectionTweet9: {}
+    };
+
+    it('returns a number of tweets in collection', function getNumberOfTweetsInCollection () {
+        var actualNumberOfTweetsInCollection = CollectionUtils.
+            getNumberOfTweetsInCollection(collectionTweetsMock);
+        var expectedNumberOfTweetsInCollection = 3;
+
+        expect(actualNumberOfTweetsInCollection).toBe(expectedNumberOfTweetsInCollection);
+    });
+
+    it('checks if collection is not empty', function isNotEmptyCollection () {
+        var actualIsEmptyCollectionValue = CollectionUtils.isEmptyCollection(collectionTweetsMock);
+
+        expect(actualIsEmptyCollectionValue).toBeDefined();
+        expect(actualIsEmptyCollectionValue).toBe(false);
+        expect(actualIsEmptyCollectionValue).not.toBe(true);
+
+    });
+});
+#+END_SRC
+
+The ~CollectionUtils-test.js~ is a bigger test suite than the one we created
+earlier.  There are quite a few things to learn from it.  Let's discuss it in
+detail.
+
+*** No Automatic Mocking
+
+#+CINDEX:mock automatically
+#+CINDEX:@code{dontMock()}
+#+CINDEX:@code{mock()}
+#+CINDEX:@code{autoMockOff()}
+#+CINDEX:@code{autoMockOn()}
+The first thing that we need to do is to tell Jest not to mock automatically.
+What does it mean to mock automatically?  In the testing environment, Jest
+replaces your usual ~require()~ function with its own version.  Jest's version
+of ~require()~ function loads the real module and replaces that module with its
+mock version.  As a result, none of the ~require()~ function calls will work as
+expected in our testing environment, not even the ones that are used to import
+the dependency modules inside a module that we are testing.  This means that
+for the module that we want the test work, we need to call ~jest.dontMock()~
+for that module, and then for each module that it depends on.  There can be a
+large numberr of dependency modules.  So instead of calling ~jest.dontMock()~
+too many times, we can reverse the situation by called the ~jest.autoMockOff()~
+method.  Now Jest won't mock by default, which means that we will need to
+explicitly call the ~jest.mock()~ method for each module that we want to mock.
+
+In ~CollectionsUtils-test.js~, we only import the two modules ~CollectionUtils~
+and its dependency module ~TweetUtils~.  So a less efficient alternative to
+~jest.autoMockOff()~ would be as follows:
+
+: jest.dontMock('../CollectionUtils');
+: jest.dontMock('../TweetUtils');
+
+Once you call ~jest.autoMockOff()~ to turn the automatic mocking off, you can
+then call ~jest.autoMockOn()~ to turn it back on later in your code.
+
+*** Define the Test Suite with ~describe()~
+
+#+CINDEX:@samp{Collection utilities module} description
+#+CINDEX:@code{describe()} function
+#+CINDEX:@code{collectionTweetsMock} object
+After taking care of turning off the automatic mocking, we define our test
+suite using ~describe()~.  We give it a name =Collection utilities module=
+since it describes exactly what module we're testing.  Now let's take a look at
+the implementation of this test suite.  Instead of immediately defining specs
+like we did in our previous test suite, we're importing the ~CollectionUtils~
+module and creating the =collectionTweetsMock= object.  So, are we allowed to
+do that?  Absolutely.  The test suite implementation function is just another
+JavaScript function, where we can do some work before we define our test specs.
+
+#+CINDEX:specs, implementing
+#+CINDEX:@code{collectionTweetsMock} object
+This test suite will implement more than one spec.  All of them will use the
+=collectionTweetsMock= object, so it makes sense to define it outside the
+specs' scope and reuse it inside the specs.  As you might have already guessed,
+the =collectionTweetsMock= object imitates a collection of tweets.
+
+Now, let's implement the individual specs.  Our first spec tests whether the
+~CollectionUtils~ module returns a number of tweets in the collection.  We
+first get the actual number of tweets in our mock collection.  For this, we
+call the ~getNumberOfTweetsInCollection()~ function and pass the
+~collectionTweetsMock~ object to it.  Then we define the number of expected
+tweets in our mock collection.  Finally, we call the ~expect()~ global function
+to create an expectation.  We use the ~toBe()~ matcher function to match the
+actual value and the expected one.
+
+*** Running Tests and Learning About Failing Tests
+
+If you now run the {{{command(npm test)}}} command, you will see that both the
+test suites pass.
+
+[[shell:(cd%20snapterest;%20yarn%20test;)][Test Collection utilities module]]
+
+How about running a little evil experiment?
+
+Open your ~<dir>/snapterest/source/utils/CollectionUtils.js~ file and inside
+the ~getNumberOfTweetsInCollection()~ function, to the following line of code:
+: return listOfCollectionTweetIds.length;
+
+Now change it to this:
+: return listOfCollectionTweetIds.length + 1;
+
+That this tiny update will do is return an incorrect number of tweets in any
+given collection.  Now run {{{command{npm test)}}} one more time.  You should
+see that all of your specs in ~CollectionUtils-test.js~ have failed.  Here is
+the one we're interested in.
+
+#+BEGIN_EXAMPLE
+yarn run v1.13.0
+$ jest
+FAIL source/utils/__tests__/CollectionUtils-test.js
+  ● Collection utilities module › returns a number of tweets in collection
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 3
+    Received: 4
+
+      14 |         var expectedNumberOfTweetsInCollection = 3;
+      15 | 
+    > 16 |         expect(actualNumberOfTweetsInCollection).toBe(expectedNumberOfTweetsInCollection);
+         |                                                  ^
+      17 |     });
+      18 | 
+      19 |     it('checks if collection is not empty', function isNotEmptyCollection () {
+
+      at Object.toBe (source/utils/__tests__/CollectionUtils-test.js:16:50)
+
+PASS source/utils/__tests__/TweetUtil-test.js
+
+Test Suites: 1 failed, 1 passed, 2 total
+Tests:       1 failed, 2 passed, 3 total
+Snapshots:   0 total
+Time:        0.932s, estimated 1s
+Ran all test suites.
+error Command failed with exit code 1.
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+#+END_EXAMPLE
+
+We haven't seen a failing test before, so let's take acloser look at what it's
+trying to tell us.  First, it gives us the bad news that the
+~CollectionUtils-test.js~ test has failed.  Then, it tells us in a
+human-friendly manner what we were testing.  Then, what went wrong; the
+unexpected test result.  Finally, Jest prints a stack trace that should give us
+enough technical details to quickly identify what part of our code has produced
+the unexpected result.
+
+Don't forget to revert the file to its original value.
+
+*** Implementing Multiple Specs in a Test Suite
+
+The distinct difference between our previous test suite and
+~CollectionUtils-test.js~ is the number of specs.  A test suite in Jest can
+have many specs that test different methods of a single module.  Our
+~CollectionUtils~ module has two methods.  Our test suite for it will have
+three specs.  Let's discuss the other two.
+
+Our next spec in ~CollectionUtils-test.js~ checks whether the collection is not
+empty.  First, we call the ~isEmptyCollection()~ method and pass the
+~collectionTweetsMock~ object to it.  We store the result in the
+~actualIsEmptyCollectionValue~ variable.  Notice how we're reusing the same
+~collectionTweetsMock~ object as in our previous spec?
+
+#+CINDEX:expectations
+#+CINDEX:@code{toEqual()}
+#+CINDEX:@code{toBeDefined()}
+#+CINDEX:@code{toBe(false)}
+#+CINDEX:@code{not.toBe(true)}
+Next, we create not one but three expectations.  You might have already guessed
+what we're expecting from our ~actualIsEmptyCollectionValue~.  We expect it to
+be defined.  This means that the ~isEmptyCollection()~ function must return
+something other than =undefined=.  We expect its value to be =false=.  Earlier,
+we used the ~toEqual()~ matcher function to compare the arrays.  ~toEqual()~
+does a deep comparison, which is perfect for comparing arrays, but it is an
+overkill for primitive values such as =false=.
+
+Finally, we expect ~actualIsEmptyCollectionValue~ not to be true.  The ~.not~
+inverses the next comparison.  It matches the expectation with the inverse of
+~toBe(true)~ with =false=.  Notice that ~toBe(false)~ and ~not.toBe(true)~
+produce the same result.
+
+Only when all three expectations are met does this spec pass.
+
+So far we've tested the utility modules, but how do you test the React
+components with Jest?  Let's find out next.
 ** Testing React Components
 
 ** Summary
