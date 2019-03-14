@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-13 Wed 11:40>
+#+DATE: <2019-03-13 Wed 21:01>
 
 #+TEXINFO: @insertcopying
 
@@ -239,6 +239,18 @@ spam.)
 
 - From [[https://github.com/jmrog/react-essentials-es6-version][Jason Roger]]
 
+** Set Variables
+
+#+NAME:use quick and dirty
+#+HEADER: :eval query
+#+HEADER: :exports results
+#+HEADER: :results silent
+#+BEGIN_SRC elisp
+(setq org-babel-use-quick-and-dirty-noweb-expansion t)
+#+END_SRC
+
+
+
 * Installing Powerful Tools for your Project
 
 #+CINDEX:Kettering, Charles
@@ -379,17 +391,19 @@ get your tools ready.  For this project, we will be using a number of tools.
 
 #+CINDEX:install Node.js
 #+CINDEX:Jest
-Install Node.js.  We'll be using version =v0.10.40= because, at the time
-of writing this book, that's the latest version of Node.js that Jest
-supports.[fn::The current versions of Node.js as of the publication of
-this document ({{{date}}}) are =10.15.2 LTS= and =11.10.1 Current=.  The
-current version of Jest is =24.1=, which appears to work with the current
-version of Node.js and React.]
+Install Node.js.  We'll be using version =v0.10.40=[fn::The currently installed
+version of Node.js as of {{{date}}} is src_sh[:eval query :exports
+results]{node -v}.] because, at the time of writing this book, that's the
+latest version of Node.js that Jest supports.[fn::The currently available
+versions of Node.js as of the publication of this document ({{{date}}}) are
+=10.15.3 LTS= and =11.11.0 Current=.  The current version of Jest is =24.1=,
+which appears to work with the current version of Node.js and React.]
 
 #+CINDEX:distribution, Node.js
 #+CINDEX:installation package, Node.js
 - Go to http://nodejs.org/dist/v0.10.40/ and download the installation package
-  for your OS:
+  for your OS[fn::One can also use NVM (Node Version Manager) to install a
+  particular Node.js version. ([[https://github.com/creationix/nvm][NVM on Github]])]:
 
     #+CINDEX:OS X
   - [[http://nodejs.org/dist/v0.10.40/node-v0.10.40-darwin-x64.tar.gz][OS X]]:[fn::Created 09-Jul-2015 21:30] ::
@@ -401,14 +415,15 @@ version of Node.js and React.]
 
 
 {{{subheading(npm Should Be Installed with Node.js)}}}
-  #+CINDEX:npm, installation
-- [[http://www.npmjs.com][npm]][fn::Current npm version is =6.8.0= as of {{{date}}}] ::
 
-  #+CINDEX:package manager, npm
-  is a package manager that manages Node.js modules.  It is shipped with
-     Node.js, so it was installed by the previous step.  To test:
+#+CINDEX:npm, installation
+#+CINDEX:package manager, npm
+[[http://www.npmjs.com][npm]] is a package manager that manages Node.js modules.  It is shipped with
+Node.js, so it was installed by the previous step.  To test:
      : $ npm -v
      : 1.4.28
+     [fn::Currently installed npm version as of {{{date}}} is src_sh[:eval
+     query :exports results]{npm -v}]
 
 ** Installing Git
 
@@ -418,7 +433,12 @@ version of Node.js and React.]
 <<install-git>>We'll be using Git to install Node.js modules.  Visit:
 - [[https://git-scm.com/book/en/v2/Getting-Started-Installing-Git][{{{cite(1.5 Getting Started - Installing Git)}}}]]
 
-{{{noindent}}}and follow the installation instructions for your OS.
+{{{noindent}}}and follow the installation instructions for your OS.  [fn::Git
+can also be installed using Homebrew or from the
+{{{command(git-osx-installer)}}} found at
+[[https://sourceforge.net/projects/git-osx-installer/]].  The current version of
+git installed is src_sh[:eval query :exports results]{git --version} using the
+{{{command(git-osx-installer)}}}.]
 
 ** Getting Data from the Twitter Streaming API
 
@@ -490,12 +510,33 @@ We need to filter the stream of data from the Twitter Streaming API into a
 meaningful set of tweets that we can display and interact with.
 
 #+CINDEX:Twitter Streaming API documentation
-You should first take a quick look at the [[https://dev.twitter.com/streaming][Twitter Streaming API documentation]].
-In particular take a look at the page that describes how to [[https://dev.twitter.com/streaming/reference/post/statuses/filter][filter]] an incoming
-stream.  Twitter provides very few filters that we can apply, so we need to
-find a way to filter that stream of data even further.
+You should first take a quick look at the [[https://dev.twitter.com/streaming][Twitter Streaming API]] [fn::no longer
+exists.] documentation[fn::See [[*My Notes][My Notes]] for some current documentation.].  In
+particular take a look at the page that describes how to [[https://dev.twitter.com/streaming/reference/post/statuses/filter][filter]] [fn::no longer
+exists.] an incoming stream.  Twitter provides very few filters that we can
+apply, so we need to find a way to filter that stream of data even further.
 
-{{{heading(Snapkite Engine)}}}
+*** My Notes
+
+- [[https://developer.twitter.com/en/docs][Developer Docs]]
+- [[https://developer.twitter.com/en/docs/tutorials][Tutorials]]
+- [[https://developer.twitter.com/en/docs/tweets/filter-realtime/overview][Filter realtime Tweets]]
+- [[https://developer.twitter.com/en/docs/tutorials/consuming-streaming-data][Consuming streaming data]]
+- [[https://developer.twitter.com/en/docs/api-reference-index][API reference index]]
+- [[https://twitter.com/TwitterDev/status/1067094924124872705][Video on building with Twitter apps]]
+- [[https://twittercommunity.com][Forums]]
+
+Many changes have been made to the Twitter API.  Perhaps of most importance is
+something that occurred on June 12, 2018:
+#+BEGIN_QUOTE
+Today, we started requiring that you whitelist the [[https://developer.twitter.com/en/docs/basics/callback_url][callback URLs]] that you use
+with the Sign in with Twitter process. You can read more about this update
+here.
+#+END_QUOTE
+There have been many deprecations as well.  At this point I will need to review
+the tutorials and docs and then begin to investigate the state of the app.
+
+** Snapkite Engine
 
 #+CINDEX:Snapkite Engine Node.js application
 #+CINDEX:Twitter Streaming API, filter engine for
@@ -3388,8 +3429,10 @@ Navigate to ~<dir>/snapterest/source/components/~ and create the
 
 #+NAME:StreamTweet component
 #+CAPTION[<StreamTweet Component>]:The ~StreamTweet~ Component (~StreamTweet.react.js~)
-#+HEADER: :noweb tangle :mkdirp yes
-#+BEGIN_SRC js :tangle snapterest/source/components/StreamTweet.react.js
+#+HEADER: :noweb no-export
+#+HEADER: :comments both
+#+HEADER: :tangle snapterest/source/components/StreamTweet.react.js :mkdirp yes
+#+BEGIN_SRC js
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Header = require('./Header.react');
@@ -3478,7 +3521,6 @@ getInitialState: function () {
         headerText: null
     });
 },
-
 #+END_SRC
 
 In our ~StreamTweet~ component's ~getInitialState()~ method, we will perform
