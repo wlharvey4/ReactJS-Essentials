@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-13 Wed 22:40>
+#+DATE: <2019-03-14 Thu 09:01>
 
 #+TEXINFO: @insertcopying
 
@@ -249,8 +249,6 @@ spam.)
 (setq org-babel-use-quick-and-dirty-noweb-expansion t)
 #+END_SRC
 
-
-
 * Installing Powerful Tools for your Project
 
 #+CINDEX:Kettering, Charles
@@ -447,8 +445,11 @@ git installed is src_sh[:eval query :exports results]{git --version} using the
 #+CINDEX:tweets, receive public
 #+CINDEX:JSON format, tweets
 <<twitter-streaming>>The data for our React application will come from Twitter.
-Twitter has the *Streaming API* that anyone can plug into to start receiving an
-endless flow of public tweets in the JSON format.
+Twitter has the *Streaming API*[fn::The =User Stream= and =Site Stream= have
+been discontinued in favor of =Activity Stream=.  See [[https://twittercommunity.com/t/details-and-what-to-expect-from-the-api-deprecations-this-week-on-august-16-2018/110746][Details and what to
+expect from the API deprecations this week on August 16 2018]].] that anyone can
+plug into to start receiving an endless flow of public tweets in the JSON
+format.
 
 {{{heading(Using the Twitter Streaming API)}}}
 
