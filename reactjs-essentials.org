@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-13 Wed 21:01>
+#+DATE: <2019-03-13 Wed 22:40>
 
 #+TEXINFO: @insertcopying
 
@@ -516,15 +516,22 @@ particular take a look at the page that describes how to [[https://dev.twitter.c
 exists.] an incoming stream.  Twitter provides very few filters that we can
 apply, so we need to find a way to filter that stream of data even further.
 
-*** My Notes
-
-- [[https://developer.twitter.com/en/docs][Developer Docs]]
-- [[https://developer.twitter.com/en/docs/tutorials][Tutorials]]
-- [[https://developer.twitter.com/en/docs/tweets/filter-realtime/overview][Filter realtime Tweets]]
-- [[https://developer.twitter.com/en/docs/tutorials/consuming-streaming-data][Consuming streaming data]]
-- [[https://developer.twitter.com/en/docs/api-reference-index][API reference index]]
-- [[https://twitter.com/TwitterDev/status/1067094924124872705][Video on building with Twitter apps]]
-- [[https://twittercommunity.com][Forums]]
+*** TODO My Notes [0/13]
+- [ ] [[https://developer.twitter.com/en/docs][Developer Docs]]
+- [ ] [[https://developer.twitter.com/en/docs/tutorials][Tutorials]]
+- [ ] [[https://developer.twitter.com/en/docs/tweets/filter-realtime/overview][Filter realtime Tweets]]
+- [ ] [[https://developer.twitter.com/en/docs/tutorials/consuming-streaming-data][Consuming streaming data]]
+- [ ] [[https://developer.twitter.com/en/docs/api-reference-index][API reference index]]
+- [ ] [[https://twitter.com/TwitterDev/status/1067094924124872705][Video on building with Twitter apps]]
+- [ ] [[https://twittercommunity.com][Forums]]
+- [ ] [[https://streamdata.io/blog/understand-twitter-streaming-api/][Understanding The Current State of The Twitter Streaming API]]
+- [ ] [[https://streamdata.io/blog/tag/twitter/][Posts Tagged with Twitter]]
+- [ ] [[https://streamdata.io/blog/twitter-api-deprecations/][Preparing For Latest Rounds Of Twitter API Deprecations]]
+- [ ] [[https://streamdata.io/blog/deprecated-event-types/][Upcoming Deprecated Event Types With The Twitter API]]
+- [ ] [[https://github.com/KyleAMathews/reactjs-twitter-stream-example][reactjs-twitter-stream-example]]
+- [ ] [[https://dzone.com/articles/how-to-use-twitter-api-using-nodejs][How to Use Twitter API With Node.js]] A step-by-step tutorial of using
+  Node.js to communicate with Twitter via the Twit NPM package, including
+  setup.
 
 Many changes have been made to the Twitter API.  Perhaps of most importance is
 something that occurred on June 12, 2018:
