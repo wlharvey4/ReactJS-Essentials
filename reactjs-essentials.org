@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-14 Thu 09:01>
+#+DATE: <2019-03-15 Fri 11:39>
 
 #+TEXINFO: @insertcopying
 
@@ -6429,6 +6429,148 @@ In the next chapter we'll learn the essentials of the Flux architecturem, and
 how to improve the maintainability of our React application.
 
 * Supercharge Your React Architecture With Flux
+
+#+CINDEX:development process, stop
+The process of building a web application has one quality that somewhat mirrors
+the process of evolution of life itself: it never ends.  Unlike building a
+bridge, building a web application has no natural state that represents the end
+of the development process.  It's up to you or your team to decide when you
+should stop the development process and release what you've already built.
+
+In this book, we have reached the point at which we can stop developing
+Snapterest.  We now have a small React.js application with basic functionality
+that simply works.
+
+Isn't that enough?
+
+#+CINDEX:maintain, web application
+Not exactly.  Earlier in this book, we discussed how the process of maintaining
+your web applications is much more expensive in terms of time and effort than
+the process of developing it.  If we choose to finish developing Snapterest at
+its current state, we'll also choose to start the process of maintaining it.
+
+Are we ready for maintaining Snapterest?  Do we know if its current state will
+allow us to introduce a new functionality later on without any significant code
+refactoring?
+
+** Analyzing Your Web Application's Architecture
+
+#+CINDEX:architecture, web application
+To answer these questions, let's zoom away from the implementation details and
+explore our application's architecture:
+
+- The ~app.js~ file renders our ~Application~ component
+- The ~Application~ component manages a collection of tweets and renders our
+  ~Stream~ and ~Collection~ components
+- The ~Stream~ component receives the new tweets from the
+  ~SnapkiteStreamClient~ library and renders the ~StreamTweet~ and ~Header~
+  components
+- The ~Collection~ component renders the ~CollectionControls~ and ~TweetList~
+  components
+
+
+#+CINDEX:data flow
+Stop right there.  Can you tell how data flows inside our application?  Do you
+know where it enters our application?  How does a new tweet end up in our
+collection?  Let's examine our data flow more closely:
+
+{{{subheading(How Data Flows)}}}
+
+1. We use the ~SnapkiteStreamClient~ library to receive a new tweet inside a
+   ~Stream~ componnent.
+2. This new tweet is then passed from ~Stream~ to the ~StreamTweet~ component.
+3. The ~StreamTweet~ component passes it to the ~Tweet~ component, which
+   renders the tweet image.
+4. A user clicks on that tweet image to add it to its collection.
+5. The ~Tweet~ component passes the ~tweet~ object to the ~StreamTweet~
+   component via the ~handleImageClick(tweet)~ callback function.
+6. The ~StreamTweet~ component passes that ~tweet~ object to the ~Stream~
+   component via the ~onAddTweetToCollection(tweet)~ callback function.
+7. The ~Stream~ component passes that ~tweet~ object to the ~Application~
+   component via the ~onAddTweetToCollection(tweet)~ callback function.
+8. The ~Application~ component adds ~tweet~ to the ~collectionTweets~ object
+   and updates its state.
+9. The state update triggers the ~Application~ component to re-render, which in
+   turn re-renders the ~Collection~ component with an updated collection of
+   tweets.
+10. Then, the child components of the ~Collection~ component can mutate our
+    collection of tweets as well.
+
+
+Do you feel confused?  Can you rely on this architecture in the long run?  Do
+you think it's easily maintainable?  I don't think so.
+
+*** Identifying the Key Problems with the Architecture
+
+Let's identify the key problems with our current architecture.  We can see that
+the new data enters our React application via the ~Stream~ component.  It then
+travels all the way down to the ~Tweet~ component in the component hierarchy.
+Then it travels all the way up to the ~Application~ component, where it's
+stored and managed.
+
+#+CINDEX:store data
+#+CINDEX:data store
+Why do we store and manage our collection tweets in the ~Application~
+component?  Because ~Application~ is a parent component for two other
+components: ~Stream~ and ~Collection~.  Both of them need to be able to mutate
+our collection tweets.  In order to accommodate this, our ~Application~
+component needs to pass callback functions to both the components:
+
+- The ~Stream~ component ::
+     : Stream onAddTweetToCollection={this.addTweetToCollection} />
+
+- The ~Collection~ component ::
+     : <Collection
+     :    tweets={this.state.collectionTweets}
+     :    onRemoveTweetFromCollection={this.removeTweetFromCollection}
+     :    onRemoveAllTweetsFromCollection={this.removeAllTweetsFromCollection}
+     : />
+
+
+The ~Stream~ component gets the ~onAddTweetToCollection()~ method to add a
+tweet to the collection.  The ~Collection~ component gets the
+~onRemoveTweetFromCollection()~ method to remove a tweet from the collection,
+and the ~onRemoveAllTweetsFromCollection()~ methods to remove all the tweets
+from the collection.
+
+These callback methods are then propagated down to the component hierarchy
+until they reach some component that actually calls them.  In our application,
+the ~onAddTweetToCollection()~ method is only called in the ~Tweet~ component.
+Let's take a look at how many times it needs to be passed from one component to
+another before it can be called ion a ~Tweet~ component:
+
+: Application -> Stream -> StreamTweet -> Tweet
+
+~onAddTweetToCollection()~ is not used in the ~Stream~ and ~StreamTweet~
+components, yet both of them get it as a property for the purpose of passing it
+down to their child components.
+
+*** A Maintenance Nightmare in the Making
+
+Snapterest is a small React applicationm, so this problem is reather an
+inconvenience, but later on, if you decide to add new features, this
+inconvience will quickly become a maintenance nightmare:
+
+: Application -> ComponentA -> ComponentB -> ComponentC -> ComponentD ->
+: ComponentE -> ComponentF -> ComponentG -> Tweet
+
+To prevent this from happening, we're going to solve two problems:
+
+1. We'll change hos the new data enters our application
+2. We'll change how the components get and set data
+
+
+We'll rethink how data flows inside our application with the help of Flux.
+
+** Understanding Flux
+
+** Creating a Dispatcher
+
+** Creating an Action Creator
+
+** Creating a Store
+
+** Summary
 
 * Prepare Your React Application for Painless Maintenance with Flux
 
