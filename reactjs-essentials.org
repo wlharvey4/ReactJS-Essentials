@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-15 Fri 11:39>
+#+DATE: <2019-03-16 Sat 11:00>
 
 #+TEXINFO: @insertcopying
 
@@ -6564,13 +6564,381 @@ We'll rethink how data flows inside our application with the help of Flux.
 
 ** Understanding Flux
 
+#+CINDEX:Flux
+#+CINDEX:scalable client-side applications, how to build
+{{{dfn(Flux)}}} ([[*Flux][Flux]]) is the application architecture from Facebook that
+complements React.  It's not a framework or a library, but rather a solution to
+a common problem: how to build scalable client-side applications.
+
+#+CINDEX:data flow, single direction
+With the Flux architecture, we can rethink how data flows inside our
+application.  Flux makes sure that all our data flows only in a /single
+direction/.  This helps us reason about how our application works, regardless
+of how small or large it is.  With Flux, we can add a new functionality without
+exploding our application's complexity.
+
+#+CINDEX:one-way data flow
+You might have noticed that both React and Flux share the same core concept:
+one-way data flow.  That's why they naturally work well together.  We know how
+data flows inside a React component, but how does Flux implement the one-way
+data flow?
+
+{{{heading(The Logical Entities of Flux)}}}
+
+#+CINDEX:logical entities, Flux
+#+CINDEX:Action
+#+CINDEX:Dispatcher
+#+CINDEX:Stores
+#+CINDEX:Views
+With Flux, we separate the concerns of our application into four logical
+entities:
+
+- Actions
+- Dispatcher
+- Stores
+- Views
+
+
+{{{subheading(Actions in Flux)}}}
+
+#+CINDEX:@code{type} property, of action object
+{{{dfn(Actions)}}} are /objects/ that we create when our application's state
+changes.  For example, when our application receives a new tweet, we create a
+new action.  An action object has a =type= property that identifies what action
+it is and any other properties that our application needs to transition to a
+new state.
+
+Here is an example of an /action/ object:
+
+#+NAME:example-action
+#+CAPTION:An example of a Flux /action/ object
+#+BEGIN_SRC js
+var action = {
+    type: 'receive_tweet',
+    tweet: tweet
+};
+#+END_SRC
+
+This is an action of type =receive_tweet=, and it has the =tweet= property,
+which is a new tweet object that our application has received.  You can guess
+in which case this action is created by looking at its type.  For each new
+tweet that our application receives, it creates a =receive_tweet= action.
+
+{{{subheading(Dispatcher and Store in Flux)}}}
+
+Where does this action go?  What part of our application gets this action?
+Actions are /dispatched/ to *stores*.
+
+#+CINDEX:store
+#+CINDEX:dispatch
+{{{dfn(Stores)}}} are responsible for managing an application's data.  They
+provide methods for accessing that data, but not for changing it.  If you want
+to change data in stores, you have to /create and dispatch an action./
+
+#+CINDEX:dispatcher
+We know how to create an action, but how do we dispatch it?  You can use a
+dispatcher for this.  The {{{dfn(dispatcher)}}} is responsible for
+/dispatching/ all the actions to all stores:
+
+  #+CINDEX:register, store with dispatcher
+- It stores register with a dispatcher.  They provide a callback function.
+- All actions are dispatched by a dispatcher to all the stores that are
+  registered with it.
+
+
+#+CINDEX:data flow in Flux
+This is how our data flow works:
+
+: Actions -> Dispatcher -> Stores
+
+
+The dispatcher plays a role of a central element in our data flow.  All actions
+are dispatched by it.  Stores register with it.  All the actions are dispatched
+synchronously.  You can't dispatch an action in the middle of the previous
+action dispatch.  No action can skip the dispatcher in the Flux architecture.
 ** Creating a Dispatcher
+
+Now let's implement this data flow.  We'll start by creating a dispatcher
+first.  Facebook offers us its implementation of a dispatcher that we can
+reuse.  Let's take advantage of this.
+
+1. Navigate to the ~<dir>/snapterest/~ directory and run the following command:
+   : npm install --save flux
+
+   The ~flux~ module comes with a ~Dispatcher~ method that we'll be reusing.
+
+2. Next, create a new folder called ~dispatcher~ in our project's
+   ~<dir>/snapterest/source/dispatcher/~ directory.  Now create the
+   ~AppDispatcher.js~ file in it:
+
+#+BEGIN_SRC js :tangle snapterest/source/dispatcher :mkdirp yes
+var Dispatcher = require('flux').Dispatcher;
+module.exports = new Dispatcher();
+#+END_SRC
+
+First, we import ~Dispatcher~ provided by Facebook; then create, and export a
+new instance of it.  Now we can use this instance in our application.
+
+Next, we need a convenient way of creating and dispatching actions.  For each
+action, let's create a function that creates and dispatches that action.  These
+functions will be our action creators.
 
 ** Creating an Action Creator
 
+#+CINDEX:@code{actions} directory
+Let's create a new folder called ~actions~ in our project's
+~<dir>/snapterest/source/~ directory.  Then, create the
+~TweetActionCreators.js~ file in it.
+
+#+CINDEX:@code{TweetActionCreators.js} file
+#+NAME:TweetActionCreators module
+#+CAPTION[<TweetActionCreators Module>]:The ~TweetActionCreators~ Module
+#+BEGIN_SRC js :tangle snapterest/source/actions/TweetActionCreators.js :mkdir yes
+var AppDispatcher = require('../dispatcher/AppDispatcher');
+
+function receiveTweet(tweet) {
+    var action = {
+        type: 'receive_tweet',
+        tweet: tweet
+    };
+
+    AppDispatcher.dispatch(action);
+}
+
+module.exports = {
+    receiveTweet: receiveTweet
+};
+#+END_SRC
+
+#+CINDEX:action creator
+#+CINDEX:dispatcher
+#+CINDEX:@code{receiveTweet()} method
+#+CINDEX:@code{action} object
+#+CINDEX:@code{type} property of @code{action} object
+#+CINDEX:@code{receive_tweet} type property
+Our action creators will need a dispatcher to dispatch the actions.  We will
+import ~AppDispatcher~ that we created previously.  Then we create our first
+action creator ~receiveTweet()~.  This method takes the ~tweet~ object as an
+argument and creates the =action= object with a =type= property set to
+=receive_tweet=.  It also adds the =tweet= object to the =action= object, and
+now every store will receive this =tweet= object.
+
+#+CINDEX:@code{dispatch()} method of @code{AppDispatcher} object
+The ~receiveTweet()~ action creator dispatches our =action= object by calling
+the ~dispatch()~ method on the =AppDispatcher= object.  The ~dispatch()~ method
+dispatches the =action= object to all the stores registered with the
+=AppDispatcher= dispatcher.
+
+So far, we've created =AppDispatcher= and ~TweetActionCreators~.  Next, let's
+create our first store.
+
 ** Creating a Store
 
+#+CINDEX:stores in Flux, create
+#+CINDEX:data for React components, in stores
+Stores manage data in our Flux architecture.  They provide that data to the
+React components.  We're going to create a simple store that manages a new
+tweet that our application receives from Twitter.
+
+#+CINDEX:@code{stores} directory
+Create a new folder called ~stores~ in our project's ~<dir>/snapterest/source/~
+directory, then create the ~TweetStore.js~ file in it.
+
+#+CINDEX:@code{TweetStore.js} file
+#+NAME:TweetStore module
+#+CAPTION[<TweetStore Module>]:The ~TweetStore~ Module
+#+BEGIN_SRC js :tangle snapterest/source/stores/TweetStore.js :mkdirp yes
+var AppDispatcher = require('../dispatcher/AppDispatcher');
+var EventEmitter = require('events').EventEmitter;
+var assign = require('object-assign');
+
+var tweet = null;
+
+function setTweet (receivedTweet) {
+    tweet = receivedTweet;
+}
+
+function emitChange () {
+    TweetStore.emit('change');
+}
+
+var TweetStore = assign( {}, EventEmitter.prototype, {
+    addChangeListener: function (callback) {
+        this.removeListener('change', callback);
+    },
+
+    getTweet: function () {
+        return tweet;
+    }
+});
+
+function handleAction (action) {
+    if (action.type === 'receive_tweet') {
+        setTweet(action.tweet);
+        emitChange();
+    }
+}
+
+TweetStore.dispatchToken = AppDispatcher.register(handleAction);
+
+module.exports = TweetStore;
+#+END_SRC
+
+*** The Four Logical Parts to Implementing a Simple Store
+
+#+CINDEX:store parts
+The ~TweetStore.js~ file implements a simple store.  We can break it into four
+logical parts:
+
+- Importing dependency modules and creating private data and methods.
+- Creating the =TweetStore= object with public methods.
+- Creating an action handler and registering a store with a dispatcher.
+- Assigning ~dispatchToken~ to our =TweetStore= object and exporting it.
+
+
+**** I. Importing Dependencies and Creating Private Data and Methods
+
+#+CINDEX:register with a dispatcher
+#+CINDEX:@code{AppDispatcher} module
+#+CINDEX:@code{EventEmitter} class
+#+CINDEX:event listeners, add and remove
+In the first logical part of our store, we're simply importing the dependency
+modules that our store needs.  Because our store will need to register with a
+dispatcher, we import the ~AppDispatcher~ module.  Next, we import the
+~EventEmitter~ class to be able to add and remove event listeners from our
+store.
+
+#+CINDEX:@code{object-assign} module
+Finally, we import the ~object-assign~ module that copies the properties from
+multiple source objects to a single target object.  We need to install this
+module:
+: npm install --save object-assign
+
+Once we import all the dependencies, we then define the data that our store
+manages, a ~tweet~.  ~TweetStore~ manages a single tweet object that we
+initially set to =null= to identify that we didn't receive the new tweet yet.
+
+Next, we create two private methods, ~setTweet()~ and ~emitChange()~.  The
+~setTweet()~ method updates ~tweet~ with a =receivedTweet= object.  The
+~emitChange()~ method emts the =change= event on the =TweetStore= object.
+These methods are private to the ~TweetStore~ module and not accessible outside
+it.
+
+**** II. Creating the =TweetStore= Object with Public Methods
+
+#+CINDEX:@code{TweetStore} object, create
+#+CINDEX:events
+#+CINDEX:@code{change} event
+#+CINDEX:event listener
+#+CINDEX:@code{addChangeListener()} method
+#+CINDEX:@code{removeChangeListener()} method
+The second logical part of the ~TweetStore.js~ file is creeating the
+=TweetStore= object.  We want the store to be able to notify other parts of the
+application when it changes its data.  We'll use /events/ for this.  Whenever
+our store updates its data, it emits the =change= event.  Anyone interested in
+data changes can listen for this =change= event.  They need to add their event
+listener function that our store will trigger on every =change= event.  For
+this, our store defines the ~addChangeListener()~ method that adds the event
+listener, which listens to the =change= event, and the ~removeChangeListener()~
+method that removes the =change= event listener.
+
+#+CINDEX:@code{EventEmitter.prototype} methods
+#+CINDEX:@code{assign()} function
+~addChangeListener()~ and ~removeChangeListener()~ depend on methods provided
+by the ~EventEmitter.prototype~ object.  So we need to copy the methods from
+the ~EventEmitter.prototype~ object to our =TweetStore= object.  That's what
+the ~assign()~ function does.  It copies the properties owned by
+=sourceObject1= and =sourceObject2= to =targetObject= and then returns
+=targetObject=.
+: targetObject = assign(targetObject, sourceObject1, sourceObject2);
+
+In our case, =sourceObject1= is ~EventEmitter.prototype~, and =sourceObject2=
+is an object literal that defines our store's methods.  ~assign()~ returns
+=targetObject= with the properties copied from all the source objects.  That's
+what our =TweetStore= object is.
+
+Have you noticed that we define the ~getTweet()~ method as a method of our
+=TweetStore= object, whereas we don't do that with the ~setTweet()~ method?
+Why is that?
+
+Later on, we'll export the =TweetStore= object, which means that all its
+properties will be available for other parts of our application to use.  We
+want them to be able to get the data from =TweetStore=, but not update that
+data directly by calling ~setTweet()~.  Instead, the only way to update data in
+any store is to create an action and dispatch it using a dispacher to stores
+that have registered with that dispatcher.  When the store gets that action, it
+can decide how to update its data.
+
+This is a very important aspect of Flux architecture.  Stores are in full
+control of managing their data.  They only allow other parts in our application
+to read that data, but never write to it directly.  Only actions should mutate
+data in stores.
+
+**** III. Creating an Action Handler and Registering a Store
+
+#+CINDEX:action handler, create
+#+CINDEX:register store with dispatcher
+The third logical part of the ~TweetStore.js~ file is creating an action
+handler and registering the store with a dispatcher.
+
+#+CINDEX:@code{handleAction()} function
+First, we create the action handler function, ~handleAction()~.  This function
+takes an =action= object as a parameter and checks its type property.  In Flux,
+all stores get all the actions, but not all stores are interested in all the
+actions, so each store must decide what actions its interested in.  For this, a
+store must check for the action type.  In our =TweetStore= store, we check
+whether the action thype is =receive_tweet=, mwhich mneans that our application
+has received a new tweet.  If that's the case, then our =TweetStore= calls its
+private ~setTweet()~ function to update the =tweet= object with a new one that
+comes from the =action= object, that is, =action.tweet=.  When the store
+changes its data, it needs to tell everyone who is interested in the data
+change.  For this, it calls its private ~emitChange()~ function that emits the
+=change= event and triggers all the event listeners created by other parts in
+our application.
+
+#+CINDEX:register store with dispatcher
+#+CINDEX:@code{register()} method
+Our next task is to register the =TweetStore= with a dispatcher.  To register a
+store with a dispatcher, you need to call a dispatcher's ~register()~ method
+and pass the store's action handler function to it as a callback function.
+Whenever the dispatcher dispatches an action, it calls that callback function
+and passes the action object to it.
+
+#+CINDEX:token, from registration
+We call the ~register()~ method of ~AppDispatcher~, and we pass the
+~handleAction()~ function to that method.  The ~register()~ method returns a
+/token/ that identifies =TweetStore=, and we can use it in other methods of
+~AppDispatcher~.  We also save that token as a property of our =TweetStore=
+object, =TweetStore.dispatchToken=.
+
+**** IV. Exporting the =TweetStore= Object
+
+The fourth logical part of the ~TweetStore.js~ file is exporting the
+=TweetStore= object.
+
+*** Summary of Creating Stores
+
+That's how you create a simple store.  Now, when we have implemented our first
+action creator, dispatcher, and store, let's revisit the Flux architecture and
+take a look at a bigger picture of how it works:
+
+1. The stores register themselves with a dispatcher.
+2. Action creators create and dispatch actions to the stores via a dispatcher.
+3. Stores check for relevant actions and change their data accordingly.
+4. Stores notify everyone who is listening about the data change.
+
+
+Well that makes sense, you may say, but what triggers action creators?  Who is
+listening to store updates?  These are very good questions to ask.  And the
+answers asre awaiting you in our next chapter.
+
 ** Summary
+
+In this chapter, we analyzed our React application's architecture.  We learned
+about the core concepts behind the Flux architecture, and implemented a
+dispatcher, action creator, and a store.  In the next chapter, we'll integrate
+them into our React application and get its architecture ready for a
+maintenance paradise.
 
 * Prepare Your React Application for Painless Maintenance with Flux
 
