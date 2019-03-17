@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-16 Sat 11:00>
+#+DATE: <2019-03-17 Sun 09:48>
 
 #+TEXINFO: @insertcopying
 
@@ -6942,12 +6942,191 @@ maintenance paradise.
 
 * Prepare Your React Application for Painless Maintenance with Flux
 
-** TODO Fix Tweet commands
+The reason why we decided to implement the Flux architecture in our React
+application is that we wanted to have a data flow that is easier to maintain.
+In the previous chapter, we implemented =AppDispatcher=, =TweetActionCreators=,
+and =TweetStore=.  Let's quickly recap what they are used for:
+
+- =TweetActionCreators= creates and dispatches the actions
+- =AppDispatcher= dispatches all the actions to all the stores
+- =TweetStore= stores and manages the application data
+
+
+The only missing parts in our data flow are bits of functionality that are as
+follows:
+
+- Use =TweetActionCreators= to create the actions and start the data flow
+- Use =TweetStore= to get data
+
+
+Here are some important questions to ask: Where in the application does the
+data flow start?  What is our data?  If we answer these questions, we will
+understand where to start refactoring our application to adapt to the Flux
+architecture.
+
+Snapterest allows users to receive and collect the latest tweets.  The only
+data that our application is concerned with is tweets, so our data flow begins
+with receiving the new tweets.  At the moment, what part of our application is
+responsible for receiving new tweets?  You might remember that our ~Stream~
+component has the following ~componentDidMount()~ method:
+
+#+BEGIN_SRC js
+componentDidMount: function () {
+    SnapkiteStreamClient.initalizeStream(this.handleNewTweet);
+}
+#+END_SRC
+
+Yes, currently, we initiate a stream of new tweets after we render the ~Stream~
+component.  ``Wait,'' you might say, ``didn't we learn that React components
+should only be concerned with rendering the user interface?''  You're correct.
+Unfortunately, at the moment, the ~Stream~ component is responsible for two
+different things:
+
+1. Rendering the ~StreamTweet~ component
+2. Initiating the data flow
+
+
+#+CINDEX:decouple concerns using Flux
+Clearly, it will be a potential maintenance issue in the future.  Let's
+decouple these two different concerns with the help of Flux.
+
+** Decoupling Concerns with Flux
+
+#+CINDEX:@file{WebAPIUtils.js}
+First, we'll create a new utility module called ~WebAPIUtils~.  Create
+{{{file(WebAPIUtils.js)}}} in the ~<dir>/snapterest/source/utils/~ directory:
+
+#+CINDEX:@code{WebAPIUtils} module
+#+NAME:WebAPIUtils module
+#+CAPTION[<WebAPIUtils Module>]:The ~WebAPIUtils~ Module for Flux
+#+BEGIN_SRC js :tangle snapterest/source/utils/WebAPIUtils.js :mkdirp yesp
+var SnapkiteStreamClient = require('snapkite-stream-client');
+var TweetActionCreators = require('../actions/TweetActionCreators');
+
+function initializeStreamOfTweets () {
+    SnapkiteStreamClient.initializeStream(TweetActionCreators.receiveTweet);
+}
+
+module.exports = {
+    initializeStreamOfTweets
+}
+#+END_SRC
+
+#+CINDEX:@code{SnapkiteStreamClient} library
+#+CINDEX:@code{TweetActionCreators} module
+In this utility module, we first import the ~SnapkiteStreamClient~ library and
+~TweetActionCreators~.
+
+#+CINDEX:@code{initializeStreamOfTweets()} method
+Then, we create the ~initializeStreamOfTweets()~ method that initializes a
+stream of new tweets, just like in the ~componentDidMount()~ method of the
+~Stream~ component, except with one key difference: whenever
+~SnapkiteStreamClient~ receives a new tweet, it calls the
+~TweetActionCreators.receiveTweet~ method that passes a new tweet to it as an
+argument.  Remember that the ~TweetActionCreators.receiveTweet~ function
+expects to receive a =tweet= argument.  This tweet will then be dispatched as a
+property of a new action object that the ~receiveTweets()~ function creates.
+
+Then, the ~WebAPIUtils~ module exports our ~initializeStreamOfTweets()~ method.
+
+#+CINDEX:data flow initiated in Flux architecture
+Now we have a module with a method that initiates the data flow in our Flux
+architecture.  Where should we imnport and call it?  Since it's decoupled from
+the ~Stream~ component, and in fact, it doesn't depend on any React component
+at all, we can use it even before React renders anything.  Let's use it in our
+{{{file(app.js)}}} file:
+
+#+COMMENT: <<WebAPIUtils in app.js>>
+#+NAME:WebAPIUtils in app.js
+#+CAPTION:Adding ~WebAPIUtils~ to ~app.js~
+#+BEGIN_SRC js
+var WebAPIUtils = reuqire('./utils/WebAPIUtils');
+
+WebAPIUtils.initializeStreamOfTweets();
+#+END_SRC
+
+#+CINDEX:@code{initializeStreamOfTweets()} method call
+All that we need to do is import it and call the ~initializeStreamOfTweets()~
+method.  We do this before calling React's ~render()~ method.
+
+In fact, for the purpose of experimentation, you can remove the
+~ReactDOM.render()~ line of code altogether and put a log statement in the
+~TweetActionCreators.receiveTweet()~ function.  For example, run the following
+code:
+
+#+BEGIN_SRC js
+function receiveTweet(tweet) {
+    console.log("I've received a new tweet and now ill dispatch it together with a new action");
+
+    var action = {
+        type: 'receive_tweet',
+        tweet: tweet
+    };
+
+    AppDispatcher.dispatch(action);
+}
+#+END_SRC
+
+Don't forget to run the {{{command(gulp)}}} command.  Then, in your web
+browser, you will see the following output:
+: I am about to learn the essentials of React.js
+
+While on your web browser's console, you will see this output:
+
+#+BEGIN_EXAMPLE
+[Snapkite Stream Client] Socket connected
+I've received a new tweet and now will dispatch it together with a new action.
+#+END_EXAMPLE
+
+This log message will be printed out for each new tweet that our application
+receives.  Even though we didn't render any React component, our Flux
+architecture is still there:
+
+1. Our application receives a new tweet.
+2. It creates and dispatches a new action.
+3. No stores have registered with the dispatcher, so there is no one to receive
+   the new action; hence, nothing is happening.
+
+
+#+CINDEX:Flux independent of React
+Now you can clearly see how React and Flux are two separate things that don't
+depend on each other at all.
+
+#+CINDEX:@code{TweetStore}
+We do want to render our React components.  After all, we've put so much effort
+into creating themn over the course of the last nine chapters!  For this, we
+need to put our ~TweetStore~ into action.  Can you tell where we should use it?
+We should use it in a React component that needs a tweet to render itself; our
+good old ~Stream~ component.
+
+** Refactoring the ~Stream~ Component
+
+** Creating ~CollectionStore~
+
+** Creating ~CollectionActionCreators~
+
+** Refactoring the ~Application~ Component
+
+** Refactoring the ~Collection~ Component
+
+** Refactoring the ~CollectionControls~ Component
+
+** Refactoring the ~CollectionRenameForm~ Component
+
+** Refactoring the ~TweetList~ Component
+
+** Refactoring the ~StreamTweet~ Component
+
+*** TODO Fix Tweet commands
 
 - See [[https://github.com/fedosejev/react-essentials/blob/master/updates.md#chapter-10-page-29][Errata]]
   Use these:
   : <Tweet tweet={this.props.tweet} onImageClick={this.props.onAddTweetToCollection} />
   : <Tweet tweet={this.props.tweet} onImageClick={this.addTweetToCollection} />
+
+** Build and Go Beyond
+
+
 * React.js
 :PROPERTIES:
 :APPENDIX: t
