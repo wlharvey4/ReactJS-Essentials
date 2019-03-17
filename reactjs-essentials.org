@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-17 Sun 09:48>
+#+DATE: <2019-03-17 Sun 10:05>
 
 #+TEXINFO: @insertcopying
 
@@ -2775,16 +2775,28 @@ snippet:
 
 #+NAME:app root container component
 #+CAPTION[<App Root Container>]:The React Application Root Container File
-#+BEGIN_SRC js :tangle snapterest/source/app.js :mkdirp yes
+#+BEGIN_SRC js :tangle snapterest/source/app.js :mkdirp yes :noweb yes
+<<root container imports>>
+
+<<root container render to dom>>
+#+END_SRC
+
+#+NAME:root container imports
+#+CAPTION:The imports of the root container ~app.js~
+#+BEGIN_SRC js :exports none
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Application = require('./components/Application.react');
+#+END_SRC
 
+#+NAME:root container render to dom
+#+CAPTION:Rendering the Application to the DOM
+#+BEGIN_SRC js :exports none
 ReactDOM.render(<Application />, document.getElementById('react-application'));
 #+END_SRC
 
 There are only four lines of code in this file, and as you can guess, they
-provifde ~document.getElementById('react-application')~ as a deployment target
+provide ~document.getElementById('react-application')~ as a deployment target
 for the ~<Application />~ component and render ~<Application />~ to the DOM.
 The whole user interface for our web application will be encapsulated in one
 React component, ~Application~.
