@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-17 Sun 10:05>
+#+DATE: <2019-03-17 Sun 10:58>
 
 #+TEXINFO: @insertcopying
 
@@ -3216,6 +3216,9 @@ Now we're ready to reuse the ~snapkite-stream-client~ module in one of our
 React components.
 
 *** Creating the ~Stream~ Component with the ~snapkite-stream-client~ Module
+:PROPERTIES:
+:CUSTOM_ID: Stream Component
+:END:
 
 #+CINDEX:@code{Stream} component
 In the previous chapter, we created the ~Application~ component with two child
@@ -7112,6 +7115,46 @@ We should use it in a React component that needs a tweet to render itself; our
 good old ~Stream~ component.
 
 ** Refactoring the ~Stream~ Component
+
+Now, with the Flux architecture in place, we will rethink how our React
+components get the data that they need to render.  As you know, there are
+usually two sources of data for a React component:
+
+1. Calling another library; for example, in our case, calling the
+   ~jQuery.ajax()~ method, or ~SnapkiteStreamComponent.initializeStream()~
+2. Receiving data from a parent React component via the =props= object
+
+
+We want our React components not to use any external libraries to receive
+data.  Instead, from now on, they will get that same data from stores.  Keeping
+this plan in mind, let's refactor our ~Stream~ component.
+
+Here's how it looks now: [[#Stream Component][The Stream Component]]
+
+*** Remove Components
+
+First, let's get rid of the ~componentDidMount()~, ~componentWillUnmount()~,
+and ~handleNewTweet()~ methods, and import the =TweetStore= store.  There is
+also no need to import the ~snapkite-stream-client~ module anymore.
+
+#+NAME:import TweetStore
+#+BEGIN_SRC js
+var TweetStore = require('../stores/TweetStore');
+#+END_SRC
+
+*** Change How ~Stream~ Component Gets Initial Tweet
+
+Next, we need to change how the ~Stream~ component gets its initial tweet.
+Let's update its ~getInitialState()~ method:
+
+#+NAME:Stream.getInitialState from Flux Store
+#+BEGIN_SRC js
+getInitialState: function () {
+    return {
+        tweet: TweetStore.getTweet()
+    }
+},
+#+END_SRC
 
 ** Creating ~CollectionStore~
 
