@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-17 Sun 10:58>
+#+DATE: <2019-03-17 Sun 19:57>
 
 #+TEXINFO: @insertcopying
 
@@ -3231,11 +3231,9 @@ file:
 #+CINDEX:@file{Stream.react.js} file
 #+NAME:Stream component
 #+CAPTION[<Stream Component>]:The ~Stream~ Component (~Stream.react.js~)
-#+BEGIN_SRC js :tangle snapterest/source/components/Stream.react.js :mkdirp yes
-var React = require('react');
+#+BEGIN_SRC js :tangle snapterest/source/components/Stream.react.js :mkdirp yes :noweb yes
+<<Stream React dependencies>>
 var SnapkiteStreamClient = require('snapkite-stream-client');
-var StreamTweet = require('./StreamTweet.react');
-var Header = require('./Header.react');
 
 var Stream = React.createClass({
     getInitialState: function () {
@@ -3279,6 +3277,13 @@ module.exports = Stream;
 #+CINDEX:@file{Header} module
 #+CINDEX:@file{snapkite-stream-client} module
 We first import the modules that our ~Stream~ component depends on:
+
+#+NAME:Stream React dependencies
+#+BEGIN_SRC js
+var React = require('react');
+var Header = require('./Header.react');
+var StreamTweet = require('./StreamTweet.react');
+#+END_SRC
 
 - ~React~: React library
 - ~StreamTweet~ and ~Header~: React components
@@ -7155,6 +7160,130 @@ getInitialState: function () {
     }
 },
 #+END_SRC
+
+Code-wise, this might look like a small change, but it's significant
+architectural improvement.  We are now using the ~getTweet()~ method to get
+data from the =TweetStore=.   In the previous chapter, we discussed how stores
+expose the public methods in Flux in order to allow other parts of our
+application to get data from them.  ~getTweet()~ is an example of one of these
+public methods, which are called /getters/.
+
+You can get data from a store, but you can't set data on a store directly just
+like that.  STores have no public /setter/ methods.  They are purposely
+designed with this limitation in mind so taht when you write your application
+with Flux, your data can flow in one direction.  This will benefit you hugely
+down the road, when you'll need to maintain your Flux application.
+
+Now we know how to get our initial tweet, but how do we get all the other new
+tweets that will arrive later?  We can create a timer and call
+~TweetStore.getTweet()~ repeatedly; however, this is not the best solution,
+because it assuemes that we don't know when =TweetStore= updates its tweet with
+a new one.  However, we /do/ know that.
+
+How, Remember that, in the previous chapter, we implemented the following
+public method on the =TweetStore= object; that is, the ~addChangeListener()~
+method.  We implemented the ~removeChangeListener()~ method as well.
+
+That's right.  We can ask =TweetStore= to tell us when it changes its data.
+For this, we need to call its ~addChangeListener()~ method and pass it a
+callback function that =TweetStore= will call for each new tweet.  The question
+is this: in our ~Stream~ component, where do we call the
+~TweetStore.addChangeListener()~ method?
+
+Since we need to add the ~change~ event listener to =TweetStore= only once per
+component lifecycle, it makes ~componentDidMount()~ a perfect candidate.  Add
+the following ~componentDidMount()~ method to the ~Stream~ component:
+
+#+NAME:Stream.componentDidMount method
+#+CAPTION:Adding the ~componentDidMount()~ Method to the ~Stream~ Component
+#+BEGIN_SRC js
+componentDidMount: function () {
+    TweetSTore.addChangeListener(this.onTweetChange);
+},
+#+END_SRC
+
+We add our own =change= event listener, ~this.onTweetChange~, to =TweetStore=.
+Now when =TweetStore= changes its data, it will triger our
+~this.onTweetChange()~ method.  We will create this method shortly.
+
+Don't forget that we need to remove any event listeners before we unmount our
+React component.  To to this, add the following ~componebntWillUnmount()~
+method to the ~Stream~ component:
+
+#+NAME:Stream.componentWillUnmount method
+#+CAPTION:Adding the ~componentWillUnmount~ Method to the ~Stream~ Component
+#+BEGIN_SRC js
+componentWillUnmount: function () {
+    TweetStore.removeChangeListener(this.onTweetChange);
+},
+#+END_SRC
+
+Removing an event listener is very similar to adding it.  We call the
+~TweetStore.removeChangeListener()~ method and pass our ~this.onTweetChange~
+method as an argument.
+
+It's time to create the ~onTweetChange()~ method in our ~Stream~ component.
+
+#+NAME:Stream.onTweetChange method
+#+CAPTION:Creating the ~onTweetChange()~ Method of the ~Stream~ Component
+#+BEGIN_SRC js
+onTweetChange: function () {
+    this.setState ({
+        tweet: TweetStore.getTweet()
+    });
+},
+#+END_SRC
+
+It updates the component's state with a new tweet stored in =TweetStore= by
+using the ~TweetStore.getTweet()~ method.
+
+There is one final change that we need to make to our ~Stream~ component.
+Later in this chapter, you'll learn to that our ~StreamTweet~ component doesn't
+need the ~handleTweetToCollection()~ callback function anymore; therefore, in
+this component, we're going to change the ~return~.  Replacde it with:
+
+#+NAME:return from Stream component
+#+CAPTION:Changing the ~return~ of the ~Stream~ Component
+#+BEGIN_SRC js
+return (<StreamTweet tweet={tweet} />);
+#+END_SRC
+
+Now let's take a look at our newly refactored ~Stream~ component.
+
+Let's recap to see how our ~Stream~ component always has the latest tweet:
+
+1. We set the component's intitial tweet to the latest tweet that we get from
+   =TweetStore= by using the ~getTweet()~ method.
+2. Then, we listen to changes in =TweetStore=.
+3. When =TweetStore= changes its tweet, we update the component's state to the
+   latest tweet that we get from =TweetStore= by using the ~getTweet()~ method.
+4. When the component is about to unmount, we stop listening to the changes in
+   =TweetStore=.
+
+
+That's how a React component interacts with a Flux store.
+
+Before we move on to making the rest of our application Flux-strong, let's take
+a look at our current data flow:
+
+- ~app.js~: :: This receives the new tweets and calls ~TweetActionCreators~ for
+               each tweet.
+- ~TweetActionCreators~: :: This creates and dispatches a new action with a new tweet.
+- ~AppDispatcher~: :: This dispatches all the actions to all stores.
+- =TweetStore=: :: This registers with a dispatcher and emits the change event
+                   on every new action received from a dispatcher.
+- ~Stream~: :: This listens to changes in =TweetStore=, updates the state with
+               a new tweet, and re-renders.
+
+
+Can you see dhow we can now scale the number of React components, action
+creators, and stores, and still be able to maintain Snapterest?  With Flux, it
+will always be a one-way data flow.  It will be the same mental model
+regardless of how many new features we implement.  We will benefit hugely in
+the long run when we need to maintain our app.
+
+Did I mention that we're going to adapt Flux in our application even more?
+Next, let's do exactly that.
 
 ** Creating ~CollectionStore~
 
