@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-17 Sun 19:57>
+#+DATE: <2019-03-18 Mon 08:26>
 
 #+TEXINFO: @insertcopying
 
@@ -3236,38 +3236,16 @@ file:
 var SnapkiteStreamClient = require('snapkite-stream-client');
 
 var Stream = React.createClass({
-    getInitialState: function () {
-        return { tweet: null }
-    },
 
-    componentDidMount: function () {
-        SnapkiteStreamClient.initializeStream(this.handleNewTweet);
-    },
+    <<Stream.getInitialState method>>
 
-    componentWillUnmount: function () {
-        SnapkiteStreamClient.destroyStream();
-    },
+    <<Stream.componentDidMount method>>
 
-    handleNewTweet: function (tweet) {
-        this.setState({ tweet: tweet });
-    },
+    <<Stream.componentWillUnmount method>>
 
-    render: function () {
-        var tweet = this.state.tweet;
+    <<Stream.handleNewTweet method>>
 
-        if (tweet) {
-            return (
-                <StreamTweet
-                 tweet={tweet}
-                 onAddTweetToCollection={this.props.onAddTweetToCollection}
-                />
-            );
-        }
-
-        return (
-            <Header text="Waiting for public photos from Twitter..." />
-        );
-    }
+    <<Stream.render method>>
 });
 
 module.exports = Stream;
@@ -3296,7 +3274,7 @@ var StreamTweet = require('./StreamTweet.react');
 #+CINDEX:@code{handleNewTweet()}
 #+CINDEX:@code{render()}
 Then we define our React component.  Here are the methods that our ~Stream~
-component implements:
+componppppent implements:
 
 - ~getInitialState()~
 - ~componentDidMount()~
@@ -3311,6 +3289,25 @@ We are already familiar with the ~getInitialState()~ and ~render()~ mnethods;
 they are part of React's API.  You already know that any React component must
 implement at least the ~render()~ method.  Let's take a look at the ~render()~
 method of our ~Stream~ component.
+
+#+NAME:Stream.render method
+#+CAPTION:The ~render()~ Method of the ~Stream~ Component
+#+BEGIN_SRC js
+render: function () {
+    var tweet = this.state.tweet;
+
+    if (tweet) {
+        return (
+            <StreamTweet
+             tweet={tweet}
+             onAddTweetToCollection={this.props.onAddTweetToCollection}
+            />
+        );
+    }
+
+    return ( <Header text="Waiting for public photos from Twitter..." /> );
+}
+#+END_SRC
 
 We created a new ~tweet~ variable that references the ~tweet~ property, which
 is party of the component's state object.  We then check whether that variable
@@ -3334,9 +3331,19 @@ React components as ~Views~, then our ~Stream~ component is a ~ControllerView~.
 **** ~Stream~'s Other Methods
 
 Now that we know what a ~Stream~ component renders, let's discuss it in the
-other methods.
+other methods:
 
 #+CINDEX:@code{getInitialState()} in @file{Stream} component
+{{{subheading(The ~Stream.getInitialState()~ Method)}}}
+
+#+NAME:Stream.getInitialState method
+#+CAPTION:The ~getInitialState()~ Method of the ~Stream~ Component
+#+BEGIN_SRC js
+getInitialState: function () {
+    return { tweet: null }
+},
+#+END_SRC
+
 The ~getInitialState()~ method returns the initial state object with a ~tweet~
 property, which is set to =null=.  Our ~Stream~ component will receive an
 endless stream of new tweets, and it needs to re-render its child components
@@ -3345,13 +3352,33 @@ the current tweet in the component's state.  Once we update its state, React
 will call its ~render()~ method and re-render all of its child components.  For
 this purpose, we will implement the ~handleNewTweet()~ method.
 
+{{{subheading(The ~Stream.handleNewTweet() Method)}}}
 #+CINDEX:@code{handleNewTweet()} in @file{Stream} component
+
+#+NAME:Stream.handleNewTweet method
+#+CAPTION:The ~StreamhandleNewTweet()~ Method
+#+BEGIN_SRC js
+handleNewTweet: function (tweet) {
+    this.setState({ tweet: tweet });
+},
+#+END_SRC
+
 The ~handleNewTweet()~ method takes a ~tweet~ object, and sets it as a new
 value for the component state's ~tweet~ property.
 
+{{{subheading(The ~Stream.componentDidMount()~ Method)}}}
 #+CINDEX:@code{componentDidMount()} in @file{Stream} component
+
 Where does the new tweet come from and when does it come?  Let's take a look at
 our ~componentDidMount()~ method.
+
+#+NAME:Stream.componentDidMount method
+#+CAPTION:The ~Stream.componentDidMount()~ Method
+#+BEGIN_SRC js
+componentDidMount: function () {
+    SnapkiteStreamClient.initializeStream(this.handleNewTweet);
+},
+#+END_SRC
 
 #+CINDEX:@code{initializeStream()} method in @file{Stream} component
 #+CINDEX:@file{SnapkiteStreamClient} object in @file{Stream} component
@@ -3380,6 +3407,15 @@ external ~SnapkiteStreamClient~ library.
 #+CINDEX:@code{componentWillUnmount()} method
 #+CINDEX:component, unmount
 #+CINDEX:unmount component
+
+#+NAME:Stream.componentWillUnmount method
+#+CAPTION:The ~Stream.componentWillUnmount()~ Method
+#+BEGIN_SRC js
+componentWillUnmount: function () {
+    SnapkiteStreamClient.destroyStream();
+},
+#+END_SRC
+
 Now we know when to initialize the external JavaScript libraries in our React
 components, but what about the reverse process---when should we uninitialize
 and clean up everything that we've done in the ~componentDidMount()~ method?
@@ -7194,7 +7230,7 @@ Since we need to add the ~change~ event listener to =TweetStore= only once per
 component lifecycle, it makes ~componentDidMount()~ a perfect candidate.  Add
 the following ~componentDidMount()~ method to the ~Stream~ component:
 
-#+NAME:Stream.componentDidMount method
+#+NAME:Flux Stream.componentDidMount method
 #+CAPTION:Adding the ~componentDidMount()~ Method to the ~Stream~ Component
 #+BEGIN_SRC js
 componentDidMount: function () {
@@ -7210,7 +7246,7 @@ Don't forget that we need to remove any event listeners before we unmount our
 React component.  To to this, add the following ~componebntWillUnmount()~
 method to the ~Stream~ component:
 
-#+NAME:Stream.componentWillUnmount method
+#+NAME:Flux Stream.componentWillUnmount method
 #+CAPTION:Adding the ~componentWillUnmount~ Method to the ~Stream~ Component
 #+BEGIN_SRC js
 componentWillUnmount: function () {
