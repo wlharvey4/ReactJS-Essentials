@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-18 Mon 09:04>
+#+DATE: <2019-03-18 Mon 10:22>
 
 #+TEXINFO: @insertcopying
 
@@ -7292,6 +7292,7 @@ using the ~TweetStore.getTweet()~ method.
 
 *** Removing the ~onAddTweetToCollection~ Callback from ~Stream.render()~
 
+#+CINDEX:@code{onAddTweetToCollection()} callback function
 There is one final change that we need to make to our ~Stream~ component.
 Later in this chapter, you'll learn to that our ~StreamTweet~ component doesn't
 need the ~onAddTweetToCollection()~ callback function anymore; therefore, in
@@ -7313,6 +7314,7 @@ render: function () {
 
 *** The Refactored ~Stream~ Component for Flux
 
+#+CINDEX:@code{Stream} component refactored for Flux
 Now let's take a look at our newly refactored ~Stream~ component.
 
 #+NAME:Flux Stream Component
@@ -7347,8 +7349,11 @@ Let's recap to see how our ~Stream~ component always has the latest tweet:
    =TweetStore=.
 
 
+*** Look at the Flux Data Flow
+
 That's how a React component interacts with a Flux store.
 
+#+CINDEX:data flow in Flux
 Before we move on to making the rest of our application Flux-strong, let's take
 a look at our current data flow:
 
@@ -7362,7 +7367,7 @@ a look at our current data flow:
                     with a new tweet, and re-renders.
 
 
-Can you see dhow we can now scale the number of React components, action
+Can you see how we can now scale the number of React components, action
 creators, and stores, and still be able to maintain Snapterest?  With Flux, it
 will always be a one-way data flow.  It will be the same mental model
 regardless of how many new features we implement.  We will benefit hugely in
@@ -7373,7 +7378,278 @@ Next, let's do exactly that.
 
 ** Creating ~CollectionStore~
 
+#+CINDEX:@code{CollectionStore}, create
+Not only does Snapterest store the latest tweet, but it also stores a
+collection of tweets that the user creates.  Let's refactor this feature with
+Flux.
+
+First, let's create a collection store.  Navigate to the
+~<dir>/snapterest/source/stores/~ directory and create the ~CollectionStore.js~
+file:
+
+#+NAME:CollectionStore file
+#+CAPTION[<Collection.js File>]:The ~Collection.js~ File
+#+BEGIN_SRC js :tangle snapterest/source/stores/Collection.js :mkdirp yes :noweb yes
+<<CollectionStore imports>>
+
+var CHANGE_EVENT = 'change';
+
+<<CollectionStore data and private methods>>
+
+<<CollectionStore>>
+
+<<CollectionStore.handleAction func>>
+
+<<CollectionStore.emitChange func>>
+
+<<CollectionStore register callback>>
+
+module.exports = CollectionStore;
+#+END_SRC
+
+The ~CollectionStore~ is a bigger store, but it has the same structure as ~TweetStore~.
+
+*** Import Dependencies
+
+First, we import the dependencies.
+
+#+NAME:CollectionStore imports
+#+BEGIN_SRC js
+var AppDispatcher = require('../dispatcher/AppDispatcher');
+var EventEmitter = require('events').EventEmitter;
+var assign = require('object-assign');
+#+END_SRC
+
+Then, we assign a =change= event name to the =CHANGE_EVENT= variable.
+
+*** Define Data and Private Methods to Mutate Data
+
+#+CINDEX:@code{CollectionStore}, private data and mutators
+Then we define our data and the four private methods that mutate this data.
+
+#+NAME:CollectionStore data and private methods
+#+BEGIN_SRC js
+var collectionTweets = {};
+var collectionName = 'new';
+
+function addTweetToCollection (tweet) {
+    collectionTweets[tweet.id] = tweet;
+}
+
+function removeTweetFromCollection (tweetId) {
+    delete collectionTweets[tweetId];
+}
+
+function removeAllTweetsFromCollection () {
+    collectionTweets = {};
+}
+
+function setCollectionName (name) {
+    collectionName = name;
+}
+#+END_SRC
+
+We store a collection of tweets in an object that is initially empty, and we
+also store the collection name that is initially set to =new=.  Then, we create
+three private functions that mutate =collectionTweets=:
+
+- ~addTweetToCollection()~: :: adds the =tweet= objct to the =collectionTweets=
+     object
+- ~removeTweetFromCollection()~: :: removes the =tweet= object from the
+     =collectionTweets= object
+- ~removeAllTweetsFromCollection()~: :: removes all the =tweet= objects from
+     =collectionTweets= by setting it to an empty object
+
+
+Next, we define one private function that mutates =collectionName= (called
+~setCollectionName()~), which changes the existing collection name toa new one.
+
+#+CINDEX:private functions
+These functions are regarded as private because they are not accessible outside
+=CollectionStore=; that is, you /can't/ access them using method calls.  As we
+discussed earlier, this is done on purpose to enforce a one-way data flow in
+your application.
+
+#+CINDEX:change event
+#+CINDEX:@code{emitChange()} function
+We also create the ~emitChange()~ function that emits the =change= event:
+
+#+NAME:CollectionStore.emitChange func
+#+BEGIN_SRC js
+function emitChange () {
+    CollectionStore.emit(CHANGE_EVENT);
+}
+#+END_SRC
+
+*** Create the =CollectionStore= Object
+
+#+CINDEX:@code{CollectionStore} object, create
+Then, we create the =CollectionStore= Object
+
+#+BEGIN_SRC js
+var CollectionStore = assign({}, EventEmitter.prototype, {
+
+    addChangeListener: function (callback) {
+        this.on(CHANGE_EVENT,  callback);
+    },
+
+    removeChangeListener: function (callback) {
+        this.removeListener(CHANGE_EVENT, callback);
+    },
+
+    getCollectionTweets: function () {
+        return collectionName;
+    }
+});
+#+END_SRC
+
+This is very similar to the =TweetStore= object, except for two methods:
+
+- ~getCollectionTweets()~ returns a collection of tweets
+- ~getCollectionName()~ returns the collection name
+
+
+These methods are accessible outside the ~CollectionStore.js~ file, and should
+be used in React components to get data from =CollectionStore=.
+
+*** Create the ~handleAction()~ Function
+
+#+CINDEX:@code{handleAction()} function
+Next we create the ~handleAction()~ function.
+
+#+NAME:CollectionStore.handleAction func
+#+BEGIN_SRC js
+function handleAction (action) {
+
+    switch (action.type) {
+
+        case 'add_tweet_to_collection':
+          addTweetToCollection(action.tweetId);
+          emitChange();
+          break;
+
+        case 'remove_tweet_from_collection':
+          removeTweetFromCollection();
+          emitChange();
+          break;
+
+        case 'remove_all_tweets_from_collection':
+          removeAllTweetsFromCollection();
+          emitChange()
+          break;
+
+        case 'set_collection_name':
+          setCollectionName(action.collectionName);
+          emitChange();
+          break;
+
+        default: // ... do nothing
+    }
+}
+#+END_SRC
+
+This function handles the actions that are dispatched by ~AppDispatcher~, but
+unlike =TweetStore= in our =CollectionStore=, we can handle more than one
+action.  In fact, we can handle the four actions that are related to the
+collection of tweets:
+
+- =add_tweet_to_collection= adds a tweet to a collection
+- =remove_tweet_from_collection= removes a tweet from a collection
+- =remove_all_tweets_from_collection= removes all the tweets from a collection
+- =set_collection_name= sets a collection name
+
+
+Remember that all the stores receive all the actions, so =CollectionStore= will
+receive the =receive_tweet= action as well, but we simply ignore it in this
+store, just like =TweetStore= ignores all of the above actions.
+
+*** Register the ~handleAction~ Callback with ~AppDispatcher~ and Export Module
+
+#+CINDEX:register action callback with dispatcher
+Next, we register the ~handleAction~ callback with ~AppDispatcher~, and save
+~dispatchToken~ in the =CollectionStore= object.
+
+#+NAME:CollectionStore register callback
+#+BEGIN_SRC js
+CollectionStore.dispatchToken = AppDispatcher.register(handleAction);
+#+END_SRC
+
+Finally, we export =CollectionStore= as a module.
+
+Now that we have the collection store ready, let's create action creator
+functions next.
+
 ** Creating ~CollectionActionCreators~
+
+#+CINDEX:@code{CollectionActionCreators}, create
+Navigate to ~<dir>/snapterest/source/actions/~ and create the
+~CollectionActionCreators.js~ file:
+
+#+NAME:CollectionActionCreators file
+#+CAPTION[<CollectionActionCreators.js>]:The ~CollectionActionCreators~ File
+#+BEGIN_SRC js :tangle: snapterest/source/actions/CollectionActionCreators.js :mkdirp yes :noweb yes
+var AppDispatcher = require('../dispatcher/AppDispatcher');
+
+module.exports = {
+
+    AddTweetToCollection: function (tweet) {
+        var action = {
+            type: 'add_tweet_to_collection',
+            tweet: tweet
+        };
+
+        AppDispatcher.dispatch(action);
+    },
+
+    removeTweetFromCollection: function (tweetId) {
+
+        var action = {
+            type: 'remove_tweet_from_collection',
+            tweetId: tweetId
+        };
+
+        AppDispatcher.dispatch(action);
+    },
+
+    removeAllTweetsFromCollection: function () {
+
+        var action = {
+            type: 'remove_all_tweets_from_collection'
+        };
+
+        AppDispatcher.dispatch(action);
+    },
+
+    setCollectionName: function (collectionName) {
+
+        var action = {
+            type: 'set_collection_name',
+            collectionName: collectionName
+        };
+
+        AppDispatcher.dispatch(action);
+    }
+};
+#+END_SRC
+
+#+CINDEX:action creator function
+For each action that we handle in =CollectionStore=, we have an action creator
+function:
+
+- ~addTweetToCollection()~ creates and dispatches the =add_tweet_to_collection=
+  action with a new tweet
+- ~removeTweetFromCollection()~ creates and dispatches the
+  =remove_tweet_from_collection= action with the ID of the tweet that must be
+  removed from the collection
+- ~removeAllTweetsFromCollection()~ creates and dispatches the
+  =remove_all_tweets_from_collection= action
+- ~setCollectionName()~ creates and dispatches the =set_collection_name= action
+  with a new collection name
+
+
+Now that we've created both the =CollectionStor= and ~CollectionActionCreators~
+modules, we can start refactoring our React components to adopt the Flux
+architecture.
 
 ** Refactoring the ~Application~ Component
 
