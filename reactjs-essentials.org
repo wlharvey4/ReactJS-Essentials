@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-18 Mon 10:22>
+#+DATE: <2019-03-19 Tue 09:19>
 
 #+TEXINFO: @insertcopying
 
@@ -2812,66 +2812,28 @@ easily distinguish between React and non-React source JavaScript files.
 
 Let's take a look at the contents of the ~Application.react.js~ file:
 
-#+NAME:Application component
 #+CAPTION[<Application Component>]:The Application Component
-#+BEGIN_SRC js :tangle snapterest/source/components/Application.react.js :mkdirp yes
-var React      = require('react');
-var Stream     = require('./Stream.react');
-var Collection = require('./Collection.react');
+#+NAME:Application component
+#+BEGIN_SRC js :tangle snapterest/source/components/Application.react.js :mkdirp yes :noweb yes
+<<Application Dependencies>>
 
 var Application = React.createClass({
-    getInitialState: function () {
-        return {
-            collectionTweets: {}
-        }
-    },
 
-    addTweetToCollection: function (tweet) {
-        var collectionTweets = this.state.collectionTweets;
-        collectionTweets[tweet.id] = tweet;
-        this.setState({
-            collectionTweets: collectionTweets
-        });
-    },
+ <<Application.getInitialState>>
 
-    removeTweetFromCollection: function (tweet) {
-        var collectionTweets = this.state.collectionTweets;
-        delete collectionTweets[tweet.id];
-        this.setState({
-            collectionTweets: collectionTweets
-        });
-    },
+    <<Application.addTweetToCollection>>
 
-    removeAllTweetsFromCollection: function () {
-        this.setState ({
-            collectionTweets: {}
-        });
-    },
+    <<Application.removeTweetFromCollection>>
 
-    render: function () {
-        return (
-            <div className="container-fluid">
-                <div className="row">
-                    <div className="col-md-4 text-center">
-                        <Stream onAddTweetToCollection={this.addTweetToCollection} />
-                    </div>
-                    <div className="col-md-8">
-                        <Collection
-                            tweets={this.state.collectionTweets}
-                            onRemoveTweetFromCollection={this.removeTweetFromCollection}
-                            onRemoveAllTweetsFromCollection={this.removeAllTweetsFromCollection}
-                        />
-                    </div>
-                </div>
-            </div>
-        );
-    }
+    <<Application.removeAllTweetsFromCollection>>
+
+    <<Application.render>>
 });
 
 module.exports = Application;
 #+END_SRC
 
-This code has significantly more code than our ~app.js~ file, but this code can
+This component has significantly more code than our ~app.js~ file, but this code can
 be easily divided into three logical parts:
 
 1. Importing dependency modules
@@ -2909,6 +2871,13 @@ components that we need to import:
 We also need to import the ~React~ library as another module.  Notice that this
 code is still part of the CommonJS module pattern, not React.
 
+#+NAME:Application Dependencies
+#+BEGIN_SRC js
+var React      = require('react');
+var Stream     = require('./Stream.react');
+var Collection = require('./Collection.react');
+#+END_SRC
+
 *** Creating React Components
 
 #+CINDEX:create components
@@ -2930,6 +2899,43 @@ All the other methods are part of our application logic that this component
 encapsulates.  We'll take a closer look at each of them right after we discuss
 what this component renders inside its ~render()~ method.
 
+#+NAME:Application.render
+#+BEGIN_SRC js :noweb yes
+<<Application.render start>>
+                    <<Stream with props>>
+<<Application.render mid>>
+                    <<Collection with props>>
+<<Application.render end>>
+#+END_SRC
+
+#+NAME:Application.render start
+#+BEGIN_SRC js :exports none
+render: function () {
+    return (
+        <div className="container-fluid">
+            <div className="row">
+                <div className="col-md-4 text-center">
+
+#+END_SRC
+
+#+NAME:Application.render mid
+#+BEGIN_SRC js :exports none
+
+                </div>
+                <div className="col-md-8">
+
+#+END_SRC
+
+#+NAME:Application.render end
+#+BEGIN_SRC js :exports none
+
+                </div>
+            </div>
+        </div>
+    );
+}
+#+END_SRC
+
 #+CINDEX:Bootstrap
 It defines the layout of our web page using the <<Bootstrap>>Bootstrap
 framework.  If you're not familiar with Boostrap, I strongly recommend that you
@@ -2947,7 +2953,10 @@ divided into two unequal parts and both of them contain the React components.
 #+CINDEX:@code{Stream} component
 This is how we're using our ~Stream~ component:
 
-: <Stream onAddTweetToCollection={this.addTweetToCollection} />
+#+NAME:Stream with props
+#+BEGIN_SRC js
+<Stream onAddTweetToCollection={this.addTweetToCollection} />
+#+END_SRC
 
 #+CINDEX:@code{onAddTweetToCollection} property
 #+CINDEX:@code{addTweetToCollection()} method
@@ -2958,10 +2967,22 @@ collection.  It's one of the custom methods that we define in our ~Application~
 component, and we can refer to it using ~this~ keyword.
 
 #+CINDEX:@code{CollectionTweets}
-Let's take a look at what the ~addTweetToCollection()~ method does.  This
-method references ~CollectionTweets~ that are stored in the current state, adds
-a new tweet to a ~collectionTweets~ object, and updates the state by calling
-the ~setState()~ method.  A new tweet is passed as an argument when the
+Let's take a look at what the ~addTweetToCollection()~ method does.
+
+#+NAME:Application.addTweetToCollection
+#+BEGIN_SRC js
+addTweetToCollection: function (tweet) {
+    var collectionTweets = this.state.collectionTweets;
+    collectionTweets[tweet.id] = tweet;
+    this.setState({
+        collectionTweets: collectionTweets
+    });
+},
+#+END_SRC
+
+This method references ~CollectionTweets~ that are stored in the current state,
+adds a new tweet to a ~collectionTweets~ object, and updates the state by
+calling the ~setState()~ method.  A new tweet is passed as an argument when the
 ~addTweetToCollection()~ method is called inside a ~Stream~ component.  This is
 an example of how a child component can update its parent component's state.
 
@@ -2996,8 +3017,18 @@ concerns they address:
 **** The Collection Component
 
 #+CINDEX:@code{Collection} component
-Our ~Application~ component has a second child component, ~Collection~.  This
-component has a number of properties:
+Our ~Application~ component has a second child component, ~Collection~.
+
+#+NAME:Collection with props
+#+BEGIN_SRC js
+<Collection
+    tweets={this.state.collectionTweets}
+    onRemoveTweetFromCollection={this.removeTweetFromCollection}
+    onRemoveAllTweetsFromCollection={this.removeAllTweetsFromCollection}
+/>
+#+END_SRC
+
+This component has a number of properties:
 
   #+CINDEX:@code{tweets}
 - ~tweets~ : This refers to our current collection of tweets
@@ -3032,6 +3063,15 @@ and ~Collection~ components?  Here's how it works:
 
 1. The ~collectionTweets~ data is initialized in the ~Application~ component's
    ~getInitialState()~ method
+
+   #+NAME:Application.getInitialState
+   #+BEGIN_SRC js
+   getInitialState: function () {
+       return {
+           collectionTweets: {}
+       }
+   },
+   #+END_SRC
 
 2. The ~collectionTweets~ data is passed to the ~Collection~ component as the
    ~tweets~ property.
@@ -3086,14 +3126,35 @@ two methods that mutate its state:
 - ~removeAllTweetsFromCollection()~
 
 
-The first removes a tweet from a collection of tweets that we store in the
-~Application~ component's state.  It takes the current ~collectionTweets~
-object from the component's state, deletes a tweet with a given ID from that
-objectm and updates the component's state with an updated ~collectionTweets~
-object.
+#+CINDEX:@code{removeTweetFromCollection} method
+#+NAME:Application.removeTweetFromCollection
+#+BEGIN_SRC js
+removeTweetFromCollection: function (tweet) {
+    var collectionTweets = this.state.collectionTweets;
+    delete collectionTweets[tweet.id];
+    this.setState({
+        collectionTweets: collectionTweets
+    });
+},
+#+END_SRC
+
+The ~removeTweetFromCollection()~ method removes a tweet from a collection of
+tweets that we store in the ~Application~ component's state.  It takes the
+current ~collectionTweets~ object from the component's state, deletes a tweet
+with a given ID from that objectm and updates the component's state with an
+updated ~collectionTweets~ object.
 
 On the other hand, the second method removes all the tweets from the
 component's state.
+
+#+NAME:Application.removeAllTweetsFromCollection
+#+BEGIN_SRC js
+removeAllTweetsFromCollection: function () {
+    this.setState ({
+        collectionTweets: {}
+    });
+},
+#+END_SRC
 
 Both of these methods are called from a child's ~Collection~ component because
 that component has no other way to mutate the ~Application~ component's state.
@@ -7653,6 +7714,56 @@ architecture.
 
 ** Refactoring the ~Application~ Component
 
+Where do we start refactoring our React components?  Let's start with the
+uppermost React component in our component's hierarchy, ~Application~.
+
+At the moment, our Application component, [[Application component][Application component]], stores and
+manages the collection of tweets.  Let's remove this functinality, as it's now
+managed by the =CollectionStore=.  Remove these methods from the ~Application~
+component:
+
+- ~getInitialState()
+- ~addTweetToCollection()
+- ~removeTweetFromCollection()
+- ~removeAllTweetsFromCollection()
+
+
+#+CAPTION[<Flux Application Component>]:The ~Application~ Component Under Flux
+#+NAME:Flux Application component
+#+BEGIN_SRC js :tangle snapterest/source/components/Application.flux.react.js :mkdirp yes :noweb yes
+<<Application Dependencies>>
+
+var Application = React.createClass({
+    <<Flux Application.render>>
+});
+
+module.exports = Application;
+#+END_SRC
+
+Now the ~Application~ component has only the ~render()~ method that renders the
+~Stream~ and ~Collection~ components.  Since it doesn't manage the collection
+of tweetsw any more, we also don't need to pass any properties to the ~Stream~
+and ~Collection~ components as well.
+
+Update the ~Application component's ~render()~ method as follows.
+
+#+CAPTION: The ~render()~ Method of ~Application~ Under Flux
+#+NAME:Flux Application.render
+#+BEGIN_SRC js :noweb yes
+<<Application.render start>>
+                    <Stream />
+<<Application.render mid>>
+                    <Collection />
+<<Application.render end>>
+#+END_SRC
+
+The adoption of the Flux architecture allows the ~Stream~ component to manage
+the latest tweet, and the ~Collection~ component to manage the collection of
+tweets, whereas the ~Application~ component doesn't need to manage anything any
+more, so it becomes a container component that wraps the ~Stream~ and
+~Collection~ components in the additional HTML markup.  The ~Application~
+component has become much simply, and its markup, visually, looks much cleaner
+now.  This improves the maintainability.
 ** Refactoring the ~Collection~ Component
 
 ** Refactoring the ~CollectionControls~ Component
@@ -7671,7 +7782,6 @@ architecture.
   : <Tweet tweet={this.props.tweet} onImageClick={this.addTweetToCollection} />
 
 ** Build and Go Beyond
-
 
 * React.js
 :PROPERTIES:
