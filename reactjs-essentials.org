@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-19 Tue 09:19>
+#+DATE: <2019-03-20 Wed 08:37>
 
 #+TEXINFO: @insertcopying
 
@@ -4474,71 +4474,35 @@ components:
 So far, we've discussed and implemented our ~Stream~ component and its child
 components.  Next, we're going to focus on our ~Collection~ component.
 
-Create the ~<dir>/snapterest/source/components/Collection.react.js~ file:
+<<Collection component>>Create the
+~<dir>/snapterest/source/components/Collection.react.js~ file:
 
 #+NAME:Collection component
 #+CAPTION[<Collection Component>]:The ~Collection~ Component (~Collection.react.js~)
-#+BEGIN_SRC js :tangle snapterest/source/components/Collection.react.js :mkdirp yes
+#+BEGIN_SRC js :tangle snapterest/source/components/Collection.react.js :mkdirp yes :noweb yes
+<<Collection imports>>
+
+var Collection = React.createClass({
+
+    <<Collection.createHtmlMarkupStringOfTweetList>>
+
+    <<Collection.getListOfTweetIds>>
+
+    <<Collection.getNumberOfTweetsInCollection>>
+
+    <<Collection.render>>
+});
+
+module.exports = Collection;
+#+END_SRC
+
+#+NAME:Collection imports
+#+BEGIN_SRC js
 var React = require('react');
 var ReactDOMServer = require('react-dom/server');
 var CollectionControls = require('./CollectionControls.react');
 var TweetList = require('./TweetList.react');
 var Header = require('./Header.react');
-
-var Collection = React.createClass({
-
-    createHtmlMarkupStringOfTweetList: function () {	(ref:htmlString)
-        var htmlString = ReactDOMServer.renderToStaticMarkup(
-            <TweetList tweets={this.props.tweets} />
-        );
-
-        var htmlMarkup = {
-            html: htmlString
-        };
-
-        return (JSON.stringify(htmlMarkup));
-    },
-
-    getListOfTweetIds: function () {
-        return (Object.keys(this.props.tweets));
-    },
-
-    getNumberOfTweetsInCollection: function () {
-        return (this.getListOfTweetIds().length);
-    },
-
-    render: function () {
-        var numberOfTweetsInCollection = this.getNumberOfTweetsInCollection();
-
-        if (numberOfTweetsInCollection > 0) {
-            var tweets = this.props.tweets;
-            var htmlMarkup = this.createHtmlMarkupStringOfTweetsList();
-            var removeAllTweetsFromCollection = this.props.onRemoveAllTweetsFromCollection;
-            var handleRemoveTweetFromCollection = this.props.onRemoveTweetFromCollection;
-
-            return (
-                <div>
-                    <CollectionControls
-                        numberOfTweetsInCollection={numberOfTweetsInCollection}
-                	htmlMarkup={htmlMarkup}
-                	onRemoveAllTweetsFromCollection={removeAllTweetsFromCollection}
-                    />
-
-                    <TweetList
-                	tweets={tweets}
-                	onRemoveTweetFromCollection={handleRemoveTweetFromCollection}
-                    />
-                </div>
-            );
-        }
-
-        return (
-            <Header text='Your Collection is empty' />
-        );
-    }
-});
-
-module.exports = Collection;
 #+END_SRC
 
 *** Collection Renders Tweets and Control Elements
@@ -4556,13 +4520,46 @@ The ~Collection~ component is responsible for rendering two things:
 #+CINDEX:@file{Collection} @code{render()} method
 Take a look at the component's [[(Collection-render)][~render()~ method]].
 
+#+NAME:Collection.render
+#+BEGIN_SRC js :noweb yes
+render: function () {
+    var numberOfTweetsInCollection = this.getNumberOfTweetsInCollection();
+
+    if (numberOfTweetsInCollection > 0) {
+
+        <<Collection.render Variables>>
+
+        <<Collection.render return when not empty>>
+    }
+
+    return (<Header text='Your Collection is empty' />);
+}
+#+END_SRC
+
 #+CINDEX:@code{getNumberOfTweetsInCollection()} method
 #+CINDEX:@code{getListOfTweetIds()} method
 We first get a number of tweets in the collection using the
-~this.getNumberOfTweetsInCollection()~ method.  This method in turn uses
-another method to get a list of tweet IDs: ~getListOfTweetIds()~ method, which
-returns an array of tweet IDs, and then ~this.getNumberOfTweetsInCollection()~
-returns the length of this array.
+~this.getNumberOfTweetsInCollection()~ method.
+
+#+NAME:Collection.getNumberOfTweetsInCollection
+#+BEGIN_SRC js
+getNumberOfTweetsInCollection: function () {
+    return (this.getListOfTweetIds().length);
+},
+#+END_SRC
+
+
+This method in turn uses another method to get a list of tweet IDs:
+
+#+NAME:Collection.getListOfTweetIds
+#+BEGIN_SRC js
+getListOfTweetIds: function () {
+    return (Object.keys(this.props.tweets));
+},
+#+END_SRC
+
+The ~getListOfTweetIds()~ method call returns an array of tweet IDs, and then
+~this.getNumberOfTweetsInCollection()~ returns the length of this array.
 
 Once we know the number of tweets in our collection, we have to make a choice:
 
@@ -4593,6 +4590,14 @@ What do all these components render?
 The idea is to only show a collection when it is not empty.  In that case,
 we're creating [[(four-variables)][four variables]]:
 
+#+NAME:Collection.render Variables
+#+BEGIN_SRC js
+var tweets = this.props.tweets;
+var htmlMarkup = this.createHtmlMarkupStringOfTweetsList();
+var removeAllTweetsFromCollection = this.props.onRemoveAllTweetsFromCollection;
+var handleRemoveTweetFromCollection = this.props.onRemoveTweetFromCollection;
+#+END_SRC
+
   #+CINDEX:@code{tweets} variable
 - the ~tweets~ variable references our ~tweets~ property that is passed from a
   parent component;
@@ -4616,12 +4621,36 @@ we're creating [[(four-variables)][four variables]]:
 #+CINDEX:@code{renderToStaticMarkup()} method
 #+CINDEX:@file{TweetList} component as argument
 As the name suggests, the ~this.createHtmlMarkupStringOfTweetList()~ method
-creates a [[(htmlString)][string]] that represents the HTML markup created by rendering the
-~TweetList~ component.  This method uses the
-~ReactDOMServer.renderToStaticMarkup()~ method that we discussed in [[renderToStaticMarkup][Chapter 2]].
-We pass the ~TweetList~ component as its argument.  This ~TweetList~ component
-has a =tweets= property that references the =tweets= property passed by a
-parent component.
+creates a string that represents the HTML markup created by rendering the
+~TweetList~ component:
+
+#+NAME:Collection.createHtmlMarkupStringOfTweetList
+#+BEGIN_SRC js :noweb yes
+createHtmlMarkupStringOfTweetList: function () {
+    <<htmlString>>
+
+    var htmlMarkup = {
+        html: htmlString
+    };
+
+    return (JSON.stringify(htmlMarkup));
+},
+#+END_SRC
+
+#+CINDEX:@code{renderToStaticMarkup} method
+#+CINDEX:@code{ReactDOMServer} method, @code{renderToStaticMarkup}
+This method uses the ~ReactDOMServer.renderToStaticMarkup()~ method that we
+discussed in [[renderToStaticMarkup][Chapter 2]].  We pass the ~TweetList~ component as its argument.
+
+#+NAME:htmlString
+#+BEGIN_SRC js
+var htmlString = ReactDOMServer.renderToStaticMarkup(
+    <TweetList tweets={this.props.tweets} />
+);
+#+END_SRC
+
+This ~TweetList~ component has a =tweets= property that references the =tweets=
+property passed by a parent component.
 
 #+CINDEX:@code{htmlString} variable
 #+CINDEX:@code{htmlMarkup} object
@@ -4653,9 +4682,29 @@ file, even outside the ~React.createClass()~ method.
 #+CINDEX:root element, only one
 #+CINDEX:@file{CollectionControls} component
 Take a closer look at what the ~Collection~ component returns when our
-collection [[(Collection-notempty)][is /not/ empty]].  We wrap the ~CollectionControls~ and ~TweetList~
-components in the ~<div>~ element because React allows only one root element.
-Let's take a look at each component and discuss its properties.
+collection [[(Collection-notempty)][is /not/ empty]].
+
+#+NAME:Collection.render return when not empty
+#+BEGIN_SRC js
+return (
+    <div>
+        <CollectionControls
+            numberOfTweetsInCollection={numberOfTweetsInCollection}
+    	htmlMarkup={htmlMarkup}
+    	onRemoveAllTweetsFromCollection={removeAllTweetsFromCollection}
+        />
+
+        <TweetList
+    	tweets={tweets}
+    	onRemoveTweetFromCollection={handleRemoveTweetFromCollection}
+        />
+    </div>
+);
+#+END_SRC
+
+We wrap the ~CollectionControls~ and ~TweetList~ components in the ~<div>~
+element because React allows only one root element.  Let's take a look at each
+component and discuss its properties.
 
 We pass the following three properties to the ~CollectionsControls~ component:
 
@@ -5942,8 +5991,9 @@ another one!
 #+CINDEX:collection utility module
 #+CINDEX:@file{CollectionUtils.js} file
 #+CINDEX:@file{snapterest/source/utils/} directory
-This time, we'll create and test the collection utility module.  Create the
-~CollectionUtils.js~ file in the ~<dir>/snapterest/source/utils/~ directory:
+<<CollectionUtils module>>This time, we'll create and test the collection
+utility module.  Create the ~CollectionUtils.js~ file in the
+~<dir>/snapterest/source/utils/~ directory:
 
 #+NAME:CollectionUtils module
 #+CAPTION[<CollectionUtils Module>]:The ~CollectionUtils~ Module for Testing
@@ -7765,6 +7815,121 @@ more, so it becomes a container component that wraps the ~Stream~ and
 component has become much simply, and its markup, visually, looks much cleaner
 now.  This improves the maintainability.
 ** Refactoring the ~Collection~ Component
+
+Next, let's refactor our ~Collection~ component.  Replace the existing
+~Collection~ component ([[Collection component][existing ~Collection~ component]]) with an updated one.
+
+
+#+CAPTION[<Collection Flux Component>]:Refactored ~Collection~ Component for Flux
+#+NAME:Collection Flux component
+#+BEGIN_SRC js :tangle snapterest/source/components/Collection.flux.react.js :mkdirp yes :noweb yes
+<<Collection imports>>
+<<Collection utils imports>>
+
+var Collection = React.createClass({
+
+    getInitialState: function () {
+        return ({ collectionTweets: CollectionStore.getCollectionTweets() });
+    },
+
+    componentDidMount: function () {
+        CollectionStore.addChangeListener(this.onCollectionChange);
+    },
+
+    componentWillUnmount: function () {
+        CollectionStore.removeChangeListener(this.onCollectionChange);
+    },
+
+    onCollectionChange: function () {
+        this.setState({
+            collectionTweets: CollectionStore.getCollectionTweets();
+        });
+    },
+
+    createHtmlMarkupStringOfTweetList: function () {
+        var htmlString = ReactDOMServer.renderToStaticMarkup(
+            <TweetList tweets={this.state.collectionTweets} />
+        );
+
+        var htmlMarkup = {
+            html: htmlString
+        };
+
+        return (JSON.stringify(htmlMarkup));
+    },
+
+    <<Collection.flux.render>>
+})
+
+module.exports = Collection;
+#+END_SRC
+
+*** Changes Made to Collection for Flux
+
+What did we change here?  A few things.  First, we imported two new modules:
+
+#+NAME:Collection utils imports
+#+BEGIN_SRC js
+var CollectionUtils = require('../utils/CollectionUtils');
+var CollectionStore = require('../stores/CollectionStore')'
+#+END_SRC
+
+We created the [[CollectionUtils module][~CollectionUtils~ module in Chapter 8]] and in this chapter, we're
+using it.  ~CollectionStore~ is where we get our data from.
+
+Next, you should be able to spot the familiar pattern of the four methods:
+
+- In the ~getInitialState()~ method, we set the collection of tweets to what is
+  stored in ~CollectionStore~ at that moment.  As you may recall that
+  ~CollectionStore~ provides the ~getCollecionTweets()~ method to get the data
+  from it.
+
+- In the ~componentDidMount()~ method, we add the =change= event listener,
+  ~this.onCollectionChange~, to ~CollectionStore~.  Whenever the collection of
+  tweets is updated, ~CollectionStore~ will call our ~this.onCollectionChange~
+  callback function to notify the ~Collection~ component of that change.
+
+- In the ~componentWillUnmount()~ method, we remove the =change= event listener
+  that we added to the ~componentDidMoun()~ method.
+
+- In the ~onCollectionChange()~ method, we set the component's state to
+  whatever is stored in ~CollectionStore~ at that moment in time.  Updating the
+  component's state trigger's re-rendering.
+
+
+The ~Collection~ component's ~render()~ method is now simpler and cleaner:
+
+#+NAME:Collection.flux.render
+#+BEGIN_SRC js
+render: function () {
+    var collectionTweets = this.state.collectionTweets;
+    var numberOfTweetsInCollection = CollectionUtils.getNumberOfTweetsInCollection(collectionTweets);
+    var htmlMarkup;
+
+    if (numberOfTweetsInCollection > 0) {
+        htmlMarkup = this.createHtmlMarkupStringOfTweetList();
+
+        return (
+            <div>
+                <CollectionControls
+            		numberOfTweetsInCollection={numberOfTweetsInCollection}
+            		htmlMarkup={htmlMarkup}
+                />
+
+            	<TweetList tweets={collectionTweets} />
+
+            </div>
+        );
+    }
+
+    return (<Header text="Your collection is empty" />);
+}
+#+END_SRC
+
+We use the ~CollectionUtils~ module to get a number of tweets in the
+collection, and we pass fewer properties to the child components:
+- ~CollectionControls~
+- ~TweetList~
 
 ** Refactoring the ~CollectionControls~ Component
 
