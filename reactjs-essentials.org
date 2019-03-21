@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-21 Thu 08:45>
+#+DATE: <2019-03-21 Thu 09:39>
 
 #+TEXINFO: @insertcopying
 
@@ -4764,21 +4764,14 @@ The ~Collection~ component has two child components:
 First build the ~TweetList~ component.  Create the following
 ~<dir>/snapterest/source/components/TweetList.react.js~ file:
 
+<<TweetList component>>
 #+NAME:TweetList component
 #+CAPTION[<TweetList Component>]:The ~TweetList~ Component (~TweetList.react.js~)
 #+HEADER: :noweb tangle :mkdirp yes
 #+BEGIN_SRC js :tangle snapterest/source/components/TweetList.react.js
-var React = require('react');
-var Tweet = require('./Tweet.react');
+<<TweetList imports>>
 
-var listStyle = {
-    padding: '0'
-};
-
-var listItemStyle = {
-    display: 'inline-block',
-    listStyle: 'none'
-};
+<<TweetList styles>>
 
 var TweetList = React.createClass({
     <<TweetList getListOfTweetIds method>>
@@ -4787,6 +4780,24 @@ var TweetList = React.createClass({
 });
 
 module.exports = TweetList;
+#+END_SRC
+
+#+NAME:TweetList imports
+#+BEGIN_SRC js
+var React = require('react');
+var Tweet = require('./Tweet.react');
+#+END_SRC
+
+#+NAME:TweetList styles
+#+BEGIN_SRC js
+var listStyle = {
+    padding: '0'
+};
+
+var listItemStyle = {
+    display: 'inline-block',
+    listStyle: 'none'
+};
 #+END_SRC
 
 *** The ~render()~ Method
@@ -4834,12 +4845,27 @@ this, we will call the ~map()~ method on our array of tweet IDs and pass the
 
 {{{subheading(The ~getTweetElement~ Method)}}}
 
-#+NAME:TweetList getTweetElement method
 #+CAPTION:The ~getTweetElement~ Method of ~TweetList~
-#+BEGIN_SRC js
+#+NAME:TweetList getTweetElement method
+#+BEGIN_SRC js :noweb yes
+<<TweetList getTweetElement method A>>
+    <<variable handleRemoveTweetFromCollection>>
+<<TweetList getTweetElement method B>>
+#+END_SRC
+
+#+NAME:TweetList getTweetElement method A
+#+BEGIN_SRC js :exports none
 getTweetElement: function (tweetId) {
     var tweet = this.props.tweets[tweetId];
-    var handleRemoveTweetFromCollection = this.props.onRemoveTweetFromCollection;
+#+END_SRC
+
+#+NAME:variable handleRemoveTweetFromCollection
+#+BEGIN_SRC js :exports none
+var handleRemoveTweetFromCollection = this.props.onRemoveTweetFromCollection;
+#+END_SRC
+
+#+NAME:TweetList getTweetElement method B
+#+BEGIN_SRC js :exports none
     var tweetElement;
 
     if (handleRemoveTweetFromCollection) {
@@ -8148,6 +8174,74 @@ That's all we need to change in the ~CollectionRenameForm~ component.  Let's
 refactor the ~TweetList~ component next.
 
 ** Refactoring the ~TweetList~ Component
+
+The [[TweetList component][~TweetList~ component]] renders a list of tweets.  Each tweet is a ~Tweet~
+component that a user can click on to remove it from a collection.  Does it
+sound like it could make use of ~CollectionActionCreators~ to you?
+
+#+CAPTION[<TweetList Flux Component>]:The ~TweetList~ Component Refactored for Flux
+#+NAME:TweetList Flux component
+#+BEGIN_SRC js :tangle snapterest/source/components/TweetList.flux.react.js :mkdirp yes :noweb yes
+<<TweetList imports>>
+<<TweetList additional import>>
+
+<<TweetList styles>>
+
+var TweetList = React.createClass({
+    <<TweetList getListOfTweetIds method>>
+    <<TweetList.getTweetElement Flux>>
+    <<TweetList.removeTweetFromCollection Flux>>
+    <<TweetList render method>>
+});
+
+module.exports = TweetList;
+#+END_SRC
+
+{{{heading(Adding an Import)}}}
+
+That's right, let's add the ~CollectionActionCreators~ module to it:
+
+#+NAME:TweetList additional import
+#+BEGIN_SRC js
+var CollectionActionCreators = require('../actions/CollectionActionCreators');
+#+END_SRC
+
+{{{heading(Create ~removeTweetFromCollection()~ Method)}}}
+
+Then we create the ~removeTweetFromCollection()~ callback function that will be
+called when a user clicks on a tweet image:
+
+#+NAME:TweetList.removeTweetFromCollection Flux
+#+BEGIN_SRC js
+removeTweetFromCollection: function (tweet) {
+    CollectionActionCreators.removeTweetFromCollection(tweet.id);
+},
+#+END_SRC
+
+As you can see, it creates a new action through the
+~removeTweetFromCollection()~ function by passing the tweet ID to it as an
+argument.
+
+{{{heading(Update Variable ~handleRemoveTweetFromCollection)}}}
+
+Finally, we need to make sure that ~removeTweetFromCollection()~ is actually
+called.  In the ~getTweetElement()~ method, we change the variable
+~handleRemoveTweetFromCollection~ to:
+
+#+NAME:TweetList.getTweetElement Flux
+#+BEGIN_SRC js :noweb yes :none
+<<TweetList getTweetElement method A>>
+    <<variable handleRemoveTweetFromCollection Flux>>
+<<TweetList getTweetElement method B>>
+#+END_SRC
+
+#+NAME:variable handleRemoveTweetFromCollection Flux
+#+BEGIN_SRC js
+var handleRemoveTweetFromCollection = this.removeTweetFromCollection;
+#+END_SRC
+
+We're all done for this component.  ~StreamTweet~ is next in our refactoring
+journey.
 
 ** Refactoring the ~StreamTweet~ Component
 
