@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-21 Thu 10:29>
+#+DATE: <2019-03-21 Thu 10:44>
 
 #+TEXINFO: @insertcopying
 
@@ -8358,6 +8358,40 @@ The ~StreamTweet~ component is done.
   : <Tweet tweet={this.props.tweet} onImageClick={this.addTweetToCollection} />
 
 ** Build and Go Beyond
+
+That's all the effort that is needed to integrate the Flux architecture into a
+React application.  If you compare your React application without Flux and with
+Flux, you'll quickly see how much easier it is to understand how your
+application works when Flux is part of it.  I highly encourage you to visit the
+Flux official website and learn more about it at
+https://facebook.github.io/flux/.
+
+I think it's a good time to check that everything is in perfect working order.
+Let's build and run Snapterest!
+
+Navigate to {{{file(<dir>/snapterest/)}}} and run the following command in
+your terminal:
+: gulp
+
+You should see an output similar to this:
+: Finished 'default' after 2.42 s
+
+Make sure that you're running the {{{file(Snapkite Engine)}}} application that
+we installed and configured in Chapter 1.  Now, open the
+{{{file(<dir>/snapterest/build/index.html)}}} in your browser.  You should see
+the new tweets appearing in the left-hand side.  Click on a tweet to add it to
+the collection that appears on the right-hand side.
+
+Does it work?  Check your web browser's console for any errors.  No errors?
+Congratulations!
+
+This is the end of our journey in learning the essentials of React.js.
+
+Wait, let's not stop here; let's continue our conversation.  If you have any
+questions left unanswered; any doubts, suggestions, ideas, or comments, or if
+you want to showcase your Snapterest application, then go to
+https://github.com/fedosejev/react-essentials/issues and create an issue.  I'll
+do my best to get back to you as soon as I can.
 
 * React.js
 :PROPERTIES:
