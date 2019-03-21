@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-21 Thu 07:52>
+#+DATE: <2019-03-21 Thu 08:45>
 
 #+TEXINFO: @insertcopying
 
@@ -5236,15 +5236,13 @@ let's take a closer look at its child components.
 First, let's create the
 ~<dir>/snapterest/source/components/CollectionRenameForm.react.js~ file:
 
+<<CollectionRenameForm component>>
 #+CINDEX:@file{CollectionRenameForm} component
 #+NAME:CollectionRenameForm component
 #+CAPTION[<CollectionRenameForm Component>]:The ~CollectionRenameForm~ Component (~CollectionRenameForm.react.js~)
 #+HEADER: :noweb tangle :mkdirp yes
 #+BEGIN_SRC js :tangle snapterest/source/components/CollectionRenameForm.react.js
-var React = require('react');
-var ReactDOM = require('react-dom');
-var Header = require('./Header.react');
-var Button = require('./Button.react');
+<<CollectionRenameForm imports>>
 
 var inputStyle = {
     marginRight: '5px'
@@ -5262,6 +5260,14 @@ var CollectionRenameForm = React.createClass({
 });
 
 module.exports = CollectionRenameForm;
+#+END_SRC
+
+#+NAME:CollectionRenameForm imports
+#+BEGIN_SRC js
+var React = require('react');
+var ReactDOM = require('react-dom');
+var Header = require('./Header.react');
+var Button = require('./Button.react');
 #+END_SRC
 
 *** CollectionRenameForm ~render()~ Method
@@ -5457,6 +5463,7 @@ Finally, let's discuss our two form buttons:
 We'll start with a ~Change~ button.  When a user clicks on it, the
 ~this.handleFormSubmit()~ method is called:
 
+<<CollectionRenameForm.handleFormSubmit method>>
 #+CINDEX:@code{handleFormSubmit()} method
 #+NAME:CollectionRenameForm handleFormSubmit method
 #+CAPTION[CollectionRenameForm handleFormSubmit Method]:The ~handleFormSubmit()~ Method of ~CollectionRenameForm~ Component
@@ -5484,6 +5491,7 @@ Now let's discuss our second form button.
 #+CINDEX:@code{handleFormCancel()} method
 When a user clicks on it, the ~this.handleFormCancel()~ method is called:
 
+<<CollectionRenameForm handleFormCancel method>>
 #+NAME:CollectionRenameForm handleFormCancel method
 #+CAPTION[CollectionRenameForm handleFormCancel() Method]:The ~handleFormCancel()~ Method of ~CollectionRenameForm~ Component
 #+BEGIN_SRC js
@@ -8042,6 +8050,102 @@ dispatches the action to stores.  In turn, =CollectionStore= removes all the
 tweets from the collection and emits the =change= event.
 
 ** Refactoring the ~CollectionRenameForm~ Component
+
+~CollectionRenameForm~ ([[CollectionRenameForm component][CollectionRenameForm component]]) is a controlled form
+component.  This means that its input value is stored in the component's state,
+and the only way to update that value is to update the component's state.  It
+has the initial value that it should get from =CollectionStore=, so let's make
+that happen.
+
+#+CAPTION[<CollectionRenameForm Flux Component>]:The ~CollectionRenameForm~ Component Refactored for Flux
+#+NAME:CollectionRenameForm Flux component
+#+HEADER: :mkdirp yes :noweb yes
+#+BEGIN_SRC js :tangle snapterest/source/components/CollectionRenameForm.flux.react.js
+<<CollectionRenameForm imports>>
+<<CollectionRenameForm additional imports>>
+
+var inputStyle = {
+    marginRight: '5px'
+};
+
+var CollectionRenameForm = React.createClass({
+
+     <<CollectionRenameForm.getInitialState flux>>
+     <<CollectionRenameForm setInputValue method>>
+     <<CollectionRenameForm handleInputValueChange method>>
+     <<CollectionRenameForm.handleFormSubmit flux>>
+     <<CollectionRenameForm.handleFormCancel flux>>
+     <<CollectionRenameForm componentDidMount method>>
+     <<CollectionRenameForm render method>>
+});
+
+module.exports = CollectionRenameForm;
+
+#+END_SRC
+
+{{{heading(Import New Modules)}}}
+
+First, we need to import the ~CollectionActionCreators~ and ~CollectionStore~
+modules:
+
+#+NAME:CollectionRenameForm additional imports
+#+BEGIN_SRC js
+var CollectionActionCreators = require('../actions/CollectionActionCreators');
+var CollectionStore = require('../stores/CollectionStore');
+#+END_SRC
+
+{{{heading(Update ~getInitialState()~)}}}
+
+Now, we need to update the ~getInitialState()~ method as follows:
+
+#+NAME:CollectionRenameForm.getInitialState flux
+#+BEGIN_SRC js
+getInitialState: function () {
+    return ({
+        inputValue: CollectionStore.getCollectionName()
+    });
+},
+#+END_SRC
+
+The only difference is that now we get the initial =inputValue= from
+=CollectionStore=.
+
+{{{heading(Update ~handleFormSubmit()~)}}}
+
+Now let's update the [[CollectionRenameForm.handleFormSubmit method][~handleFormSubmit()~ method]] by using the following code:
+
+#+NAME:CollectionRenameForm.handleFormSubmit flux
+#+BEGIN_SRC js
+handleFormSubmit: function (event) {
+    event.preventDefault();
+    var collectionName = this.state.inputValue;
+    CollectionActionCreators.setCollectionName(collectionName);
+    this.props.onCancelCollectionNameChange();
+},
+#+END_SRC
+
+The important difference here is that when a user submits a form, we create a
+new action that sets a new name in our collection store.
+
+{{{heading(Update ~handleFormCancel()~)}}}
+
+Finally, we need to change the source of the collection name in the
+[[CollectionRenameForm handleFormCancel method][~handleFormCancel()~ method]].
+
+#+NAME:CollectionRenameForm.handleFormCancel flux
+#+BEGIN_SRC js
+handleFormCancel: function (event) {
+    event.preventDefault();
+    var collectionName = CollectionStore.getCollectionName();
+    this.setInputValue(collectionName);
+    this.props.onCancelCollectionNameChange();
+},
+#+END_SRC
+
+Once again, we get the collection name from a collection store.
+
+That's all we need to change in the ~CollectionRenameForm~ component.  Let's
+refactor the ~TweetList~ component next.
 
 ** Refactoring the ~TweetList~ Component
 
