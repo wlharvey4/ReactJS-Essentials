@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-21 Thu 09:39>
+#+DATE: <2019-03-21 Thu 10:29>
 
 #+TEXINFO: @insertcopying
 
@@ -3552,16 +3552,14 @@ lifecycle methods.
 Navigate to ~<dir>/snapterest/source/components/~ and create the
 ~StreamTweet.react.js~ file:
 
+<<StreamTweet component>>
 #+NAME:StreamTweet component
 #+CAPTION[<StreamTweet Component>]:The ~StreamTweet~ Component (~StreamTweet.react.js~)
 #+HEADER: :noweb no-export
 #+HEADER: :comments both
 #+HEADER: :tangle snapterest/source/components/StreamTweet.react.js :mkdirp yes
 #+BEGIN_SRC js
-var React = require('react');
-var ReactDOM = require('react-dom');
-var Header = require('./Header.react');
-var Tweet = require('./Tweet.react');
+<<StreamTweet imports>>
 
 var StreamTweet = React.createClass({
     // define other component lifecycle methods here
@@ -3581,10 +3579,7 @@ var StreamTweet = React.createClass({
         return (
             <section>
                 <Header text={this.state.headerText} />
-                <Tweet
-                 tweet={this.props.tweet}
-                 onImageClick={this.props.onAddTweetToCollection}
-                />
+                <<StreamTweet.render Tweet>>
             </section>
         );
     }
@@ -3592,6 +3587,30 @@ var StreamTweet = React.createClass({
 
 module.exports = StreamTweet;
 #+END_SRC
+
+{{{heading(The ~StreamTweet~'s Imports)}}}
+
+#+NAME:StreamTweet imports
+#+BEGIN_SRC js
+var React = require('react');
+var ReactDOM = require('react-dom');
+var Header = require('./Header.react');
+var Tweet = require('./Tweet.react');
+#+END_SRC
+
+{{{heading(The ~StreamTweet.render()~ of the ~Tweet~ component)}}}
+
+The details of this rendered ~Tweet~ component will be [[StreamTweet.render Tweet for Flux][refactored for Flux]].
+
+#+NAME:StreamTweet.render Tweet
+#+BEGIN_SRC js
+<Tweet
+   tweet={this.props.tweet}
+   onImageClick={this.props.onAddTweetToCollection}
+/>
+#+END_SRC
+
+*** Discussing the Component Lifecycle Methods
 
 The ~StreamTweet~ component has no lifecycle methods yet, other than
 ~render()~.  We'll create and discuss them one by one as we move ahead.
@@ -8244,6 +8263,92 @@ We're all done for this component.  ~StreamTweet~ is next in our refactoring
 journey.
 
 ** Refactoring the ~StreamTweet~ Component
+
+~StreamTweet~ ([[StreamTweet component][~StreamTweet~ component]]) renders a tweet image that a user can
+click on to add it to a collection of tweets.  You might have already guessed
+that we're going to create and dispatch a new action when a user clicks on that
+tweet image.
+
+#+CAPTION[<StreamTweet Flux Component>]:The ~StreamTweet~ Component Refactored for Flux
+#+NAME:StreamTweet Flux component
+#+HEADER: :noweb no-export
+#+HEADER: :comments both
+#+BEGIN_SRC js :tangle snapterest/source/components/StreamTweet.flux.react.js :mkdirp yes
+<<StreamTweet imports>>
+<<StreamTweet additional import>>
+
+var StreamTweet = React.createClass({
+    // define other component lifecycle methods here
+
+    <<getInitialState>>
+    <<componentWillMount>>
+    <<componentDidMount>>
+    <<componentWillReceiveProps>>
+    <<shouldComponentUpdate>>
+    <<componentWillUpdate>>
+    <<componentDidUpdate>>
+    <<componentWillUnmount>>
+    <<StreamTweet.addTweetToCollection flux>>
+
+    render: function () {
+        console.log('[Snapterest] StreamTweet: Running render()');
+
+        return (
+            <section>
+                <Header text={this.state.headerText} />
+                <<StreamTweet.render Tweet for Flux>>
+            </section>
+        );
+    }
+});
+
+module.exports = StreamTweet;
+#+END_SRC
+
+#+END_SRC
+
+{{{heading(Import ~CollectionActionCreators)}}}
+
+First, we import the ~CollectionActionCreators~ module to the ~StreamTweet~
+component.
+
+#+NAME:StreamTweet additional import
+#+BEGIN_SRC js
+var CollectionActionCreators = require('../actions/CollectionActionCreators');
+#+END_SRC
+
+{{{heading(Add ~addTweetToCollection()~ Method)}}}
+
+Then, we add a new ~addTweetToCollection()~ method to it:
+
+#+NAME:StreamTweet.addTweetToCollection flux
+#+BEGIN_SRC js
+addTweetToCollection: function (tweet) {
+    CollectionActionCreators.addTweetToCollection(tweet);
+},
+
+#+END_SRC
+
+The ~addTweetToCollection()~ is a callback function that should be invoked when
+a user clicks on a tweet image.
+
+{{{heading(Update the ~render()~ Method)}}}
+
+Let's take a look at this line in the ~render()~ method:
+: <Tweet tweet={this.props.tweet} onImageClick={this.props.onAddTweetToCollection} />
+
+We replace it with this line of code:
+
+<<StreamTweet.render Tweet for Flux>>
+#+NAME:StreamTweet.render Tweet for Flux
+#+BEGIN_SRC js
+<Tweet
+  tweet={this.props.tweet}
+  onImageClick={this.addTweetToCollection}
+/>
+#+END_SRC
+
+The ~StreamTweet~ component is done.
 
 *** TODO Fix Tweet commands
 
