@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-21 Thu 10:44>
+#+DATE: <2019-03-22 Fri 07:55>
 
 #+TEXINFO: @insertcopying
 
@@ -3433,6 +3433,7 @@ value for the component state's ~tweet~ property.
 Where does the new tweet come from and when does it come?  Let's take a look at
 our ~componentDidMount()~ method.
 
+<<SnapkiteStreamClient.initializeStream>>
 #+NAME:Stream.componentDidMount method
 #+CAPTION:The ~Stream.componentDidMount()~ Method
 #+BEGIN_SRC js
@@ -7185,23 +7186,30 @@ follows:
 - Use =TweetStore= to get data
 
 
+#+CINDEX:refactor app for Flux, how
 Here are some important questions to ask: Where in the application does the
 data flow start?  What is our data?  If we answer these questions, we will
 understand where to start refactoring our application to adapt to the Flux
 architecture.
 
+#+CINDEX:data flow, begins with tweets
+#+CINDEX:new tweets, @file{Stream} component
 Snapterest allows users to receive and collect the latest tweets.  The only
 data that our application is concerned with is tweets, so our data flow begins
 with receiving the new tweets.  At the moment, what part of our application is
 responsible for receiving new tweets?  You might remember that our ~Stream~
-component has the following ~componentDidMount()~ method:
+component has the following ~componentDidMount()~ method
+([[SnapkiteStreamClient.initializeStream][SnapkiteStreamClient.initializeStream]]):
 
+#+CINDEX:@code{SnapkiteStreamClient.initializeStream()} method
+#+CINDEX:@code{initializeStream()} method of @file{SnapkiteStreamClient}
 #+BEGIN_SRC js
 componentDidMount: function () {
     SnapkiteStreamClient.initalizeStream(this.handleNewTweet);
 }
 #+END_SRC
 
+#+CINDEX:single responsibility principle, violation
 Yes, currently, we initiate a stream of new tweets after we render the ~Stream~
 component.  ``Wait,'' you might say, ``didn't we learn that React components
 should only be concerned with rendering the user interface?''  You're correct.
@@ -7327,15 +7335,22 @@ good old ~Stream~ component.
 
 ** Refactoring the ~Stream~ Component
 
+#+CINDEX:data to React components, how
+#+CINDEX:data sources, possible
 Now, with the Flux architecture in place, we will rethink how our React
 components get the data that they need to render.  As you know, there are
 usually two sources of data for a React component:
 
+   #+CINDEX:data from external library
+   #+CINDEX:data from parent component
+   #+CINDEX:data from @code{props} object
 1. Calling another library; for example, in our case, calling the
    ~jQuery.ajax()~ method, or ~SnapkiteStreamComponent.initializeStream()~
 2. Receiving data from a parent React component via the =props= object
 
 
+#+CINDEX:data store, receive data from
+#+CINDEX:refactor @file{Stream} component
 We want our React components not to use any external libraries to receive
 data.  Instead, from now on, they will get that same data from stores.  Keeping
 this plan in mind, let's refactor our ~Stream~ component.
@@ -7344,6 +7359,9 @@ Here's how it looks now: [[#Stream Component][The Stream Component]]
 
 *** Remove Components
 
+#+CINDEX:@file{TweetStore}, import
+#+CINDEX:store, import
+#+CINDEX:data store, import
 First, let's get rid of the ~componentDidMount()~, ~componentWillUnmount()~,
 and ~handleNewTweet()~ methods, and import the =TweetStore= store.  There is
 also no need to import the ~snapkite-stream-client~ module anymore.
@@ -7356,6 +7374,7 @@ var TweetStore = require('../stores/TweetStore');
 
 *** Change How ~Stream~ Component Gets Initial Tweet
 
+#+CINDEX:tweet, get initial
 Next, we need to change how the ~Stream~ component gets its initial tweet.
 Let's update its ~getInitialState()~ method:
 
@@ -7385,10 +7404,11 @@ you hugely down the road, when you'll need to maintain your Flux application.
 
 *** Getting Additional Tweets with ~addChangeListener()~
 
+#+CINDEX:tweets, getting subsequent
 Now we know how to get our initial tweet, but how do we get all the other new
 tweets that will arrive later?  We can create a timer and call
 ~TweetStore.getTweet()~ repeatedly; however, this is not the best solution,
-because it assuemes that we don't know when =TweetStore= updates its tweet with
+because it assumes that we don't know when =TweetStore= updates its tweet with
 a new one.  However, we /do/ know that.
 
 How?  Remember that, in the previous chapter, we implemented the following
