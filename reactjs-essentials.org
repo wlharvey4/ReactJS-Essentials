@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-22 Fri 07:55>
+#+DATE: <2019-03-22 Fri 09:03>
 
 #+TEXINFO: @insertcopying
 
@@ -47,7 +47,6 @@ frontend journey.
 
   #+CINDEX:Fedosejev, Artemij
 - [[https://github.com/fedosejev][Artemij Fedosejev]]
-
 
   #+CINDEX:React Essentials Github
 - [[https://github.com/fedosejev/react-essentials][Author's React Essentials Github Page]]
@@ -7538,8 +7537,7 @@ Let's recap to see how our ~Stream~ component always has the latest tweet:
 4. When the component is about to unmount, we stop listening to the changes in
    =TweetStore=.
 
-
-*** Look at the Flux Data Flow
+n*** Look at the Flux Data Flow
 
 That's how a React component interacts with a Flux store.
 
@@ -7557,6 +7555,7 @@ a look at our current data flow:
                     with a new tweet, and re-renders.
 
 
+#+CINDEX:scale React app
 Can you see how we can now scale the number of React components, action
 creators, and stores, and still be able to maintain Snapterest?  With Flux, it
 will always be a one-way data flow.  It will be the same mental model
@@ -7610,6 +7609,7 @@ var EventEmitter = require('events').EventEmitter;
 var assign = require('object-assign');
 #+END_SRC
 
+#+CINDEX:@code{change} event
 Then, we assign a =change= event name to the =CHANGE_EVENT= variable.
 
 *** Define Data and Private Methods to Mutate Data
@@ -7639,6 +7639,7 @@ function setCollectionName (name) {
 }
 #+END_SRC
 
+#+CINDEX:store collection of tweets in object
 We store a collection of tweets in an object that is initially empty, and we
 also store the collection name that is initially set to =new=.  Then, we create
 three private functions that mutate =collectionTweets=:
@@ -7843,9 +7844,11 @@ architecture.
 
 ** Refactoring the ~Application~ Component
 
+#+CINDEX:refactor React components, start at top
 Where do we start refactoring our React components?  Let's start with the
 uppermost React component in our component's hierarchy, ~Application~.
 
+#+CINDEX:refactor @file{Application} component
 At the moment, our Application component, [[Application component][Application component]], stores and
 manages the collection of tweets.  Let's remove this functinality, as it's now
 managed by the =CollectionStore=.  Remove these methods from the ~Application~
@@ -7891,10 +7894,13 @@ the latest tweet, and the ~Collection~ component to manage the collection of
 tweets, whereas the ~Application~ component doesn't need to manage anything any
 more, so it becomes a container component that wraps the ~Stream~ and
 ~Collection~ components in the additional HTML markup.  The ~Application~
-component has become much simply, and its markup, visually, looks much cleaner
+component has become much simpler, and its markup, visually, looks much cleaner
 now.  This improves the maintainability.
+
 ** Refactoring the ~Collection~ Component
 
+#+CINDEX:refactor @file{Collection} component
+#+CINDEX:@file{Collection} component, refactor for Flux
 Next, let's refactor our ~Collection~ component.  Replace the existing
 ~Collection~ component ([[Collection component][existing ~Collection~ component]]) with an updated one.
 
@@ -8005,6 +8011,7 @@ render: function () {
 }
 #+END_SRC
 
+#+CINDEX:@file{CollectionUtils} module
 We use the ~CollectionUtils~ module to get a number of tweets in the
 collection, and we pass fewer properties to the child components:
 - ~CollectionControls~
@@ -8012,6 +8019,8 @@ collection, and we pass fewer properties to the child components:
 
 ** Refactoring the ~CollectionControls~ Component
 
+#+CINDEX:refactor @file{CollectionControls} component
+#+CINDEX:@file{CollectionControls} component, refactor for Flux
 The ~CollectionControls~ component gets some major improvements as well.  Let's
 take a look at the refactored version first ([[CollectionControls component][~CollectionControls~ component]]),
 and then discuss what was updated and why:
@@ -8097,6 +8106,7 @@ Instead, we get it from our ~CollectionStore~.
 
 *** Replace ~handleChangeCollectionName()~
 
+#+CINDEX:@code{removeAllTweetsFromCollection} method
 Then, we make one of the key changes.  We replace the
 ~handleChangeCollectionName()~ method with a new one,
 ~removeAllTweetsFromCollection()~:
@@ -8116,6 +8126,8 @@ tweets from the collection and emits the =change= event.
 
 ** Refactoring the ~CollectionRenameForm~ Component
 
+#+CINDEX:refactor @file{CollectionRenameForm} component
+#+CINDEX:@file{CollectionRenameForm} component, refactor for Flux
 ~CollectionRenameForm~ ([[CollectionRenameForm component][CollectionRenameForm component]]) is a controlled form
 component.  This means that its input value is stored in the component's state,
 and the only way to update that value is to update the component's state.  It
@@ -8214,6 +8226,8 @@ refactor the ~TweetList~ component next.
 
 ** Refactoring the ~TweetList~ Component
 
+#+CINDEX:refactor @file{TweetList} component
+#+CINDEX:@file{TweetList} component, refactor for Flux
 The [[TweetList component][~TweetList~ component]] renders a list of tweets.  Each tweet is a ~Tweet~
 component that a user can click on to remove it from a collection.  Does it
 sound like it could make use of ~CollectionActionCreators~ to you?
@@ -8284,6 +8298,8 @@ journey.
 
 ** Refactoring the ~StreamTweet~ Component
 
+#+CINDEX:refactor @file{StreamTweet} component
+#+CINDEX:@file{StreamTweet} component, refactor for Flux
 ~StreamTweet~ ([[StreamTweet component][~StreamTweet~ component]]) renders a tweet image that a user can
 click on to add it to a collection of tweets.  You might have already guessed
 that we're going to create and dispatch a new action when a user clicks on that
@@ -8372,6 +8388,7 @@ The ~StreamTweet~ component is done.
 
 *** TODO Fix Tweet commands
 
+#+CINDEX:errata, @file{StreamTweet} component
 - See [[https://github.com/fedosejev/react-essentials/blob/master/updates.md#chapter-10-page-29][Errata]]
   Use these:
   : <Tweet tweet={this.props.tweet} onImageClick={this.props.onAddTweetToCollection} />
@@ -8379,6 +8396,7 @@ The ~StreamTweet~ component is done.
 
 ** Build and Go Beyond
 
+#+CINDEX:Flux architecture
 That's all the effort that is needed to integrate the Flux architecture into a
 React application.  If you compare your React application without Flux and with
 Flux, you'll quickly see how much easier it is to understand how your
@@ -8386,9 +8404,13 @@ application works when Flux is part of it.  I highly encourage you to visit the
 Flux official website and learn more about it at
 https://facebook.github.io/flux/.
 
+#+CINDEX:Snapterest, build and run
+#+CINDEX:build and run Snapterest
 I think it's a good time to check that everything is in perfect working order.
 Let's build and run Snapterest!
 
+#+CINDEX:@command{gulp} command, run
+#+CINDEX:run @command{gulp} command
 Navigate to {{{file(<dir>/snapterest/)}}} and run the following command in
 your terminal:
 : gulp
@@ -8396,6 +8418,7 @@ your terminal:
 You should see an output similar to this:
 : Finished 'default' after 2.42 s
 
+#+CINDEX:@file{Snapkite Engine}
 Make sure that you're running the {{{file(Snapkite Engine)}}} application that
 we installed and configured in Chapter 1.  Now, open the
 {{{file(<dir>/snapterest/build/index.html)}}} in your browser.  You should see
