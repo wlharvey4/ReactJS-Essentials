@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-22 Fri 09:03>
+#+DATE: <2019-03-22 Fri 10:33>
 
 #+TEXINFO: @insertcopying
 
@@ -241,7 +241,6 @@ spam.)
 ** Set Variables
 
 #+NAME:use quick and dirty
-#+HEADER: :eval query
 #+HEADER: :exports results
 #+HEADER: :results silent
 #+BEGIN_SRC elisp
@@ -389,12 +388,12 @@ get your tools ready.  For this project, we will be using a number of tools.
 #+CINDEX:install Node.js
 #+CINDEX:Jest
 Install Node.js.  We'll be using version =v0.10.40=[fn::The currently installed
-version of Node.js as of {{{date}}} is src_sh[:eval query :exports
-results]{node -v}.] because, at the time of writing this book, that's the
-latest version of Node.js that Jest supports.[fn::The currently available
-versions of Node.js as of the publication of this document ({{{date}}}) are
-=10.15.3 LTS= and =11.11.0 Current=.  The current version of Jest is =24.1=,
-which appears to work with the current version of Node.js and React.]
+version of Node.js as of {{{date}}} is src_sh[:exports results]{node -v}.]
+because, at the time of writing this book, that's the latest version of Node.js
+that Jest supports.[fn::The currently available versions of Node.js as of the
+publication of this document ({{{date}}}) are =10.15.3 LTS= and =11.11.0
+Current=.  The current version of Jest is =24.1=, which appears to work with
+the current version of Node.js and React.]
 
 #+CINDEX:distribution, Node.js
 #+CINDEX:installation package, Node.js
@@ -419,8 +418,8 @@ which appears to work with the current version of Node.js and React.]
 Node.js, so it was installed by the previous step.  To test:
      : $ npm -v
      : 1.4.28
-     [fn::Currently installed npm version as of {{{date}}} is src_sh[:eval
-     query :exports results]{npm -v}]
+     [fn::Currently installed npm version as of {{{date}}} is src_sh[:exports
+     results]{npm -v}]
 
 ** Installing Git
 
@@ -434,7 +433,7 @@ Node.js, so it was installed by the previous step.  To test:
 can also be installed using Homebrew or from the
 {{{command(git-osx-installer)}}} found at
 [[https://sourceforge.net/projects/git-osx-installer/]].  The current version of
-git installed is src_sh[:eval query :exports results]{git --version} using the
+git installed is src_sh[:exports results]{git --version} using the
 {{{command(git-osx-installer)}}}.]
 
 ** Getting Data from the Twitter Streaming API
@@ -682,7 +681,7 @@ that socket connection and process tweets as they arrive.
 
     #+NAME:config.json
     #+CAPTION:Snapkite Engine ~config.json~
-    #+BEGIN_SRC js
+    #+BEGIN_SRC js :eval never
     "filters": [
         "snapkite-filter-is-possibly-sensitive",
         "snapkite-filter-has-mobile-photo",
@@ -836,6 +835,12 @@ our answers, creates ~package.json~ for our project.
 : npm init
 Accept all the defaults.
 
+#+BEGIN_SRC sh :exports both :results output
+[ -d snapterest ] || mkdir -v snapterest
+cd snapterest
+[ -e package.json ] || yarn init --yes
+#+END_SRC
+
 #+CINDEX:modular application
 #+CINDEX:modules
 #+CINDEX:Node.js modules
@@ -871,6 +876,10 @@ To install Browserify, run the following command from inside the
 ~<dir>/snapterest/~ directory:
 : npm install --save-dev browserify
 
+#+BEGIN_SRC sh :dir snapterest :exports both :results output
+yarn add --dev browserify
+#+END_SRC
+
 Browserify will allow us to use Node.js modules in our client-side JavaScript
 applications.  It will be a part of our build process.
 
@@ -898,6 +907,10 @@ Let's install it.
 : npm install --save-dev gulp
 : npm install --global gulp-cli
 
+#+BEGIN_SRC sh :dir snapterest :exports both :results output
+yarn add --dev gulp
+#+END_SRC
+
 {{{subheading(An Example ~gulpfile.js~)}}}
 
 #+CINDEX:gulpfile
@@ -909,7 +922,7 @@ https://gulpjs.com/docs/en/getting-started/quick-start#create-a-gulpfile]:
 
 #+NAME:example-gulpfile.js
 #+CAPTION:Example of a ~gulpfile.js~
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 function defaultTask(cb) {
   console.log("I am about to learn the essentials of React.js");
   cb();
@@ -944,7 +957,7 @@ following code:
 
 #+NAME:default gulpfile
 #+CAPTION:A default ~gulpfile.js~ that will package source and dependency modules using Browserify
-#+BEGIN_SRC js :tangle snapterest/gulpfile.js
+#+BEGIN_SRC js :tangle snapterest/gulpfile.js :eval no-export
 var gulp = require('gulp');
 var browserify = require('browserify');
 var babelify = require('babelify');
@@ -971,6 +984,10 @@ version 6.  Version 7 introduced some [[https://github.com/fedosejev/react-essen
 
 : npm install --save-dev babelify@^6.2.0
 
+#+BEGIN_SRC sh :dir snapterest :exports both :results output
+yarn add --dev babelify@^6.2.0
+#+END_SRC
+
 #+CINDEX:JSX
 The ~babelify~ module allows us to write the JSX syntax that we'll introduce in
 the next chapter.
@@ -983,8 +1000,11 @@ the next chapter.
 It allows us to use Browserify and Gulp together.  For more details on why this
 works, go to [[https://www.npmjs.com/package/vinyl-source-stream][Vinyl-Source-Stream]].  Let's install the ~vinyl-source-stream~
 dependency module:
-
 : npm install --save-dev vinyl-source-stream
+
+#+BEGIN_SRC sh :dir snapterest :exports both :results output
+yarn add --dev vinyl-source-stream
+#+END_SRC
 
 **** Test Default Gulp Task
 
@@ -998,7 +1018,7 @@ $ gulp
 [19:06:03] Finished 'default' after 40 ms
 #+END_EXAMPLE
 
-#+BEGIN_SRC sh :dir snapterest :results output :exports none
+#+BEGIN_SRC sh :dir snapterest :results output :exports none :eval no-export
 gulp
 #+END_SRC
 
@@ -1027,7 +1047,7 @@ with a link to our ~snapterest.js~ script.  Create the ~index.html~ file in the
 
 #+NAME:index.html
 #+CAPTION:Project Snapterest ~index.html~
-#+BEGIN_SRC html :tangle snapterest/build/index.html :mkdirp yes
+#+BEGIN_SRC html :tangle snapterest/build/index.html :mkdirp yes :eval no
 <!doctype html>
 <html lang="en">
   <head>
@@ -1328,14 +1348,14 @@ Let's start with an example of a =ReactElement=:
 
 1. Add the following code to your ~<dir>/snapterest/source/app.js~ file:
 
-   #+BEGIN_SRC js
+   #+BEGIN_SRC js :eval no
    var reactElement = React.createElement('h1');
    ReactDOM.render(reactElement, document.getElementById('react-application'));
    #+END_SRC
 
 2. Now your ~app.js~ file should look exactly like this:
 
-   #+BEGIN_SRC js
+   #+BEGIN_SRC js :eval no
    var React = require('react');
    var ReactDOM = require('react-dom');
 
@@ -1358,7 +1378,7 @@ Let's start with an example of a =ReactElement=:
    this line among others:
    : <h1 data-reactid=".0"></h1>
 
-   #+BEGIN_SRC html
+   #+BEGIN_SRC html :eval no
    <html lang="en">
      <head>
        <meta charset="utf-8">
@@ -1431,7 +1451,7 @@ While creating DOM elements with React, we can pass the =props= object with
 properties that represent HTML attributes such as =class=, =style=, and so on.
 For example, run the following commands:
 
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 var React = require ('react');
 var ReactDOM = require('react-dom');
 var reactElement = React.createElement('h1', { className: 'header' });
@@ -1468,7 +1488,7 @@ element represented by a ~ReactElement~, a string or a number represented by
 
 Here is an example:
 
-#+BEGIN_SRC js snapterest/source/app.js
+#+BEGIN_SRC js snapterest/source/app.js :eval no
 var React = require('react');
 var ReactDOM = require('react-dom');
 var reactElement = React.createElement('h1', { className: 'header' }, 'This is React.');
@@ -1491,7 +1511,7 @@ React.)}}} string is represented by a ~ReactText~.
 Next, create a React element with a number of other React elements as it's
 children:
 
-#+BEGIN_SRC js snapterest/source/app.js
+#+BEGIN_SRC js snapterest/source/app.js :eval no
 var React = require('react');
 var ReactDOM = require('react-dom');
 
@@ -1515,7 +1535,7 @@ array of ~ReactNode~'s.  Each ~ReactElement~ in the ~reactFragment~ array must
 have a =key= property that helps React to identify that ~ReactElement~.  As a
 result, we get the following HTML markup:
 
-#+BEGIN_SRC html
+#+BEGIN_SRC html :eval no
 <section class="container" data-reactid=".0">
   <h1 class="header" data-reactid=".0.$header">This is React.</h1>
   <p class="content" data-reactid=".0.$content">And that's how it works.</p>
@@ -1537,7 +1557,7 @@ function that creates other functions.  This is exactly what
 
 Consider the following example:
 
-#+BEGIN_SRC js snapterest/source/app.js
+#+BEGIN_SRC js snapterest/source/app.js :eval no
 var React = require('react');
 var ReactDOM = require('react-dom');
 
@@ -1553,7 +1573,7 @@ ReactDOM.render(listOfItems, document.getElementById('react-application'));
 
 The preceeding example produces this HTML:
 
-#+BEGIN_SRC html
+#+BEGIN_SRC html :eval no
 <ul class="list-of-items" data-reactid=".0">
   <li class="item-1" data-reactid=".0.$item-1">Item 1</li>
   <li class="item-2" data-reactid=".0.$item-2">Item 1</li>
@@ -1564,7 +1584,7 @@ The preceeding example produces this HTML:
 #+CINDEX:factory function
 We can simplify it by first creating a factory function:
 
-#+BEGIN_SRC js snapterest/source/app.js
+#+BEGIN_SRC js snapterest/source/app.js :eval no
 var React = require('react');
 var ReactDOM = require('react-dom');
 
@@ -1610,7 +1630,7 @@ and so on.  Using them, we can simplify our previous example even further:
 
 #+NAME:built-in-factory-function-app.js
 #+CAPTION:Creating a DOM Structure Using Built-in Factory Functions
-#+BEGIN_SRC js snapterest/source/app.js
+#+BEGIN_SRC js snapterest/source/app.js :eval no
 var React = require('react');
 var ReactDOM = require('react-dom');
 
@@ -1738,7 +1758,7 @@ Translate this to one using JSX:
 
 #+NAME:jsx-app.js
 #+CAPTION:Coding With JSX
-#+BEGIN_SRC js snapterest/source/app.js
+#+BEGIN_SRC js snapterest/source/app.js :eval no
 var React = require('react');
 var ReactDOM = require('react-dom');
 
@@ -1847,7 +1867,7 @@ Let's take a look at the following example of how to create a React
 
 #+NAME:example stateless component
 #+CAPTION:An Example Stateless React Component
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 var React = require('react');
 var ReactDOM = require('react-dom');
 
@@ -1921,7 +1941,7 @@ Here is an example of a specification object in its simplest form:
 
 #+NAME:simplest-specification-object
 #+CAPTIONS:An Example of the Simplest Specification Object
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 {
     render: function () {
         return null;
@@ -1936,7 +1956,7 @@ can return a ~ReactElement~ that we learned how to create in Chapter 2.
 
 #+NAME:simple-specification-object
 #+CAPTION:A Simple Specification Object Returning a ~ReactElement~
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 {
     render: function () {
         return React.createElement('h1',
@@ -1969,7 +1989,7 @@ condition that decides what to render:
 
 #+NAME:simple-component-with-state
 #+CAPTION:A Simple Specification Object with State and a Conditional
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 {
     render: function () {
         var elementState = {
@@ -2032,7 +2052,7 @@ from ~this.props~, you can render it:
 
 #+NAME:component-using-props
 #+CAPTION:Passing Props to a Component
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 {
     render: function () {
         var elementState = {
@@ -2059,7 +2079,7 @@ hard-coding ~isHidden~):
 
 #+NAME:passing-props-to-component
 #+CAPTION:Example of Passing ~props~ to the ~render()~ Method
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 {
     render: function () {
         if (this.props.isHidden) {			(ref:props-isHidden)
@@ -2077,7 +2097,7 @@ We can also use ~this.props~ to compute data that needs to be rendered (see
 
 #+NAME:use-props-to-compute
 #+CAPTION:Example of Using ~props~ to Compute a Value
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 {
     render: function () {
         if (this.props.isHidden) {
@@ -2184,7 +2204,7 @@ return.  Let's add this method to our React component:
 
 #+NAME:component-getInitialState
 #+CAPTION:Simple Component Using ~getInitialState()~ Method
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 {
     getInitialState: function () {
         return {
@@ -2255,7 +2275,7 @@ part of the next state.
 
 Image that this is our current state:
 
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 {
     isHidden: true,
     title: 'Stateful React Component'
@@ -2264,7 +2284,7 @@ Image that this is our current state:
 
 We call ~this.setState(nextState)~, where ~nextState~ is as follows:
 
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 {
     isHidden: false
 }
@@ -2272,7 +2292,7 @@ We call ~this.setState(nextState)~, where ~nextState~ is as follows:
 
 React will merge the two states into a new one:
 
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 {
     isHidden: false,
     title: 'Stateful React Component'
@@ -2292,7 +2312,7 @@ component that reacts to a user event:
 
 #+NAME:component-reacts-to-user-event
 #+CAPTION:A stateful component that reacts to a user event
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 {
     getInitialState: function () {
         return {
@@ -2430,7 +2450,7 @@ button.  The component will still work as expected:
 
 #+NAME:stateful-component-no-title
 #+CAPTION:A stateful component that reacts with minimal state
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 {
     getInitialState: function () {
         return {
@@ -2484,7 +2504,7 @@ automatically get updated by React.  Take advantage of React.
 
 #+NAME:example stateful component
 #+CAPTION:An Example Stateful Component
-#+BEGIN_SRC js -n
+#+BEGIN_SRC js -n :eval no
 var React = require('react');
 var ReactDOM = require('react-dom');
 
@@ -2774,7 +2794,7 @@ snippet:
 
 #+NAME:app root container component
 #+CAPTION[<App Root Container>]:The React Application Root Container File
-#+BEGIN_SRC js :tangle snapterest/source/app.js :mkdirp yes :noweb yes
+#+BEGIN_SRC js :tangle snapterest/source/app.js :mkdirp yes :noweb yes :eval no
 <<root container imports>>
 
 <<root container render to dom>>
@@ -2782,7 +2802,7 @@ snippet:
 
 #+NAME:root container imports
 #+CAPTION:The imports of the root container ~app.js~
-#+BEGIN_SRC js :exports none
+#+BEGIN_SRC js :exports none :eval no
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Application = require('./components/Application.react');
@@ -2790,7 +2810,7 @@ var Application = require('./components/Application.react');
 
 #+NAME:root container render to dom
 #+CAPTION:Rendering the Application to the DOM
-#+BEGIN_SRC js :exports none
+#+BEGIN_SRC js :exports none :eval no
 ReactDOM.render(<Application />, document.getElementById('react-application'));
 #+END_SRC
 
@@ -2813,7 +2833,8 @@ Let's take a look at the contents of the ~Application.react.js~ file:
 
 #+CAPTION[<Application Component>]:The Application Component
 #+NAME:Application component
-#+BEGIN_SRC js :tangle snapterest/source/components/Application.react.js :mkdirp yes :noweb yes
+#+HEADER: :noweb yes :eval no
+#+BEGIN_SRC js :tangle snapterest/source/components/Application.react.js :mkdirp yes
 <<Application Dependencies>>
 
 var Application = React.createClass({
@@ -2871,7 +2892,7 @@ We also need to import the ~React~ library as another module.  Notice that this
 code is still part of the CommonJS module pattern, not React.
 
 #+NAME:Application Dependencies
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 var React      = require('react');
 var Stream     = require('./Stream.react');
 var Collection = require('./Collection.react');
@@ -2899,7 +2920,7 @@ encapsulates.  We'll take a closer look at each of them right after we discuss
 what this component renders inside its ~render()~ method.
 
 #+NAME:Application.render
-#+BEGIN_SRC js :noweb yes
+#+BEGIN_SRC js :noweb yes :eval no
 <<Application.render start>>
                     <<Stream with props>>
 <<Application.render mid>>
@@ -2908,7 +2929,7 @@ what this component renders inside its ~render()~ method.
 #+END_SRC
 
 #+NAME:Application.render start
-#+BEGIN_SRC js :exports none
+#+BEGIN_SRC js :exports none :eval no
 render: function () {
     return (
         <div className="container-fluid">
@@ -2918,7 +2939,7 @@ render: function () {
 #+END_SRC
 
 #+NAME:Application.render mid
-#+BEGIN_SRC js :exports none
+#+BEGIN_SRC js :exports none :eval no
 
                 </div>
                 <div className="col-md-8">
@@ -2926,7 +2947,7 @@ render: function () {
 #+END_SRC
 
 #+NAME:Application.render end
-#+BEGIN_SRC js :exports none
+#+BEGIN_SRC js :exports none :eval no
 
                 </div>
             </div>
@@ -2953,7 +2974,7 @@ divided into two unequal parts and both of them contain the React components.
 This is how we're using our ~Stream~ component:
 
 #+NAME:Stream with props
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 <Stream onAddTweetToCollection={this.addTweetToCollection} />
 #+END_SRC
 
@@ -2969,7 +2990,7 @@ component, and we can refer to it using ~this~ keyword.
 Let's take a look at what the ~addTweetToCollection()~ method does.
 
 #+NAME:Application.addTweetToCollection
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 addTweetToCollection: function (tweet) {
     var collectionTweets = this.state.collectionTweets;
     collectionTweets[tweet.id] = tweet;
@@ -3019,7 +3040,7 @@ concerns they address:
 Our ~Application~ component has a second child component, ~Collection~.
 
 #+NAME:Collection with props
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 <Collection
     tweets={this.state.collectionTweets}
     onRemoveTweetFromCollection={this.removeTweetFromCollection}
@@ -3064,7 +3085,7 @@ and ~Collection~ components?  Here's how it works:
    ~getInitialState()~ method
 
    #+NAME:Application.getInitialState
-   #+BEGIN_SRC js
+   #+BEGIN_SRC js :eval no
    getInitialState: function () {
        return {
            collectionTweets: {}
@@ -3127,7 +3148,7 @@ two methods that mutate its state:
 
 #+CINDEX:@code{removeTweetFromCollection} method
 #+NAME:Application.removeTweetFromCollection
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 removeTweetFromCollection: function (tweet) {
     var collectionTweets = this.state.collectionTweets;
     delete collectionTweets[tweet.id];
@@ -3147,7 +3168,7 @@ On the other hand, the second method removes all the tweets from the
 component's state.
 
 #+NAME:Application.removeAllTweetsFromCollection
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 removeAllTweetsFromCollection: function () {
     this.setState ({
         collectionTweets: {}
@@ -3213,7 +3234,7 @@ It will install the ~snapkite-stream-client~ module, and add it to
 
 #+NAME:snapkite-stream-client
 #+CAPTION[snapkite-stream-client]:After Installing the ~snapkite-stream-client~ Module
-#+BEGIN_src sh
+#+BEGIN_src sh :eval no
 $ yarn add snapkite-stream-client
 yarn add v1.13.0
 [1/4] 🔍  Resolving packages...
@@ -3291,7 +3312,8 @@ file:
 #+CINDEX:@file{Stream.react.js} file
 #+NAME:Stream component
 #+CAPTION[<Stream Component>]:The ~Stream~ Component (~Stream.react.js~)
-#+BEGIN_SRC js :tangle snapterest/source/components/Stream.react.js :mkdirp yes :noweb yes
+#+HEADER: :noweb yes :eval no
+#+BEGIN_SRC js :tangle snapterest/source/components/Stream.react.js :mkdirp yes
 <<Stream React dependencies>>
 var SnapkiteStreamClient = require('snapkite-stream-client');
 
@@ -3317,7 +3339,7 @@ module.exports = Stream;
 We first import the modules that our ~Stream~ component depends on:
 
 #+NAME:Stream React dependencies
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 var React = require('react');
 var Header = require('./Header.react');
 var StreamTweet = require('./StreamTweet.react');
@@ -3352,7 +3374,7 @@ method of our ~Stream~ component.
 
 #+NAME:Stream.render method
 #+CAPTION:The ~render()~ Method of the ~Stream~ Component
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 render: function () {
     var tweet = this.state.tweet;
 
@@ -3398,7 +3420,7 @@ other methods:
 
 #+NAME:Stream.getInitialState method
 #+CAPTION:The ~getInitialState()~ Method of the ~Stream~ Component
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 getInitialState: function () {
     return { tweet: null }
 },
@@ -3417,7 +3439,7 @@ this purpose, we will implement the ~handleNewTweet()~ method.
 
 #+NAME:Stream.handleNewTweet method
 #+CAPTION:The ~StreamhandleNewTweet()~ Method
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 handleNewTweet: function (tweet) {
     this.setState({ tweet: tweet });
 },
@@ -3435,7 +3457,7 @@ our ~componentDidMount()~ method.
 <<SnapkiteStreamClient.initializeStream>>
 #+NAME:Stream.componentDidMount method
 #+CAPTION:The ~Stream.componentDidMount()~ Method
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 componentDidMount: function () {
     SnapkiteStreamClient.initializeStream(this.handleNewTweet);
 },
@@ -3471,7 +3493,7 @@ external ~SnapkiteStreamClient~ library.
 
 #+NAME:Stream.componentWillUnmount method
 #+CAPTION:The ~Stream.componentWillUnmount()~ Method
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 componentWillUnmount: function () {
     SnapkiteStreamClient.destroyStream();
 },
@@ -3558,7 +3580,7 @@ Navigate to ~<dir>/snapterest/source/components/~ and create the
 #+HEADER: :noweb no-export
 #+HEADER: :comments both
 #+HEADER: :tangle snapterest/source/components/StreamTweet.react.js :mkdirp yes
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 <<StreamTweet imports>>
 
 var StreamTweet = React.createClass({
@@ -3591,7 +3613,7 @@ module.exports = StreamTweet;
 {{{heading(The ~StreamTweet~'s Imports)}}}
 
 #+NAME:StreamTweet imports
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Header = require('./Header.react');
@@ -3603,7 +3625,7 @@ var Tweet = require('./Tweet.react');
 The details of this rendered ~Tweet~ component will be [[StreamTweet.render Tweet for Flux][refactored for Flux]].
 
 #+NAME:StreamTweet.render Tweet
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 <Tweet
    tweet={this.props.tweet}
    onImageClick={this.props.onAddTweetToCollection}
@@ -3655,7 +3677,7 @@ then use this method to return the initial component's state.  In your
 
 #+NAME:getInitialState
 #+CAPTION:StreamTweet's ~getInitialState()~ Method
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 // getInitialState() method
 getInitialState: function () {
     console.log('[Snapterest] StreamTweet: 1. Running getInitialState()');
@@ -3698,7 +3720,7 @@ right after the ~getInitialState()~ method in your ~StreamTweet~ component.
 
 #+NAME:componentWillMount
 #+CAPTION:StreamTweet's ~componentWillMount()~ Method
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 // componentWillMount method
 componentWillMount: function () {
     console.log('[Snapterest] StreamTweet: 2. Running componentWillMount()');
@@ -3807,7 +3829,7 @@ method:
 
 #+NAME:componentDidMount
 #+CAPTION: StreamTweet's ~componentDidMount()~ Method
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 // componentDidMount() method
 componentDidMount: function () {
     console.log('[Snapterest] StreamTweet: 3. Running componentDidMount()');
@@ -3906,7 +3928,7 @@ your ~StreamTweet~ component after the ~compontDidMount()~ method:
 
 #+NAME:componentWillUnmount
 #+CAPTION:StreamTweet's ~componentWillUnmount()~ Method
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 // componentWillUnmount() method
 componentWillUnmount: function () {
     console.log('[Snapterest] StreamTweet: 8. Running componentWillUnmount()');
@@ -4001,7 +4023,7 @@ component.  Add the following code after the ~componentDidMount()~ method in
 
 #+NAME:componentWillReceiveProps
 #+CAPTION[componentWillReceiveProps]:The ~componentWillReceivePropse()~ Method in ~StreamTweet~ Component
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 // componentWillReceiveProps() Method
 componentWillReceiveProps: function (nextProps) {
     console.log('[Snapterest] StreamTweet: 4. Running componentWillReceiveProps()');
@@ -4106,7 +4128,7 @@ after the ~componentWillReceiveProps()~ method:
 
 #+NAME:shouldComponentUpdate
 #+CAPTION:The ~shouldComponentUpdate()~ Method of ~StreamTweet~
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 // shouldComponentUpdate() method
 shouldComponentUpdate: function (nextProps, nextState) {
     console.log('[Snapterest] StreamTweet: 5. Running shouldComponentUpdate()');
@@ -4143,7 +4165,7 @@ log it in the ~StreamTweet~ component.  Add this code after the
 
 #+NAME:componentWillUpdate
 #+CAPTION:The ~componentWillUpdate()~ Method of ~StreamTweet~
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 // componentWillUpdate Method
 componentWillUpdate: function (nextProps, nextState) {
     console.log('[Snapterest] StreamTweet: 6. Running componentWillUpdate()');
@@ -4169,7 +4191,7 @@ global object.  Add this code after the ~componentWillUpdate()~ method:
 
 #+NAME:componentDidUpdate
 #+CAPTION:The ~componentDidUpdate()~ Method of ~StreamTweet~
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 // componentDidUpdate() method
 componentDidUpdate: function (prevProps, prevState) {
     console.log('[Snapterest] StreamTweet: 7. Running componentDidUpdate()');
@@ -4206,7 +4228,7 @@ Navigate to ~<dir>/snapterest/source/components/~ and create the
 
 #+NAME:Header component
 #+CAPTION[<Header Component>]:The ~Header~ Component (~Header.react.js~)
-#+BEGIN_SRC js -r :tangle snapterest/source/components/Header.react.js :mkdirp yes
+#+BEGIN_SRC js -r :tangle snapterest/source/components/Header.react.js :mkdirp yes :eval no
 var React = require('react');
 
 var headerStyle = {
@@ -4303,7 +4325,7 @@ Next, let's create our ~Tweet~ component.  Navigate to
 
 #+NAME:Tweet component
 #+CAPTION[<Tweet Component>]:The ~Tweet~ Component (~Tweet.react.js~)
-#+BEGIN_SRC js -r :tangle snapterest/source/components/Tweet.react.js :mkdirp yes
+#+BEGIN_SRC js -r :tangle snapterest/source/components/Tweet.react.js :mkdirp yes :eval no
 var React = require('react');
 
 var tweetStyle = {
@@ -4393,7 +4415,7 @@ component's =propTypes= object:
 
 #+NAME:PropTypes-object
 #+CAPTION:The =PropTypes= Object
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 propTypes: {
     propertyName: validator
 }
@@ -4434,7 +4456,7 @@ property is missing:
 
 #+NAME:PropTypes-object-isRequired
 #+CAPTION:The =PropTypes= Object with ~isRequired~
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 propTypes: {
     propertyName: React.PropTypes.number.isRequired
 }
@@ -4448,7 +4470,7 @@ You can also specify your own custom validator function tht should return an
 
 #+NAME:PropTypes-object-custom
 #+CAPTION:A Custom =PropTypes= Object
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 propTypes: {
     propertyName: function (properties, propertyName, componentName) {
         // ... validation failed
@@ -4498,7 +4520,8 @@ components.  Next, we're going to focus on our ~Collection~ component.
 
 #+NAME:Collection component
 #+CAPTION[<Collection Component>]:The ~Collection~ Component (~Collection.react.js~)
-#+BEGIN_SRC js :tangle snapterest/source/components/Collection.react.js :mkdirp yes :noweb yes
+#+HEADER: :noweb yes :eval no
+#+BEGIN_SRC js :tangle snapterest/source/components/Collection.react.js :mkdirp yes
 <<Collection imports>>
 
 var Collection = React.createClass({
@@ -4516,7 +4539,7 @@ module.exports = Collection;
 #+END_SRC
 
 #+NAME:Collection imports
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 var React = require('react');
 var ReactDOMServer = require('react-dom/server');
 var CollectionControls = require('./CollectionControls.react');
@@ -4540,7 +4563,7 @@ The ~Collection~ component is responsible for rendering two things:
 Take a look at the component's [[(Collection-render)][~render()~ method]].
 
 #+NAME:Collection.render
-#+BEGIN_SRC js :noweb yes
+#+BEGIN_SRC js :noweb yes :eval no
 render: function () {
     var numberOfTweetsInCollection = this.getNumberOfTweetsInCollection();
 
@@ -4561,7 +4584,7 @@ We first get a number of tweets in the collection using the
 ~this.getNumberOfTweetsInCollection()~ method.
 
 #+NAME:Collection.getNumberOfTweetsInCollection
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 getNumberOfTweetsInCollection: function () {
     return (this.getListOfTweetIds().length);
 },
@@ -4571,7 +4594,7 @@ getNumberOfTweetsInCollection: function () {
 This method in turn uses another method to get a list of tweet IDs:
 
 #+NAME:Collection.getListOfTweetIds
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 getListOfTweetIds: function () {
     return (Object.keys(this.props.tweets));
 },
@@ -4610,7 +4633,7 @@ The idea is to only show a collection when it is not empty.  In that case,
 we're creating [[(four-variables)][four variables]]:
 
 #+NAME:Collection.render Variables
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 var tweets = this.props.tweets;
 var htmlMarkup = this.createHtmlMarkupStringOfTweetsList();
 var removeAllTweetsFromCollection = this.props.onRemoveAllTweetsFromCollection;
@@ -4644,7 +4667,7 @@ creates a string that represents the HTML markup created by rendering the
 ~TweetList~ component:
 
 #+NAME:Collection.createHtmlMarkupStringOfTweetList
-#+BEGIN_SRC js :noweb yes
+#+BEGIN_SRC js :noweb yes :eval no
 createHtmlMarkupStringOfTweetList: function () {
     <<htmlString>>
 
@@ -4662,7 +4685,7 @@ This method uses the ~ReactDOMServer.renderToStaticMarkup()~ method that we
 discussed in [[renderToStaticMarkup][Chapter 2]].  We pass the ~TweetList~ component as its argument.
 
 #+NAME:htmlString
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 var htmlString = ReactDOMServer.renderToStaticMarkup(
     <TweetList tweets={this.props.tweets} />
 );
@@ -4704,7 +4727,7 @@ Take a closer look at what the ~Collection~ component returns when our
 collection [[(Collection-notempty)][is /not/ empty]].
 
 #+NAME:Collection.render return when not empty
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 return (
     <div>
         <CollectionControls
@@ -4786,7 +4809,7 @@ First build the ~TweetList~ component.  Create the following
 <<TweetList component>>
 #+NAME:TweetList component
 #+CAPTION[<TweetList Component>]:The ~TweetList~ Component (~TweetList.react.js~)
-#+HEADER: :noweb tangle :mkdirp yes
+#+HEADER: :noweb tangle :mkdirp yes :eval no
 #+BEGIN_SRC js :tangle snapterest/source/components/TweetList.react.js
 <<TweetList imports>>
 
@@ -4802,13 +4825,13 @@ module.exports = TweetList;
 #+END_SRC
 
 #+NAME:TweetList imports
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 var React = require('react');
 var Tweet = require('./Tweet.react');
 #+END_SRC
 
 #+NAME:TweetList styles
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 var listStyle = {
     padding: '0'
 };
@@ -4831,7 +4854,7 @@ function.
 
 #+NAME:TweetList render method
 #+CAPTION:The ~TweetList~ ~render()~ Method
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 render: function () {
     var tweetElements = this.getListOfTweetIds().map(this.getTweetElement);
 
@@ -4851,7 +4874,7 @@ The ~this.getListOfTweetIds()~ method returns an array of tweet IDs.
 
 #+NAME:TweetList getListOfTweetIds method
 #+CAPTION:The ~getListOfTweetIds~ Method of ~TweetList~
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 getListOfTweetIds: function () {
     return Object.keys(this.props.tweets);
 },
@@ -4866,25 +4889,25 @@ this, we will call the ~map()~ method on our array of tweet IDs and pass the
 
 #+CAPTION:The ~getTweetElement~ Method of ~TweetList~
 #+NAME:TweetList getTweetElement method
-#+BEGIN_SRC js :noweb yes
+#+BEGIN_SRC js :noweb yes :eval no
 <<TweetList getTweetElement method A>>
     <<variable handleRemoveTweetFromCollection>>
 <<TweetList getTweetElement method B>>
 #+END_SRC
 
 #+NAME:TweetList getTweetElement method A
-#+BEGIN_SRC js :exports none
+#+BEGIN_SRC js :exports none :eval no
 getTweetElement: function (tweetId) {
     var tweet = this.props.tweets[tweetId];
 #+END_SRC
 
 #+NAME:variable handleRemoveTweetFromCollection
-#+BEGIN_SRC js :exports none
+#+BEGIN_SRC js :exports none :eval no
 var handleRemoveTweetFromCollection = this.props.onRemoveTweetFromCollection;
 #+END_SRC
 
 #+NAME:TweetList getTweetElement method B
-#+BEGIN_SRC js :exports none
+#+BEGIN_SRC js :exports none :eval no
     var tweetElement;
 
     if (handleRemoveTweetFromCollection) {
@@ -4982,7 +5005,7 @@ file:
 <<CollectionControls component>>
 #+NAME:CollectionControls component
 #+CAPTION[<CollectionControls Component>]:The ~CollectionControls~ Component (~CollectionControls.react.js~)
-#+HEADER: :noweb tangle :mkdirp yes
+#+HEADER: :noweb tangle :mkdirp yes :eval no
 #+BEGIN_SRC js :tangle snapterest/source/components/CollectionControls.react.js
 <<CollectionControls imports>>
 
@@ -5016,7 +5039,7 @@ component re-render, we'll store that name in the component's state object:
 
 #+NAME:CollectionControls getInitialState method
 #+CAPTION[CollectionControls getInitialState()]:The ~getInitialState()~ Method of ~CollectionControls~ Component
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 getInitialState: function () {
     return ({
         name: 'new',
@@ -5027,7 +5050,7 @@ getInitialState: function () {
 #+END_SRC
 
 #+NAME:CollectionControls imports
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 var React = require('react');
 var Header = require('./Header.react');
 var Button = require('./Button.react');
@@ -5050,7 +5073,7 @@ Let's take a look at its ~render()~ method:
 
 #+NAME:CollectionControls render method
 #+CAPTION[CollectionControls render()]:The ~render()~ Method of ~CollectionControls~ Component
-#+BEGIN_SRC js :noweb yes
+#+BEGIN_SRC js :noweb yes :eval no
 render: function () {
     if (this.state.isEditingName) {
         return (
@@ -5080,7 +5103,7 @@ that renders a form to change the collection name:
 
 #+NAME:CollectionControls render CollectionRenameForm
 #+CAPTION:CollectionControls render CollectionRenameForm
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 <CollectionRenameForm
     name={this.state.name}
     onChangeCollectionName={this.setCollectionName}
@@ -5105,7 +5128,7 @@ Now let's take a closer look at the ~setCollectionName~ method.
 
 #+NAME:CollectionControls setCollectionName method
 #+CAPTION:The ~setCollectionName()~ Method of ~CollectionList~
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
     setCollectionName: function (name) {
         this.setState({
             name: name,
@@ -5126,7 +5149,7 @@ Now, let's take a look at the ~toggleEditCollectionName()~ method.
 
 #+NAME:CollectionControls toggleEditCollectionName method
 #+CAPTION:The ~toggleEditCollectionName()~ Method
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 toggleEditCollectionName: function () {
     this.setState({
         isEditingName: !this.state.isEditingName
@@ -5160,7 +5183,7 @@ pass a string, but rather a call to the ~this.getHeaderText()~ method.
 
 #+NAME:CollectionControls getHeaderText method
 #+CAPTION[CollectionControls getHeaderText() Method]:The ~getHeaderText()~ Method of ~CollectionControls~ Component
-#+BEGIN_SRC js :noweb yes
+#+BEGIN_SRC js :noweb yes :eval no
 getHeaderText: function () {
     var numberOfTweetsInCollection = this.props.numberOfTweetsInCollection;
     var text = numberOfTweetsInCollection;
@@ -5196,7 +5219,7 @@ string to it based on what that integer value is:
 Once the header string is created, then we return the following elements:
 
 #+NAME:getHeaderText returnText
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 return (
     <span>
         {text} <strong>{this.state.name}</strong> collection
@@ -5226,7 +5249,7 @@ method is ~Button~.
 
 #+NAME:CollectionControls render Rename Button component
 #+CAPTION:Rendering the Rename ~Button~ Component
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 <Button
      label="Rename collection"
      handleClick={this.toggleEditCollectionName}
@@ -5251,7 +5274,7 @@ It will remove all the tweets from a collection.
 
 #+NAME:CollectionControls render Empty Button component
 #+CAPTION:Rendering the Empty ~Button~ Component
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 <Button
      label="Empty collection"
      handleClick={this.props.onRemoveAllTweetsFromCollection}
@@ -5265,7 +5288,7 @@ Our final collection control element is =CollectionExportForm=.
 
 #+NAME:CollectionControls render Export component
 #+CAPTION:Rendering the ~ExportForm~ Component
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 <CollectionExportForm htmlMarkup={this.props.htmlMarkup} />
 #+END_SRC
 
@@ -5285,7 +5308,7 @@ First, let's create the
 #+CINDEX:@file{CollectionRenameForm} component
 #+NAME:CollectionRenameForm component
 #+CAPTION[<CollectionRenameForm Component>]:The ~CollectionRenameForm~ Component (~CollectionRenameForm.react.js~)
-#+HEADER: :noweb tangle :mkdirp yes
+#+HEADER: :noweb tangle :mkdirp yes :eval no
 #+BEGIN_SRC js :tangle snapterest/source/components/CollectionRenameForm.react.js
 <<CollectionRenameForm imports>>
 
@@ -5308,7 +5331,7 @@ module.exports = CollectionRenameForm;
 #+END_SRC
 
 #+NAME:CollectionRenameForm imports
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Header = require('./Header.react');
@@ -5322,7 +5345,7 @@ This component renders a form to change the collection name:
 
 #+NAME:CollectionRenameForm render method
 #+CAPTION[CollectionRenameForm render() Method]:The ~render()~ Method of ~CollectionRenameForm~ Component
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 render: function () {
     return (
         <form
@@ -5414,7 +5437,7 @@ references the component's ~this.handleInputValueChange~ method:
 
 #+NAME:CollectionRenameForm handleInputValueChange method
 #+CAPTION[CollectionRenameForm handleInputValueChange() Method]:handleInputValueChange Method
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 handleInputValueChange: function (event) {
     var inputValue = event.target.value
     this.setInputValue(inputValue);
@@ -5435,7 +5458,7 @@ that string into our ~this.setInputValue()~ method:
 
 #+NAME:CollectionRenameForm setInputValue method
 #+CAPTION[CollectionRenameForm setInputValue]:The ~setInputValue()~ Method of ~CollectionRenameForm~ Component
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 setInputValue: function (inputValue) {
     this.setState({
         inputValue: inputValue
@@ -5454,7 +5477,7 @@ mounted?  Let's take a look at this:
 #+CINDEX:@code{getInitialState()} method
 #+NAME:CollectionRenameForm getInitialState method
 #+CAPTION[CollectionRenameForm getInitialState() Method]:The ~getInitialState()~ Method of ~CollectionRenameForm~ Component
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 getInitialState: function () {
     return ({
         inputValue: this.props.name
@@ -5477,7 +5500,7 @@ focus:
 #+CINDEX:@code{componentDidMount()} method
 #+NAME:CollectionRenameForm componentDidMount method
 #+CAPTION[CollectionRenameForm componentDidMount() Method]:The ~componentDidMount()~ Method of ~CollectionRenameForm~ Component
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 componentDidMount: function () {
     this.refs.collectionName.focus();
 },
@@ -5512,7 +5535,7 @@ We'll start with a ~Change~ button.  When a user clicks on it, the
 #+CINDEX:@code{handleFormSubmit()} method
 #+NAME:CollectionRenameForm handleFormSubmit method
 #+CAPTION[CollectionRenameForm handleFormSubmit Method]:The ~handleFormSubmit()~ Method of ~CollectionRenameForm~ Component
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 handleFormSubmit: function (event) {
     event.preventDefault();
 
@@ -5539,7 +5562,7 @@ When a user clicks on it, the ~this.handleFormCancel()~ method is called:
 <<CollectionRenameForm handleFormCancel method>>
 #+NAME:CollectionRenameForm handleFormCancel method
 #+CAPTION[CollectionRenameForm handleFormCancel() Method]:The ~handleFormCancel()~ Method of ~CollectionRenameForm~ Component
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 handleFormCancel: function (event) {
     event.preventDefault();
 
@@ -5570,7 +5593,7 @@ Create the following file at
 
 #+NAME:Button component
 #+CAPTION[<Button Component>]:The ~Button~ Component (~Button.react.js~)
-#+BEGIN_SRC js :tangle snapterest/source/components/Button.react.js :mkdirp yes
+#+BEGIN_SRC js :tangle snapterest/source/components/Button.react.js :mkdirp yes :eval no
 var React = require('react');
 
 var buttonStyle = {
@@ -5625,7 +5648,7 @@ file:
 
 #+NAME:CollectionExportForm component
 #+CAPTION[<CollectionExportForm Component>]:The ~CollectionExportForm~ Component (~CollectionExportForm.react.js~)
-#+BEGIN_SRC js :tangle snapterest/source/components/CollectionExportForm.react.js :mkdirp yes
+#+BEGIN_SRC js :tangle snapterest/source/components/CollectionExportForm.react.js :mkdirp yes :eval no
 var React = require('react');
 
 var formStyle = {
@@ -5779,7 +5802,7 @@ new ~TweetUtils.js~ file in it:
 
 #+NAME:TweetUtils module
 #+CAPTION[<TweetUtils Module>]:The ~TweetUtils~ Module in ~source/utils/~
-#+BEGIN_SRC js :tangle snapterest/source/utils/TweetUtils.js :mkdirp yes
+#+BEGIN_SRC js :tangle snapterest/source/utils/TweetUtils.js :mkdirp yes :eval no
 exports.getListOfTweetIds = function (tweets) {
     return (Object.keys(tweets));
 }
@@ -5808,7 +5831,7 @@ Create a ~TweetUtils-test.js~ file inside ~__tests__~.
 
 #+NAME:TweetUtils-test module
 #+CINDEX[<TweetUtils-test Module>]:The ~TweetUtils-test~ Test Module
-#+BEGIN_SRC js :tangle snapterest/source/utils/__tests__/TweetUtil-test.js :mkdirp yes
+#+BEGIN_SRC js :tangle snapterest/source/utils/__tests__/TweetUtil-test.js :mkdirp yes :eval no
 jest.dontMock('../TweetUtils');
 
 describe ('Tweet utilities module', function () {
@@ -5964,7 +5987,7 @@ Next, edit the ~package.json~ file.  Replace the existing =scripts=
 object[fn::My ~package.json~ does not have an existing =scripts= object,
 perhaps because it was created with Yarn?], replacing it with:
 
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 "scripts": {
      "test": "jest"
 },
@@ -5972,7 +5995,6 @@ perhaps because it was created with Yarn?], replacing it with:
 
 #+NAME:add test script to package.json
 #+CAPTION: Adding a =test= Script Command to ~Package.json~
-#+HEADER: :eval query
 #+HEADER: :results output
 #+HEADER: :exports both
 #+HEADER: :dir snapterest
@@ -6056,7 +6078,7 @@ utility module.  Create the ~CollectionUtils.js~ file in the
 
 #+NAME:CollectionUtils module
 #+CAPTION[<CollectionUtils Module>]:The ~CollectionUtils~ Module for Testing
-#+BEGIN_SRC js :tangle snapterest/source/utils/CollectionUtils.js :mkdirp yes
+#+BEGIN_SRC js :tangle snapterest/source/utils/CollectionUtils.js :mkdirp yes :eval no
 function getNumberOfTweetsInCollection (collection) {
     var TweetUtils = require('./TweetUtils');
     var listOfCollectionTweetIds = TweetUtils.getListOfTweetIds(collection);
@@ -6110,7 +6132,7 @@ following ~CollectionUtils-test.js~ file:
 
 #+NAME:CollectionUtils-test file
 #+CAPTION[<CollectionUtils-test File>]:The ~CollectionUtils-test~ File
-#+BEGIN_SRC js :tangle snapterest/source/utils/__tests__/CollectionUtils-test.js :mkdirp yes
+#+BEGIN_SRC js :tangle snapterest/source/utils/__tests__/CollectionUtils-test.js :mkdirp yes :eval no
 jest.autoMockOff();
 
 describe('Collection utilities module', function () {
@@ -6318,7 +6340,7 @@ Create the ~Header-test.js~ in the
 
 #+NAME:Header-test file
 #+CAPTION[<Header-test File>]:The ~Header-test.js~ File
-#+BEGIN_SRC js :tangle snapterest/source/components/__tests__/Header-test.js :mkdirp yes
+#+BEGIN_SRC js :tangle snapterest/source/components/__tests__/Header-test.js :mkdirp yes :eval no
 jest.dontMock('../Header.react');
 
 describe('Header component', function () {
@@ -6438,7 +6460,7 @@ Create the ~Button-test.js~ file in the
 
 #+NAME:Button-test file
 #+CAPTION[<Button-test.js File>]:The ~Button-test.js~ File
-#+BEGIN_SRC js :tangle snapterest/source/components/__tests__/Button-test.js :mkdirp yes
+#+BEGIN_SRC js :tangle snapterest/source/components/__tests__/Button-test.js :mkdirp yes :eval no
 jest.dontMock('../Button.react');
 
 describe('Button component', function () {
@@ -6578,7 +6600,7 @@ jest = {
 #+HEADER: :results output
 #+HEADER: :exports both
 #+HEADER: :dir snapterest
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 var fs = require('fs');
 var p = JSON.parse(fs.readFileSync('package.json', 'utf8'));
 p.jest = {
@@ -6838,7 +6860,7 @@ Here is an example of an /action/ object:
 
 #+NAME:example-action
 #+CAPTION:An example of a Flux /action/ object
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 var action = {
     type: 'receive_tweet',
     tweet: tweet
@@ -6897,7 +6919,7 @@ reuse.  Let's take advantage of this.
    ~<dir>/snapterest/source/dispatcher/~ directory.  Now create the
    ~AppDispatcher.js~ file in it:
 
-#+BEGIN_SRC js :tangle snapterest/source/dispatcher :mkdirp yes
+#+BEGIN_SRC js :tangle snapterest/source/dispatcher :mkdirp yes :eval no
 var Dispatcher = require('flux').Dispatcher;
 module.exports = new Dispatcher();
 #+END_SRC
@@ -6919,7 +6941,7 @@ Let's create a new folder called ~actions~ in our project's
 #+CINDEX:@code{TweetActionCreators.js} file
 #+NAME:TweetActionCreators module
 #+CAPTION[<TweetActionCreators Module>]:The ~TweetActionCreators~ Module
-#+BEGIN_SRC js :tangle snapterest/source/actions/TweetActionCreators.js :mkdir yes
+#+BEGIN_SRC js :tangle snapterest/source/actions/TweetActionCreators.js :mkdir yes :eval no
 var AppDispatcher = require('../dispatcher/AppDispatcher');
 
 function receiveTweet(tweet) {
@@ -6973,7 +6995,7 @@ directory, then create the ~TweetStore.js~ file in it.
 #+CINDEX:@code{TweetStore.js} file
 #+NAME:TweetStore module
 #+CAPTION[<TweetStore Module>]:The ~TweetStore~ Module
-#+BEGIN_SRC js :tangle snapterest/source/stores/TweetStore.js :mkdirp yes
+#+BEGIN_SRC js :tangle snapterest/source/stores/TweetStore.js :mkdirp yes :eval no
 var AppDispatcher = require('../dispatcher/AppDispatcher');
 var EventEmitter = require('events').EventEmitter;
 var assign = require('object-assign');
@@ -7202,7 +7224,7 @@ component has the following ~componentDidMount()~ method
 
 #+CINDEX:@code{SnapkiteStreamClient.initializeStream()} method
 #+CINDEX:@code{initializeStream()} method of @file{SnapkiteStreamClient}
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 componentDidMount: function () {
     SnapkiteStreamClient.initalizeStream(this.handleNewTweet);
 }
@@ -7232,7 +7254,7 @@ First, we'll create a new utility module called ~WebAPIUtils~.  Create
 #+CINDEX:@code{WebAPIUtils} module
 #+NAME:WebAPIUtils module
 #+CAPTION[<WebAPIUtils Module>]:The ~WebAPIUtils~ Module for Flux
-#+BEGIN_SRC js :tangle snapterest/source/utils/WebAPIUtils.js :mkdirp yesp
+#+BEGIN_SRC js :tangle snapterest/source/utils/WebAPIUtils.js :mkdirp yes :eval no
 var SnapkiteStreamClient = require('snapkite-stream-client');
 var TweetActionCreators = require('../actions/TweetActionCreators');
 
@@ -7272,7 +7294,7 @@ at all, we can use it even before React renders anything.  Let's use it in our
 #+COMMENT: <<WebAPIUtils in app.js>>
 #+NAME:WebAPIUtils in app.js
 #+CAPTION:Adding ~WebAPIUtils~ to ~app.js~
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 var WebAPIUtils = reuqire('./utils/WebAPIUtils');
 
 WebAPIUtils.initializeStreamOfTweets();
@@ -7287,7 +7309,7 @@ In fact, for the purpose of experimentation, you can remove the
 ~TweetActionCreators.receiveTweet()~ function.  For example, run the following
 code:
 
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 function receiveTweet(tweet) {
     console.log("I've received a new tweet and now ill dispatch it together with a new action");
 
@@ -7366,7 +7388,7 @@ and ~handleNewTweet()~ methods, and import the =TweetStore= store.  There is
 also no need to import the ~snapkite-stream-client~ module anymore.
 
 #+NAME:Flux Stream component imports
-#+BEGIN_SRC js :noweb yes
+#+BEGIN_SRC js :noweb yes :eval no
 <<Stream React dependencies>>
 var TweetStore = require('../stores/TweetStore');
 #+END_SRC
@@ -7378,7 +7400,7 @@ Next, we need to change how the ~Stream~ component gets its initial tweet.
 Let's update its ~getInitialState()~ method:
 
 #+NAME:Flux Stream.getInitialState method
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 getInitialState: function () {
     return ({ tweet: TweetStore.getTweet() });
 },
@@ -7429,7 +7451,7 @@ the following ~componentDidMount()~ method to the ~Stream~ component:
 
 #+NAME:Flux Stream.componentDidMount method
 #+CAPTION:Adding the ~componentDidMount()~ Method to the ~Stream~ Component
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 componentDidMount: function () {
     TweetSTore.addChangeListener(this.onTweetChange);
 },
@@ -7450,7 +7472,7 @@ method to the ~Stream~ component:
 
 #+NAME:Flux Stream.componentWillUnmount method
 #+CAPTION:Adding the ~componentWillUnmount~ Method to the ~Stream~ Component
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 componentWillUnmount: function () {
     TweetStore.removeChangeListener(this.onTweetChange);
 },
@@ -7467,7 +7489,7 @@ It's time to create the ~onTweetChange()~ method in our ~Stream~ component.
 
 #+NAME:Stream.onTweetChange method
 #+CAPTION:Creating the ~onTweetChange()~ Method of the ~Stream~ Component
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 onTweetChange: function () {
     this.setState ({
         tweet: TweetStore.getTweet()
@@ -7489,7 +7511,7 @@ this component, we're going to change the ~return~.  Replace it with:
 
 #+NAME:Flux Stream.render method
 #+CAPTION:Changing the ~return~ of the ~Stream~ Component
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 render: function () {
     var tweet = this.state.tweet;
 
@@ -7508,7 +7530,8 @@ Now let's take a look at our newly refactored ~Stream~ component.
 
 #+NAME:Flux Stream Component
 #+CAPTION:The ~Stream~ Component Refactored for Flux
-#+BEGIN_SRC js :tangle snapterest/source/components/Stream.flux.react.js :noweb yes :mkdirp yes
+#+HEADER: :noweb yes :mkdirp yes :eval no
+#+BEGIN_SRC js :tangle snapterest/source/components/Stream.flux.react.js
 <<Flux Stream component imports>>
 
 var Stream = React.createClass({
@@ -7578,7 +7601,8 @@ file:
 
 #+NAME:CollectionStore file
 #+CAPTION[<Collection.js File>]:The ~Collection.js~ File
-#+BEGIN_SRC js :tangle snapterest/source/stores/Collection.js :mkdirp yes :noweb yes
+#+HEADER: :mkdirp yes :noweb yes :eval no
+#+BEGIN_SRC js :tangle snapterest/source/stores/Collection.js
 <<CollectionStore imports>>
 
 var CHANGE_EVENT = 'change';
@@ -7603,7 +7627,7 @@ The ~CollectionStore~ is a bigger store, but it has the same structure as ~Tweet
 First, we import the dependencies.
 
 #+NAME:CollectionStore imports
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 var AppDispatcher = require('../dispatcher/AppDispatcher');
 var EventEmitter = require('events').EventEmitter;
 var assign = require('object-assign');
@@ -7618,7 +7642,7 @@ Then, we assign a =change= event name to the =CHANGE_EVENT= variable.
 Then we define our data and the four private methods that mutate this data.
 
 #+NAME:CollectionStore data and private methods
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 var collectionTweets = {};
 var collectionName = 'new';
 
@@ -7666,7 +7690,7 @@ your application.
 We also create the ~emitChange()~ function that emits the =change= event:
 
 #+NAME:CollectionStore.emitChange func
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 function emitChange () {
     CollectionStore.emit(CHANGE_EVENT);
 }
@@ -7677,7 +7701,7 @@ function emitChange () {
 #+CINDEX:@code{CollectionStore} object, create
 Then, we create the =CollectionStore= Object
 
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 var CollectionStore = assign({}, EventEmitter.prototype, {
 
     addChangeListener: function (callback) {
@@ -7709,7 +7733,7 @@ be used in React components to get data from =CollectionStore=.
 Next we create the ~handleAction()~ function.
 
 #+NAME:CollectionStore.handleAction func
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 function handleAction (action) {
 
     switch (action.type) {
@@ -7761,7 +7785,7 @@ Next, we register the ~handleAction~ callback with ~AppDispatcher~, and save
 ~dispatchToken~ in the =CollectionStore= object.
 
 #+NAME:CollectionStore register callback
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 CollectionStore.dispatchToken = AppDispatcher.register(handleAction);
 #+END_SRC
 
@@ -7778,7 +7802,8 @@ Navigate to ~<dir>/snapterest/source/actions/~ and create the
 
 #+NAME:CollectionActionCreators file
 #+CAPTION[<CollectionActionCreators.js>]:The ~CollectionActionCreators~ File
-#+BEGIN_SRC js :tangle: snapterest/source/actions/CollectionActionCreators.js :mkdirp yes :noweb yes
+#+HEADER: :mkdirp yes :noweb yes :eval no
+#+BEGIN_SRC js :tangle: snapterest/source/actions/CollectionActionCreators.js
 var AppDispatcher = require('../dispatcher/AppDispatcher');
 
 module.exports = {
@@ -7862,7 +7887,8 @@ component:
 
 #+CAPTION[<Flux Application Component>]:The ~Application~ Component Under Flux
 #+NAME:Flux Application component
-#+BEGIN_SRC js :tangle snapterest/source/components/Application.flux.react.js :mkdirp yes :noweb yes
+#+HEADER: :mkdirp yes :noweb yes :eval no
+#+BEGIN_SRC js :tangle snapterest/source/components/Application.flux.react.js
 <<Application Dependencies>>
 
 var Application = React.createClass({
@@ -7881,7 +7907,7 @@ Update the ~Application component's ~render()~ method as follows.
 
 #+CAPTION: The ~render()~ Method of ~Application~ Under Flux
 #+NAME:Flux Application.render
-#+BEGIN_SRC js :noweb yes
+#+BEGIN_SRC js :noweb yes :eval no
 <<Application.render start>>
                     <Stream />
 <<Application.render mid>>
@@ -7907,7 +7933,8 @@ Next, let's refactor our ~Collection~ component.  Replace the existing
 
 #+CAPTION[<Collection Flux Component>]:Refactored ~Collection~ Component for Flux
 #+NAME:Collection Flux component
-#+BEGIN_SRC js :tangle snapterest/source/components/Collection.flux.react.js :mkdirp yes :noweb yes
+#+HEADER: :mkdirp yes :noweb yes :eval no
+#+BEGIN_SRC js :tangle snapterest/source/components/Collection.flux.react.js
 <<Collection imports>>
 <<Collection utils imports>>
 
@@ -7954,7 +7981,7 @@ module.exports = Collection;
 What did we change here?  A few things.  First, we imported two new modules:
 
 #+NAME:Collection utils imports
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 var CollectionUtils = require('../utils/CollectionUtils');
 var CollectionStore = require('../stores/CollectionStore')'
 #+END_SRC
@@ -7985,7 +8012,7 @@ Next, you should be able to spot the familiar pattern of the four methods:
 The ~Collection~ component's ~render()~ method is now simpler and cleaner:
 
 #+NAME:Collection.flux.render
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 render: function () {
     var collectionTweets = this.state.collectionTweets;
     var numberOfTweetsInCollection = CollectionUtils.getNumberOfTweetsInCollection(collectionTweets);
@@ -8027,7 +8054,8 @@ and then discuss what was updated and why:
 
 #+CAPTION[<CollectionControls Flux Component>]:The Refactored ~CollectionControls~ Component
 #+NAME:CollectionControls Flux component
-#+BEGIN_SRC js :tangle snapterest/source/components/CollectionControls.react.flux.js :mkdirp yes :noweb yes
+#+HEADER: :mkdirp yes :noweb yes :eval no
+#+BEGIN_SRC js :tangle snapterest/source/components/CollectionControls.react.flux.js
 <<CollectionControls imports>>
 <<CollectionControls additional imports>>
 
@@ -8096,7 +8124,7 @@ module.exports = CollectionControls;
 First, we import the two additional modules:
 
 #+NAME:CollectionControls additional imports
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 var CollectionActionCreators = require('../actions/CollectionActionCreators');
 var CollectionStore = require('../stores/CollectionStore');
 #+END_SRC
@@ -8112,7 +8140,7 @@ Then, we make one of the key changes.  We replace the
 ~removeAllTweetsFromCollection()~:
 
 #+NAME:CollectionControls.removeAllTweetsFromCollection
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 removeAllTweetsFromCollection: function () {
     CollectionActionCreators.removeAllTweetsFromCollection();
 },
@@ -8136,7 +8164,7 @@ that happen.
 
 #+CAPTION[<CollectionRenameForm Flux Component>]:The ~CollectionRenameForm~ Component Refactored for Flux
 #+NAME:CollectionRenameForm Flux component
-#+HEADER: :mkdirp yes :noweb yes
+#+HEADER: :mkdirp yes :noweb yes :eval no
 #+BEGIN_SRC js :tangle snapterest/source/components/CollectionRenameForm.flux.react.js
 <<CollectionRenameForm imports>>
 <<CollectionRenameForm additional imports>>
@@ -8166,7 +8194,7 @@ First, we need to import the ~CollectionActionCreators~ and ~CollectionStore~
 modules:
 
 #+NAME:CollectionRenameForm additional imports
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 var CollectionActionCreators = require('../actions/CollectionActionCreators');
 var CollectionStore = require('../stores/CollectionStore');
 #+END_SRC
@@ -8176,7 +8204,7 @@ var CollectionStore = require('../stores/CollectionStore');
 Now, we need to update the ~getInitialState()~ method as follows:
 
 #+NAME:CollectionRenameForm.getInitialState flux
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 getInitialState: function () {
     return ({
         inputValue: CollectionStore.getCollectionName()
@@ -8192,7 +8220,7 @@ The only difference is that now we get the initial =inputValue= from
 Now let's update the [[CollectionRenameForm.handleFormSubmit method][~handleFormSubmit()~ method]] by using the following code:
 
 #+NAME:CollectionRenameForm.handleFormSubmit flux
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 handleFormSubmit: function (event) {
     event.preventDefault();
     var collectionName = this.state.inputValue;
@@ -8210,7 +8238,7 @@ Finally, we need to change the source of the collection name in the
 [[CollectionRenameForm handleFormCancel method][~handleFormCancel()~ method]].
 
 #+NAME:CollectionRenameForm.handleFormCancel flux
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 handleFormCancel: function (event) {
     event.preventDefault();
     var collectionName = CollectionStore.getCollectionName();
@@ -8234,7 +8262,8 @@ sound like it could make use of ~CollectionActionCreators~ to you?
 
 #+CAPTION[<TweetList Flux Component>]:The ~TweetList~ Component Refactored for Flux
 #+NAME:TweetList Flux component
-#+BEGIN_SRC js :tangle snapterest/source/components/TweetList.flux.react.js :mkdirp yes :noweb yes
+#+HEADER: :mkdirp yes :noweb yes :eval no
+#+BEGIN_SRC js :tangle snapterest/source/components/TweetList.flux.react.js
 <<TweetList imports>>
 <<TweetList additional import>>
 
@@ -8255,7 +8284,7 @@ module.exports = TweetList;
 That's right, let's add the ~CollectionActionCreators~ module to it:
 
 #+NAME:TweetList additional import
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 var CollectionActionCreators = require('../actions/CollectionActionCreators');
 #+END_SRC
 
@@ -8265,7 +8294,7 @@ Then we create the ~removeTweetFromCollection()~ callback function that will be
 called when a user clicks on a tweet image:
 
 #+NAME:TweetList.removeTweetFromCollection Flux
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 removeTweetFromCollection: function (tweet) {
     CollectionActionCreators.removeTweetFromCollection(tweet.id);
 },
@@ -8282,14 +8311,14 @@ called.  In the ~getTweetElement()~ method, we change the variable
 ~handleRemoveTweetFromCollection~ to:
 
 #+NAME:TweetList.getTweetElement Flux
-#+BEGIN_SRC js :noweb yes :none
+#+BEGIN_SRC js :noweb yes :exports never :eval no
 <<TweetList getTweetElement method A>>
     <<variable handleRemoveTweetFromCollection Flux>>
 <<TweetList getTweetElement method B>>
 #+END_SRC
 
 #+NAME:variable handleRemoveTweetFromCollection Flux
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 var handleRemoveTweetFromCollection = this.removeTweetFromCollection;
 #+END_SRC
 
@@ -8307,7 +8336,7 @@ tweet image.
 
 #+CAPTION[<StreamTweet Flux Component>]:The ~StreamTweet~ Component Refactored for Flux
 #+NAME:StreamTweet Flux component
-#+HEADER: :noweb no-export
+#+HEADER: :noweb no-export :eval no
 #+HEADER: :comments both
 #+BEGIN_SRC js :tangle snapterest/source/components/StreamTweet.flux.react.js :mkdirp yes
 <<StreamTweet imports>>
@@ -8341,15 +8370,13 @@ var StreamTweet = React.createClass({
 module.exports = StreamTweet;
 #+END_SRC
 
-#+END_SRC
-
 {{{heading(Import ~CollectionActionCreators)}}}
 
 First, we import the ~CollectionActionCreators~ module to the ~StreamTweet~
 component.
 
 #+NAME:StreamTweet additional import
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 var CollectionActionCreators = require('../actions/CollectionActionCreators');
 #+END_SRC
 
@@ -8358,7 +8385,7 @@ var CollectionActionCreators = require('../actions/CollectionActionCreators');
 Then, we add a new ~addTweetToCollection()~ method to it:
 
 #+NAME:StreamTweet.addTweetToCollection flux
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 addTweetToCollection: function (tweet) {
     CollectionActionCreators.addTweetToCollection(tweet);
 },
@@ -8377,7 +8404,7 @@ We replace it with this line of code:
 
 <<StreamTweet.render Tweet for Flux>>
 #+NAME:StreamTweet.render Tweet for Flux
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 <Tweet
   tweet={this.props.tweet}
   onImageClick={this.addTweetToCollection}
@@ -8568,7 +8595,7 @@ Examples:
 1. When a user clicks "delete" on a completed todo a single "delete-todo"
    action is dispatched:
 
-   #+BEGIN_SRC js
+   #+BEGIN_SRC js :eval no
   {
     type: 'delete-todo',
     todoID: '1234',
@@ -8774,7 +8801,7 @@ Check out [[https://github.com/facebook/flux/blob/master/src/Dispatcher.js][Disp
 For example, consider this hypothetical flight destination form, which selects
 a default city when a country is selected:
 
-#+BEGIN_SRC js -n
+#+BEGIN_SRC js -n :eval no
 var flightDispatcher = new Dispatcher();
 
 // Keeps track of which country is selected
@@ -8789,7 +8816,7 @@ var FlightPriceStore = {price: null};
 
 When a user changes the selected city, we dispatch the payload:
 
-#+BEGIN_SRC js +n
+#+BEGIN_SRC js +n :eval no
 flightDispatcher.dispatch({
   actionType: 'city-update',
   selectedCity: 'paris'
@@ -8798,7 +8825,7 @@ flightDispatcher.dispatch({
 
 This payload is digested by CityStore:
 
-#+BEGIN_SRC js +n
+#+BEGIN_SRC js +n :eval no
 flightDispatcher.register(function(payload) {
   if (payload.actionType === 'city-update') {
     CityStore.city = payload.selectedCity;
@@ -8808,7 +8835,7 @@ flightDispatcher.register(function(payload) {
 
 When the user selects a country, we dispatch the payload:
 
-#+BEGIN_SRC js +n
+#+BEGIN_SRC js +n :eval no
 flightDispatcher.dispatch({
   actionType: 'country-update',
   selectedCountry: 'australia'
@@ -8817,7 +8844,7 @@ flightDispatcher.dispatch({
 
 This payload is digested by both stores:
 
-#+BEGIN_SRC js +n
+#+BEGIN_SRC js +n :eval no
 CountryStore.dispatchToken = flightDispatcher.register(function(payload) {
   if (payload.actionType === 'country-update') {
     CountryStore.country = payload.selectedCountry;
@@ -8830,7 +8857,7 @@ to the returned token. Using this token with ~waitFor()~, we can guarantee that
 ~CountryStore~ is updated before the callback that updates ~CityStore~ needs to
 query its data.
 
-#+BEGIN_SRC js +n
+#+BEGIN_SRC js +n :eval no
 CityStore.dispatchToken = flightDispatcher.register(function(payload) {
   if (payload.actionType === 'country-update') {
     // `CountryStore.country` may not be updated.
@@ -8845,7 +8872,7 @@ CityStore.dispatchToken = flightDispatcher.register(function(payload) {
 
 The usage of ~waitFor()~ can be chained, for example:
 
-#+BEGIN_SRC js +n
+#+BEGIN_SRC js +n :eval no
 FlightPriceStore.dispatchToken =
   flightDispatcher.register(function(payload) {
     switch (payload.actionType) {
@@ -8885,7 +8912,7 @@ These base classes can be imported from ~flux/utils~ like this:
 
 #+NAME:flux-utils.js
 #+CAPTION:Importing base classes from ~flux/utils~
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 import {ReduceStore} from 'flux/utils';
 
 class CounterStore extends ReduceStore<number> {
@@ -9034,7 +9061,7 @@ examples to work, you'd need to also install ~@babel/preset-env~ and
 
 {{{subheading(Node)}}}
 
-#+BEGIN_SRC js
+#+BEGIN_SRC js :eval no
 var fs = require("fs");
 var browserify = require("browserify");
 browserify("./script.js")
@@ -9074,8 +9101,12 @@ A fast-paced guide to designing and building scalable and maintainable web apps
 with React.js
 #+END_QUOTE
 
-Outline prepared by WLHarvey \copy {{{date(%F)}}}
+{{{noindent}}} Outline Version {{{VERSION}}}
+
+{{{noindent}}} Prepared by WLHarvey \copy {{{date(%Y)}}}
+
 * MACROS                                                           :noexport:
+#+MACRO:VERSION 0.0.1 {{{date(%F %R)}}}
 #+MACRO:heading @@texinfo:@heading @@$1
 #+MACRO:subheading @@texinfo:@subheading @@$1
 #+MACRO:tiauthor @@texinfo:@author @@$1
@@ -9087,7 +9118,7 @@ Outline prepared by WLHarvey \copy {{{date(%F)}}}
 #+MACRO:noindent @@texinfo:@noindent @@
 #+MACRO:dfn @@texinfo:@dfn{@@$1@@texinfo:}@@
 * EXPORT SETTINGS                                                  :noexport:
-#+PROPERTY: header-args :eval never-export
+#+PROPERTY: header-args
 #+OPTIONS: h:4
 #+TEXINFO_CLASS: info
 #+TEXINFO_HEADER:
