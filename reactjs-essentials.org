@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-22 Fri 10:33>
+#+DATE: <2019-03-22 Fri 13:56>
 
 #+TEXINFO: @insertcopying
 
@@ -247,7 +247,7 @@ spam.)
 (setq org-babel-use-quick-and-dirty-noweb-expansion t)
 #+END_SRC
 
-* Installing Powerful Tools for your Project
+* Installing Powerful Tools for your Project~
 
 #+CINDEX:Kettering, Charles
 #+BEGIN_QUOTE
@@ -748,16 +748,14 @@ named {{{file(snapterest/)}}} inside a directory of your choice:
 
 *** Shell Script to Create Project Structure
 
-#+BEGIN_SRC sh :results output
+#+NAME:shell script to create project structure
+#+BEGIN_SRC sh :results output :exports both :eval query-export
+echo creating project structure
 [ -d snapterest ]        || mkdir -v snapterest
 [ -d snapterest/build ]  || mkdir -v snapterest/build
 [ -d snapterest/source ] || mkdir -v snapterest/source
 [ -e snapterest/app.js ] || touch snapterest/source/app.js
 #+END_SRC
-
-#+RESULTS:
-: mkdir: created directory 'snapterest/build'
-: mkdir: created directory 'snapterest/source'
 
 ** Building the Project
 
@@ -835,7 +833,8 @@ our answers, creates ~package.json~ for our project.
 : npm init
 Accept all the defaults.
 
-#+BEGIN_SRC sh :exports both :results output
+#+NAME:run yarn init
+#+BEGIN_SRC sh :exports both :results output :eval query-export
 [ -d snapterest ] || mkdir -v snapterest
 cd snapterest
 [ -e package.json ] || yarn init --yes
@@ -876,7 +875,8 @@ To install Browserify, run the following command from inside the
 ~<dir>/snapterest/~ directory:
 : npm install --save-dev browserify
 
-#+BEGIN_SRC sh :dir snapterest :exports both :results output
+#+NAME:install Browserify
+#+BEGIN_SRC sh :dir snapterest :exports both :results output :eval query-export
 yarn add --dev browserify
 #+END_SRC
 
@@ -907,7 +907,8 @@ Let's install it.
 : npm install --save-dev gulp
 : npm install --global gulp-cli
 
-#+BEGIN_SRC sh :dir snapterest :exports both :results output
+#+NAME:install Gulp.js
+#+BEGIN_SRC sh :dir snapterest :exports both :results output :eval query-export
 yarn add --dev gulp
 #+END_SRC
 
@@ -984,7 +985,8 @@ version 6.  Version 7 introduced some [[https://github.com/fedosejev/react-essen
 
 : npm install --save-dev babelify@^6.2.0
 
-#+BEGIN_SRC sh :dir snapterest :exports both :results output
+#+NAME:install Babelify
+#+BEGIN_SRC sh :dir snapterest :exports both :results output :eval query-export
 yarn add --dev babelify@^6.2.0
 #+END_SRC
 
@@ -1002,7 +1004,8 @@ works, go to [[https://www.npmjs.com/package/vinyl-source-stream][Vinyl-Source-S
 dependency module:
 : npm install --save-dev vinyl-source-stream
 
-#+BEGIN_SRC sh :dir snapterest :exports both :results output
+#+NAME:install Vinyl Source Stream module
+#+BEGIN_SRC sh :dir snapterest :exports both :results output :eval query-export
 yarn add --dev vinyl-source-stream
 #+END_SRC
 
@@ -1018,14 +1021,10 @@ $ gulp
 [19:06:03] Finished 'default' after 40 ms
 #+END_EXAMPLE
 
-#+BEGIN_SRC sh :dir snapterest :results output :exports none :eval no-export
+#+NAME:run gulp
+#+BEGIN_SRC sh :dir snapterest :results output :exports none :eval query-export
 gulp
 #+END_SRC
-
-#+RESULTS:
-: [12:36:23] Using gulpfile ~/Dev/Programming/WebDev/React/ReactJS-Essentials/snapterest/gulpfile.js
-: [12:36:23] Starting 'default'...
-: [12:36:23] Finished 'default' after 44 ms
 
 #+CINDEX:@file{build} directory
 #+CINDEX:@file{snapterest.js} file
@@ -4388,8 +4387,6 @@ var Tweet = React.createClass({
 module.exports = Tweet;
 #+END_SRC
 
-#+RESULTS: Tweet
-
 #+CINDEX:click event handler
 This component renders a ~<div>~ element with a child ~<img>~ element.  Both
 the elements have inline styles, and the ~<img>~ element has a click event
@@ -6007,7 +6004,6 @@ fs.writeFileSync('package.json', p);
 console.log(p);
 #+END_SRC
 
-#+RESULTS: add test script to package.json
 #+begin_example
 {
   "name": "snapterest",
@@ -6596,7 +6592,6 @@ jest = {
 
 #+NAME:add babel preprocessor for jest to package.json
 #+CAPTION[<jest-preprocessor>]:Adding the Babel Proprocessor to Jest
-#+HEADER: :eval query
 #+HEADER: :results output
 #+HEADER: :exports both
 #+HEADER: :dir snapterest
@@ -6612,7 +6607,6 @@ fs.writeFileSync('package.json', p);
 console.log(p);
 #+END_SRC
 
-#+RESULTS: add babel preprocessor for jest to package.json
 #+begin_example
 {
   "name": "snapterest",
@@ -9106,7 +9100,7 @@ with React.js
 {{{noindent}}} Prepared by WLHarvey \copy {{{date(%Y)}}}
 
 * MACROS                                                           :noexport:
-#+MACRO:VERSION 0.0.1 {{{date(%F %R)}}}
+#+MACRO:VERSION 0.0.2 {{{date(%F %R)}}}
 #+MACRO:heading @@texinfo:@heading @@$1
 #+MACRO:subheading @@texinfo:@subheading @@$1
 #+MACRO:tiauthor @@texinfo:@author @@$1
