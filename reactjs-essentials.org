@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-23 Sat 08:32>
+#+DATE: <2019-03-24 Sun 16:11>
 
 #+TEXINFO: @insertcopying
 
@@ -565,6 +565,41 @@ that socket connection and process tweets as they arrive.
    : git clone https://github.com/snapkite/snapkite-engine.git
    This should create the ~<dir>/snapkite-engine~ folder.
 
+#+NAME:mkdir snapkite
+#+BEGIN_SRC sh :eval query-export :results output :exports both
+[ -d snapkite ] || mkdir -v snapkite
+cd snapkite
+git clone https://github.com/snapkite/snapkite-engine.git
+tree
+#+END_SRC
+
+#+RESULTS: mkdir snapkite
+#+begin_example
+mkdir: created directory 'snapkite'
+.
+└── snapkite-engine
+    ├── LICENSE
+    ├── README.md
+    ├── app.js
+    ├── controllers
+    │   ├── database.js
+    │   ├── keyword.js
+    │   ├── socket.js
+    │   ├── tweet.js
+    │   └── twitter.js
+    ├── example.config.json
+    ├── filters
+    │   └── README.md
+    ├── models
+    │   ├── Keyword.js
+    │   └── Tweet.js
+    ├── package.json
+    ├── snapkite-engine-logo.png
+    └── utils.js
+
+4 directories, 15 files
+#+end_example
+
    #+CINDEX:Node-Gyp module
 2. <<install-node-gyp>>Now install the other node modules that
    ~snapkite-engine~ depends on.  One of them is the ~node-gyp~ module.  Also
@@ -578,12 +613,37 @@ that socket connection and process tweets as they arrive.
    : cd <dir>/snapkite-engine/
    : npm install
 
+#+NAME:install snapkite-engine modules
+#+BEGIN_SRC sh :eval query-export :results output :exports both
+cd snapkite/snapkite-engine
+yarn
+#+END_SRC
+
+#+RESULTS: install snapkite-engine modules
+: yarn install v1.13.0
+: info No lockfile found.
+: [1/4] Resolving packages...
+: [2/4] Fetching packages...
+: [3/4] Linking dependencies...
+: [4/4] Building fresh packages...
+: success Saved lockfile.
+: Done in 6.81s.
+
    #+CINDEX:Snapkite Engine, configure
    #+CINDEX:configure Snapkite Engine
 5. <<configure-Snapkite>>Configure Snapkite Engine.  Assuming you are in the
    ~<dir>/snapkite-engine/~ directory, copy the ~./example.config.json~ file to
    ~./config.json~ by the following command:
    : cp example.config.json config.json
+
+#+NAME:configure Snapkite-Engine
+#+BEGIN_SRC sh :eval query-export :results output :exports both
+cd snapkite/snapkite-engine
+cp -v example.config.json config.json
+#+END_SRC
+
+#+RESULTS: configure Snapkite-Engine
+: example.config.json -> config.json
 
    #+CINDEX:@file{config.json}
 6. <<config.json>>Open ~config.json~ in your editor to edit the configuration
@@ -9594,7 +9654,7 @@ with React.js
 {{{noindent}}} Prepared by WLHarvey \copy {{{date(%Y)}}}
 
 * MACROS                                                           :noexport:
-#+MACRO:VERSION 0.0.3 {{{date(%F %R)}}}
+#+MACRO:VERSION 0.0.4 {{{date(%F %R)}}}
 #+MACRO:heading @@texinfo:@heading @@$1
 #+MACRO:subheading @@texinfo:@subheading @@$1
 #+MACRO:tiauthor @@texinfo:@author @@$1
