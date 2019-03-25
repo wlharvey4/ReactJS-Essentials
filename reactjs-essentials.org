@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-24 Sun 19:00>
+#+DATE: <2019-03-24 Sun 21:37>
 
 #+TEXINFO: @insertcopying
 
@@ -830,6 +830,55 @@ cp -v example.config.json config.json
      #+CINDEX:documentation, Snapkite Engine
    - other properties can be set to their defaults[fn::check out the Snapkite
      Engine [[https://github.com/snapkite/snapkite-engine][documentation]]]
+
+#+NAME: setup config.json
+#+HEADER: :dir snapkite/snapkite-engine :eval query-export :results output :exports both
+#+BEGIN_SRC js
+var fs = require('fs');
+var cjson = JSON.parse(fs.readFileSync('config.json', 'utf8'));
+cjson.application.trackKeywords = "my";
+cjson.twitter.api = {
+    "consumerKey": ***REMOVED***,
+    "consumerSecret": ***REMOVED***,
+    "accessTokenKey": ***REMOVED***,
+    "accessTokenSecret": ***REMOVED***
+}
+fs.writeFileSync('config.json', JSON.stringify(cjson,null,2));
+console.log(JSON.stringify(cjson,null,2));
+#+END_SRC
+
+#+RESULTS: setup config.json
+#+begin_example
+{
+  "application": {
+    "pushTweets": true,
+    "storeTweets": false,
+    "pushKeywords": false,
+    "storeKeywords": false,
+    "trackKeywords": "my",
+    "excludeKeywords": "",
+    "filters": []
+  },
+  "twitter": {
+    "api": {
+      "consumerKey": ***REMOVED***,
+      "consumerSecret": ***REMOVED***,
+      "accessTokenKey": ***REMOVED***,
+      "accessTokenSecret": ***REMOVED***
+    }
+  },
+  "database": {
+    "hostname": "127.0.0.1",
+    "port": "27017",
+    "username": "",
+    "password": "",
+    "name": "snapkite"
+  },
+  "socket": {
+    "port": 3000
+  }
+}
+#+end_example
 
    #+CINDEX:Snapkite Filter module
    #+CINDEX:Snapkite Filters, list
