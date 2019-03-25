@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-24 Sun 21:37>
+#+DATE: <2019-03-24 Sun 21:58>
 
 #+TEXINFO: @insertcopying
 
@@ -913,11 +913,19 @@ console.log(JSON.stringify(cjson,null,2));
    #+CINDEX:Snapkite filters, install
    Install them.  Navigate to the ~<dir>/snapkite-engine/filters/~ directory:
    : cd <dir>/snapkite-engine/filters/
+
    Clone all Snapkite Filters by running these commands:
-   : git clone https://github.com/snapkite/snapkite-filter-is-possibly-sensitive
-   : git clone https://github.com/snapkite/snapkite-filter-has-mobile-photo
-   : git clone https://github.com/snapkite/snapkite-filter-is-retweet
-   : git clone https://github.com/snapkite/snapkite-filter-has-text
+
+#+NAME:install Snapkite filters
+#+HEADER: :dir snapkite/snapkite-engine/filters :eval query-export :exports code
+#+BEGIN_SRC sh
+git clone https://github.com/snapkite/snapkite-filter-is-possibly-sensitive
+git clone https://github.com/snapkite/snapkite-filter-has-mobile-photo
+git clone https://github.com/snapkite/snapkite-filter-is-retweet
+git clone https://github.com/snapkite/snapkite-filter-has-text
+#+END_SRC
+
+#+RESULTS: install Snapkite filters
 
    #+CINDEX:Snapkite filters, configure
    #+CINDEX:configure Snapkite filters
@@ -944,6 +952,22 @@ console.log(JSON.stringify(cjson,null,2));
    We don't need to change any of the default settings in these ~config.json~
    files, as they are already configured to fit our purposes.
 
+#+NAME:configure Snapkite Filters
+#+HEADER: :dir snapkite/snapkite-engine/filters
+#+HEADER: :eval query-export :results output :exports both
+#+BEGIN_SRC sh
+for filter in *
+do
+  cp -v $filter/example.config.json $filter/config.json
+done
+#+END_SRC
+
+#+RESULTS: configure Snapkite Filters
+: snapkite-filter-has-mobile-photo/example.config.json -> snapkite-filter-has-mobile-photo/config.json
+: snapkite-filter-has-text/example.config.json -> snapkite-filter-has-text/config.json
+: snapkite-filter-is-possibly-sensitive/example.config.json -> snapkite-filter-is-possibly-sensitive/config.json
+: snapkite-filter-is-retweet/example.config.json -> snapkite-filter-is-retweet/config.json
+
 10. <<Snapkite-config.json>>Tell Snapkite Engine which Snapkite Filters it
     should use.  Open the ~<dir>/snapkite-engine/config.json~ file in a text
     editor and look for this:
@@ -961,7 +985,6 @@ console.log(JSON.stringify(cjson,null,2));
         "snapkite-filter-has-text"
     ]
     #+END_SRC
-
 
 *** Run the Snapkite Engine
 
@@ -1016,7 +1039,6 @@ named {{{file(snapterest/)}}} inside a directory of your choice:
 
      place the main application file in the ~source/~ directory.  This file
      will be the entry point to our application.  Leave it empty for now.
-
 
 *** Shell Script to Create Project Structure
 
