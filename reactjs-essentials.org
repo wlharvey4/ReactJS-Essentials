@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-24 Sun 21:58>
+#+DATE: <2019-03-24 Sun 22:11>
 
 #+TEXINFO: @insertcopying
 
@@ -838,10 +838,10 @@ var fs = require('fs');
 var cjson = JSON.parse(fs.readFileSync('config.json', 'utf8'));
 cjson.application.trackKeywords = "my";
 cjson.twitter.api = {
-    "consumerKey": ***REMOVED***,
-    "consumerSecret": ***REMOVED***,
-    "accessTokenKey": ***REMOVED***,
-    "accessTokenSecret": ***REMOVED***
+    "consumerKey": process.env.TWITTER_CONSUMER_KEY
+    "consumerSecret": process.env.TWITTER_CONSUMER_SECRET
+    "accessTokenKey": process.env.TWITTER_ACCESS_TOKEN_KEY
+    "accessTokenSecret": process.env.TWITTER_ACCESS_TOKEN_SECRET
 }
 fs.writeFileSync('config.json', JSON.stringify(cjson,null,2));
 console.log(JSON.stringify(cjson,null,2));
@@ -975,16 +975,58 @@ done
 
     Now replace that with the following:
 
-    #+NAME:config.json
-    #+CAPTION:Snapkite Engine ~config.json~
-    #+BEGIN_SRC js :eval never
+#+NAME:Add filters to Snapkite Engine config
+#+HEADER: :dir snapkite/snapkite-engine :eval query-export :results output :exports both
+#+BEGIN_SRC js
+var fs = require('fs');
+var cjson = JSON.parse(fs.readFileSync('config.json', 'utf8'));
+cjson.application.filters = [
+    "snapkite-filter-is-possibly-sensitive",
+    "snapkite-filter-has-mobile-photo",
+    "snapkite-filter-is-retweet",
+    "snapkite-filter-has-text"
+];
+fs.writeFileSync('config.json', JSON.stringify(cjson,null,2));
+console.log(JSON.stringify(cjson,null,2));
+#+END_SRC
+
+#+RESULTS: Add filters to Snapkite Engine config
+#+begin_example
+{
+  "application": {
+    "pushTweets": true,
+    "storeTweets": false,
+    "pushKeywords": false,
+    "storeKeywords": false,
+    "trackKeywords": "my",
+    "excludeKeywords": "",
     "filters": [
-        "snapkite-filter-is-possibly-sensitive",
-        "snapkite-filter-has-mobile-photo",
-        "snapkite-filter-is-retweet",
-        "snapkite-filter-has-text"
+      "snapkite-filter-is-possibly-sensitive",
+      "snapkite-filter-has-mobile-photo",
+      "snapkite-filter-is-retweet",
+      "snapkite-filter-has-text"
     ]
-    #+END_SRC
+  },
+  "twitter": {
+    "api": {
+      "consumerKey": ***REMOVED***,
+      "consumerSecret": ***REMOVED***,
+      "accessTokenKey": ***REMOVED***,
+      "accessTokenSecret": ***REMOVED***
+    }
+  },
+  "database": {
+    "hostname": "127.0.0.1",
+    "port": "27017",
+    "username": "",
+    "password": "",
+    "name": "snapkite"
+  },
+  "socket": {
+    "port": 3000
+  }
+}
+#+end_example
 
 *** Run the Snapkite Engine
 
@@ -9888,7 +9930,7 @@ with React.js
 {{{noindent}}} Prepared by WLHarvey \copy {{{date(%Y)}}}
 
 * MACROS                                                           :noexport:
-#+MACRO:VERSION 0.0.4 {{{date(%F %R)}}}
+#+MACRO:VERSION 0.0.5 {{{date(%F %R)}}}
 #+MACRO:heading @@texinfo:@heading @@$1
 #+MACRO:subheading @@texinfo:@subheading @@$1
 #+MACRO:tiauthor @@texinfo:@author @@$1
