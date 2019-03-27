@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-26 Tue 08:23>
+#+DATE: <2019-03-27 Wed 19:44>
 
 #+TEXINFO: @insertcopying
 
@@ -567,7 +567,8 @@ that socket connection and process tweets as they arrive.
    This should create the ~<dir>/snapkite-engine~ folder.
 
 #+NAME:mkdir snapkite
-#+BEGIN_SRC sh :eval query-export :results output :exports both
+##+HEADER: :eval query-export
+#+BEGIN_SRC sh :results output :exports both
 [ -d snapkite ] && echo snapkite dir exists || mkdir -v snapkite
 cd snapkite
 [ -d snapkite-engine ] && echo snapkite-engine exists || { \
@@ -577,17 +578,16 @@ cd snapkite
 cd .. && tree snapkite
 #+END_SRC
 
-
    #+CINDEX:Node-Gyp module
 2. <<install-node-gyp>>Now install the other node modules that
    ~snapkite-engine~ depends on.  One of them is the ~node-gyp~ module.  Also
    install other tools that are listed on [[https://github.com/TooTallNate/node-gyp#installation][node-gyp installation]].
 
 #+NAME:install Node-Gyp
-#+BEGIN_SRC sh :eval query-export :results output :exports both :dir snapkite/snapkite-engine
-yarn add node-gyp
+##+HEADER: :eval query-export
+#+BEGIN_SRC sh :results output :exports both :dir snapkite/snapkite-engine
+[ -d node_modules/node-gyp ] && echo node-gyp already installed || yarn add node-gyp
 #+END_SRC
-
 
 3. Once you install them, you're ready to install the ~node-gyp~ command:
    : npm install --global node-gyp
@@ -598,10 +598,10 @@ yarn add node-gyp
    : npm install
 
 #+NAME:install snapkite-engine modules
-#+BEGIN_SRC sh :eval query-export :results output :exports both :dir snapkite/snapkite-engine
-yarn
+##+HEADER: :eval query-export
+#+BEGIN_SRC sh :results output :exports both :dir snapkite/snapkite-engine
+[ -d node_modules ] && echo node_modules installed || yarn
 #+END_SRC
-
 
    #+CINDEX:Snapkite Engine, configure
    #+CINDEX:configure Snapkite Engine
@@ -611,8 +611,9 @@ yarn
    : cp example.config.json config.json
 
 #+NAME:configure Snapkite-Engine
-#+BEGIN_SRC sh :eval query-export :results output :exports both :dir snapkite/snapkite-engine
-cp -v example.config.json config.json
+##+HEADER: :eval query-export
+#+BEGIN_SRC sh :results output :exports both :dir snapkite/snapkite-engine
+[ -e config.json ] && echo config.json already copied || cp -v example.config.json config.json
 #+END_SRC
 
 
@@ -639,22 +640,105 @@ cp -v example.config.json config.json
    - other properties can be set to their defaults[fn::check out the Snapkite
      Engine [[https://github.com/snapkite/snapkite-engine][documentation]]]
 
-#+NAME: setup config.json
-#+HEADER: :dir snapkite/snapkite-engine :eval query-export :results output :exports both
-#+BEGIN_SRC js
-var fs = require('fs');
-var cjson = JSON.parse(fs.readFileSync('config.json', 'utf8'));
-cjson.application.trackKeywords = "my";
-cjson.twitter.api = {
-    "consumerKey": process.env.TWITTER_CONSUMER_KEY
-    "consumerSecret": process.env.TWITTER_CONSUMER_SECRET
-    "accessTokenKey": process.env.TWITTER_ACCESS_TOKEN_KEY
-    "accessTokenSecret": process.env.TWITTER_ACCESS_TOKEN_SECRET
-}
-fs.writeFileSync('config.json', JSON.stringify(cjson,null,2));
-console.log(JSON.stringify(cjson,null,2));
+# #+NAME: add keys to config.json
+# #+HEADER: :eval query-export
+# #+HEADER: :dir snapkite/snapkite-engine  :results output :exports both
+# #+BEGIN_SRC js
+# var fs = require('fs');
+# var cjson = JSON.parse(fs.readFileSync('config.json', 'utf8'));
+# cjson.application.trackKeywords = "my";
+# cjson.twitter.api = {
+#     "consumerKey": process.env.TWITTER_CONSUMER_KEY,
+#     "consumerSecret": process.env.TWITTER_CONSUMER_SECRET,
+#     "accessTokenKey": process.env.TWITTER_ACCESS_TOKEN_KEY,
+#     "accessTokenSecret": process.env.TWITTER_ACCESS_TOKEN_SECRET
+# }
+# fs.writeFileSync('config.json', JSON.stringify(cjson,null,2));
+# console.log(JSON.stringify(cjson,null,2));
+# #+END_SRC
+
+#+NAME: add keys to config.json
+#+HEADER: :eval query-export
+#+BEGIN_SRC sh :dir snapkite/snapkite-engine :results output :exports both
+. ~/.bashrc
+echo TWITTER_CONSUMER_KEY is $TWITTER_CONSUMER_KEY
+sed -E -i '.bak' -e '/api/ s/\{\}/\{\
+      \"consumerKey\": \"'$TWITTER_CONSUMER_KEY'\",\
+      \"consumerSecret\": \"'$TWITTER_CONSUMER_SECRET'\",\
+      \"accessTokenKey\": \"'$TWITTER_ACCESS_TOKEN_KEY'\",\
+      \"accessTokenSecret\": \"'$TWITTER_ACCESS_TOKEN_SECRET'\"\
+    \}/' -e '/trackKeywords/ s/\"trackKeywords\".*/\"trackKeywords\": \"my\",/' \
+config.json
+cat config.json
 #+END_SRC
 
+#+RESULTS: add keys to config.json
+#+begin_example
+TWITTER_CONSUMER_KEY is PcBwCyec2ue7aQwRaklWaprvA
+{
+  "application": {
+    "pushTweets": true,
+    "storeTweets": false,
+    "pushKeywords": false,
+    "storeKeywords": false,
+    "trackKeywords": "my",
+    "excludeKeywords": "",
+    "filters": []
+  },
+  "twitter": {
+    "api": {
+      "consumerKey": "",
+      "consumerSecret": "",
+      "accessTokenKey": "",
+      "accessTokenSecret": ""
+    }
+  },
+  "database": {
+    "hostname": "127.0.0.1",
+    "port": "27017",
+    "username": "",
+    "password": "",
+    "name": "snapkite"
+  },
+  "socket": {
+    "port": 3000
+  }
+}
+#+end_example
+
+#+RESULTS:
+#+begin_example
+TWITTER_CONSUMER_KEY is PcBwCyec2ue7aQwRaklWaprvA
+{
+  "application": {
+    "pushTweets": true,
+    "storeTweets": false,
+    "pushKeywords": false,
+    "storeKeywords": false,
+    "trackKeywords": "my",
+    "excludeKeywords": "",
+    "filters": []
+  },
+  "twitter": {
+    "api": {
+      "consumerKey": "",
+      "consumerSecret": "",
+      "accessTokenKey": "",
+      "accessTokenSecret": ""
+    }
+  },
+  "database": {
+    "hostname": "127.0.0.1",
+    "port": "27017",
+    "username": "",
+    "password": "",
+    "name": "snapkite"
+  },
+  "socket": {
+    "port": 3000
+  }
+}
+#+end_example
 
    #+CINDEX:Snapkite Filter module
    #+CINDEX:Snapkite Filters, list
@@ -693,14 +777,19 @@ console.log(JSON.stringify(cjson,null,2));
    Clone all Snapkite Filters by running these commands:
 
 #+NAME:install Snapkite filters
-#+HEADER: :dir snapkite/snapkite-engine/filters :eval query-export :exports code
+##+HEADER: :eval query-export
+#+HEADER: :dir snapkite/snapkite-engine/filters :exports code
 #+BEGIN_SRC sh
-git clone https://github.com/snapkite/snapkite-filter-is-possibly-sensitive
-git clone https://github.com/snapkite/snapkite-filter-has-mobile-photo
-git clone https://github.com/snapkite/snapkite-filter-is-retweet
-git clone https://github.com/snapkite/snapkite-filter-has-text
+[ -d snapkite-filter-is-possibly-sensitive ] && echo filters already added || { \
+  git clone https://github.com/snapkite/snapkite-filter-is-possibly-sensitive
+  git clone https://github.com/snapkite/snapkite-filter-has-mobile-photo
+  git clone https://github.com/snapkite/snapkite-filter-is-retweet
+  git clone https://github.com/snapkite/snapkite-filter-has-text
+}
 #+END_SRC
 
+#+RESULTS: install Snapkite filters
+: filters already added
 
    #+CINDEX:Snapkite filters, configure
    #+CINDEX:configure Snapkite filters
@@ -728,15 +817,20 @@ git clone https://github.com/snapkite/snapkite-filter-has-text
    files, as they are already configured to fit our purposes.
 
 #+NAME:configure Snapkite Filters
+##+HEADER: :eval query-export
 #+HEADER: :dir snapkite/snapkite-engine/filters
-#+HEADER: :eval query-export :results output :exports both
+#+HEADER: :results output :exports both
 #+BEGIN_SRC sh
-for filter in *
-do
-  cp -v $filter/example.config.json $filter/config.json
-done
+[ -e snapkite-filter-is-possibly-sensitive/config.json ] && echo filters already configured || { \
+  for filter in *
+  do
+    cp -v $filter/example.config.json $filter/config.json
+  done
+}
 #+END_SRC
 
+#+RESULTS: configure Snapkite Filters
+: filters already configured
 
 10. <<Snapkite-config.json>>Tell Snapkite Engine which Snapkite Filters it
     should use.  Open the ~<dir>/snapkite-engine/config.json~ file in a text
@@ -745,8 +839,11 @@ done
 
     Now replace that with the following:
 
+#+COMMENT: TODO---make this code conditional on not already being done
+
 #+NAME:Add filters to Snapkite Engine config
-#+HEADER: :dir snapkite/snapkite-engine :eval query-export :results output :exports both
+##+HEADER: :eval query-export
+#+HEADER: :dir snapkite/snapkite-engine :results output :exports both
 #+BEGIN_SRC js
 var fs = require('fs');
 var cjson = JSON.parse(fs.readFileSync('config.json', 'utf8'));
@@ -760,6 +857,38 @@ fs.writeFileSync('config.json', JSON.stringify(cjson,null,2));
 console.log(JSON.stringify(cjson,null,2));
 #+END_SRC
 
+#+RESULTS: Add filters to Snapkite Engine config
+#+begin_example
+{
+  "application": {
+    "pushTweets": true,
+    "storeTweets": false,
+    "pushKeywords": false,
+    "storeKeywords": false,
+    "trackKeywords": "my",
+    "excludeKeywords": "",
+    "filters": [
+      "snapkite-filter-is-possibly-sensitive",
+      "snapkite-filter-has-mobile-photo",
+      "snapkite-filter-is-retweet",
+      "snapkite-filter-has-text"
+    ]
+  },
+  "twitter": {
+    "api": {}
+  },
+  "database": {
+    "hostname": "127.0.0.1",
+    "port": "27017",
+    "username": "",
+    "password": "",
+    "name": "snapkite"
+  },
+  "socket": {
+    "port": 3000
+  }
+}
+#+end_example
 
 *** Run the Snapkite Engine
 
@@ -767,6 +896,8 @@ console.log(JSON.stringify(cjson,null,2));
 <<test-Snapkite-Engine>>With that you have successfully installed Snapkite
 Engine with a number of Snapkite Filters.  Now let's check if we can run it.
 Navigate to ~<dir>/snapkite-engine~ and run:
+: $ npm start
+: [Snapkite][Socket] Listening on port 3000
 
 You should see no error messages.  If you do and you are not sure how to fix
 them, go to https://github.com/fedosejev/react-essentials/issues, create a new
@@ -816,7 +947,8 @@ named {{{file(snapterest/)}}} inside a directory of your choice:
 *** Shell Script to Create Project Structure
 
 #+NAME:shell script to create project structure
-#+BEGIN_SRC sh :results output :exports both :eval query-export
+#+HEADER: :eval query-export
+#+BEGIN_SRC sh :results output :exports both
 echo creating project structure
 [ -d snapterest ]        || mkdir -v snapterest
 [ -d snapterest/build ]  || mkdir -v snapterest/build
@@ -901,12 +1033,12 @@ our answers, creates ~package.json~ for our project.
 Accept all the defaults.
 
 #+NAME:run yarn init
-#+BEGIN_SRC sh :exports both :results output :eval query-export
+#+HEADER: :eval query-export
+#+BEGIN_SRC sh :exports both :results output
 [ -d snapterest ] || mkdir -v snapterest
 cd snapterest
 [ -e package.json ] || yarn init --yes
 #+END_SRC
-
 
 #+CINDEX:modular application
 #+CINDEX:modules
