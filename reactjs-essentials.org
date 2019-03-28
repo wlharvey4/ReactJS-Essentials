@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-28 Thu 17:00>
+#+DATE: <2019-03-28 Thu 19:17>
 
 #+TEXINFO: @insertcopying
 
@@ -1112,7 +1112,7 @@ $ gulp
 
 #+NAME:run gulp
 #+HEADER: :eval query-export
-#+BEGIN_SRC sh :dir snapterest :results output :exports both
+#+BEGIN_SRC sh :exports none
 gulp
 #+END_SRC
 
@@ -5737,7 +5737,7 @@ command:
 
 #+NAME:run gulp command
 #+HEADER: :eval query-export
-#+BEGIN_SRC sh :dir snapterest :exports both :results output
+#+BEGIN_SRC sh :exports none
 gulp
 #+END_SRC
 
@@ -8396,14 +8396,10 @@ Let's build and run Snapterest!
 #+CINDEX:run @command{gulp} command
 Navigate to {{{file(<dir>/snapterest/)}}} and run the following command in
 your terminal:
+: gulp
 
 You should see an output similar to this:
-
-#+NAME:run project
-#+HEADER: :eval query-export
-#+BEGIN_SRC sh :dir snapterest
-gulp
-#+END_SRC
+: Finished 'default' after 2.42 s
 
 #+CINDEX:@file{Snapkite Engine}
 Make sure that you're running the {{{file(Snapkite Engine)}}} application that
