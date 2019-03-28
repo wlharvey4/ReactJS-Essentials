@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-28 Thu 13:36>
+#+DATE: <2019-03-28 Thu 14:05>
 
 #+TEXINFO: @insertcopying
 
@@ -761,8 +761,6 @@ if (c===1) {
 
     Now replace that with the following:
 
-#+COMMENT: TODO---make this code conditional on not already being done
-
 #+NAME:check-filters-config
 #+BEGIN_SRC sh :dir snapkite/snapkite-engine :results value :exports code
 grep --silent '"filters": \[\]' config.json && echo 1 || echo 0
@@ -801,6 +799,12 @@ Navigate to ~<dir>/snapkite-engine~ and run:
 You should see no error messages.  If you do and you are not sure how to fix
 them, go to https://github.com/fedosejev/react-essentials/issues, create a new
 issue and copy/paste the error message that you get.
+
+#+NAME: start-snapkite-engine
+#+HEADER: :dir snapkite/snapkite-engine :exports both :results value
+#+BEGIN_SRC elisp
+(start-process "snapkite-engine" "start-snapkite-engine" "yarn" "start")
+#+END_SRC
 
 ** Creating the Project Structure
 
