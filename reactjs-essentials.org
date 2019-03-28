@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-27 Wed 23:46>
+#+DATE: <2019-03-28 Thu 11:11>
 
 #+TEXINFO: @insertcopying
 
@@ -640,26 +640,39 @@ cd .. && tree snapkite
    - other properties can be set to their defaults[fn::check out the Snapkite
      Engine [[https://github.com/snapkite/snapkite-engine][documentation]]]
 
+#+NAME:check-config-keys
+#+BEGIN_SRC sh :dir snapkite/snapkite-engine :results value silent :exports both
+grep --silent '"consumerKey": ""' config.json && echo 1 || echo 0
+#+END_SRC
+
 #+NAME: add keys to config.json
 ##+HEADER: :eval query-export
-#+HEADER: :dir snapkite/snapkite-engine :exports results :results output silent
+#+HEADER: :var c=check-config-keys()
+#+HEADER: :dir snapkite/snapkite-engine :results output :exports both
 #+BEGIN_SRC js
-var fs = require('fs');
-fs.copyFileSync('config.json','config.json.bak',fs.constants.COPYFILE_EXCL);
+if (c===1) {
+  var fs = require('fs');
+  fs.copyFileSync('config.json','config.json.bak',fs.constants.COPYFILE_EXCL);
 
-var cjson = JSON.parse(fs.readFileSync('config.json', 'utf8'));
-cjson.application.trackKeywords = "my";
-cjson.twitter.api = {
-    "consumerKey": process.env.TWITTER_CONSUMER_KEY,
-    "consumerSecret": process.env.TWITTER_CONSUMER_SECRET,
-    "accessTokenKey": process.env.TWITTER_ACCESS_TOKEN_KEY,
-    "accessTokenSecret": process.env.TWITTER_ACCESS_TOKEN_SECRET
+  var cjson = JSON.parse(fs.readFileSync('config.json', 'utf8'));
+  cjson.application.trackKeywords = "my";
+  cjson.twitter.api = {
+      "consumerKey": process.env.TWITTER_CONSUMER_KEY,
+      "consumerSecret": process.env.TWITTER_CONSUMER_SECRET,
+      "accessTokenKey": process.env.TWITTER_ACCESS_TOKEN_KEY,
+      "accessTokenSecret": process.env.TWITTER_ACCESS_TOKEN_SECRET
+  }
+  cjson = JSON.stringify(cjson,null,2);
+
+  fs.writeFileSync('config.json', cjson);
+  console.log(cjson);
+} else {
+  console.log("keys already installed");
 }
-cjson = JSON.stringify(cjson,null,2);
-
-fs.writeFileSync('config.json', cjson);
-console.log(cjson);
 #+END_SRC
+
+#+RESULTS: add keys to config.json
+: keys already installed
 
    #+CINDEX:Snapkite Filter module
    #+CINDEX:Snapkite Filters, list
@@ -756,21 +769,34 @@ console.log(cjson);
 
 #+COMMENT: TODO---make this code conditional on not already being done
 
+#+NAME:check-filters-config
+#+BEGIN_SRC sh :dir snapkite/snapkite-engine :results value silent :exports both
+grep --silent '"filters": \[\]' config.json && echo 1 || echo 0
+#+END_SRC
+
 #+NAME:Add filters to Snapkite Engine config
 ##+HEADER: :eval query-export
+#+HEADER: :var c=check-filters-config()
 #+HEADER: :dir snapkite/snapkite-engine :results output :exports both
 #+BEGIN_SRC js
-var fs = require('fs');
-var cjson = JSON.parse(fs.readFileSync('config.json', 'utf8'));
-cjson.application.filters = [
-    "snapkite-filter-is-possibly-sensitive",
-    "snapkite-filter-has-mobile-photo",
-    "snapkite-filter-is-retweet",
-    "snapkite-filter-has-text"
-];
-fs.writeFileSync('config.json', JSON.stringify(cjson,null,2));
+if (c === 1) {
+  var fs = require('fs');
+  fs.copyFileSync('config.json', 'config.json.bak2', fs.constants.COPYFILE_EXCL);
+  var cjson = JSON.parse(fs.readFileSync('config.json', 'utf8'));
+  cjson.application.filters = [
+      "snapkite-filter-is-possibly-sensitive",
+      "snapkite-filter-has-mobile-photo",
+      "snapkite-filter-is-retweet",
+      "snapkite-filter-has-text"
+  ];
+  fs.writeFileSync('config.json', JSON.stringify(cjson,null,2));
 console.log(JSON.stringify(cjson,null,2));
+} else {
+  console.log("filters already installed");
+}
 #+END_SRC
+
+#+RESULTS:
 
 *** Run the Snapkite Engine
 
