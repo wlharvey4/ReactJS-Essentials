@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-28 Thu 11:11>
+#+DATE: <2019-03-28 Thu 13:36>
 
 #+TEXINFO: @insertcopying
 
@@ -641,12 +641,11 @@ cd .. && tree snapkite
      Engine [[https://github.com/snapkite/snapkite-engine][documentation]]]
 
 #+NAME:check-config-keys
-#+BEGIN_SRC sh :dir snapkite/snapkite-engine :results value silent :exports both
+#+BEGIN_SRC sh :dir snapkite/snapkite-engine :results value :exports code
 grep --silent '"consumerKey": ""' config.json && echo 1 || echo 0
 #+END_SRC
 
-#+NAME: add keys to config.json
-##+HEADER: :eval query-export
+#+NAME: add-keys-to-config.json
 #+HEADER: :var c=check-config-keys()
 #+HEADER: :dir snapkite/snapkite-engine :results output :exports both
 #+BEGIN_SRC js
@@ -665,14 +664,11 @@ if (c===1) {
   cjson = JSON.stringify(cjson,null,2);
 
   fs.writeFileSync('config.json', cjson);
-  console.log(cjson);
+  console.log("keys installed");
 } else {
   console.log("keys already installed");
 }
 #+END_SRC
-
-#+RESULTS: add keys to config.json
-: keys already installed
 
    #+CINDEX:Snapkite Filter module
    #+CINDEX:Snapkite Filters, list
@@ -711,8 +707,7 @@ if (c===1) {
    Clone all Snapkite Filters by running these commands:
 
 #+NAME:install Snapkite filters
-##+HEADER: :eval query-export
-#+HEADER: :dir snapkite/snapkite-engine/filters :exports both
+#+HEADER: :dir snapkite/snapkite-engine/filters :results silent :exports both
 #+BEGIN_SRC sh
 [ -d snapkite-filter-is-possibly-sensitive ] && echo filters already added || { \
   git clone https://github.com/snapkite/snapkite-filter-is-possibly-sensitive
@@ -748,7 +743,6 @@ if (c===1) {
    files, as they are already configured to fit our purposes.
 
 #+NAME:configure Snapkite Filters
-##+HEADER: :eval query-export
 #+HEADER: :dir snapkite/snapkite-engine/filters
 #+HEADER: :results output :exports both
 #+BEGIN_SRC sh
@@ -770,12 +764,11 @@ if (c===1) {
 #+COMMENT: TODO---make this code conditional on not already being done
 
 #+NAME:check-filters-config
-#+BEGIN_SRC sh :dir snapkite/snapkite-engine :results value silent :exports both
+#+BEGIN_SRC sh :dir snapkite/snapkite-engine :results value :exports code
 grep --silent '"filters": \[\]' config.json && echo 1 || echo 0
 #+END_SRC
 
 #+NAME:Add filters to Snapkite Engine config
-##+HEADER: :eval query-export
 #+HEADER: :var c=check-filters-config()
 #+HEADER: :dir snapkite/snapkite-engine :results output :exports both
 #+BEGIN_SRC js
@@ -795,8 +788,6 @@ console.log(JSON.stringify(cjson,null,2));
   console.log("filters already installed");
 }
 #+END_SRC
-
-#+RESULTS:
 
 *** Run the Snapkite Engine
 
