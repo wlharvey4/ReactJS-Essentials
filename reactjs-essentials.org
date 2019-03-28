@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-28 Thu 14:59>
+#+DATE: <2019-03-28 Thu 15:23>
 
 #+TEXINFO: @insertcopying
 
@@ -846,7 +846,6 @@ named {{{file(snapterest/)}}} inside a directory of your choice:
 *** Shell Script to Create Project Structure
 
 #+NAME:shell script to create project structure
-#+HEADER: :eval query-export
 #+BEGIN_SRC sh :results output :exports both
 echo creating project structure
 [ -d snapterest ]        || mkdir -v snapterest
@@ -931,7 +930,6 @@ our answers, creates ~package.json~ for our project.
 Accept all the defaults.
 
 #+NAME:run yarn init
-#+HEADER: :eval query-export
 #+BEGIN_SRC sh :exports both :results output :dir snapterest
 [ -e package.json ] || yarn init --yes
 #+END_SRC
@@ -971,7 +969,6 @@ To install Browserify, run the following command from inside the
 ~<dir>/snapterest/~ directory:
 
 #+NAME:install Browserify
-#+HEADER: :eval query-export
 #+BEGIN_SRC sh :dir snapterest :exports both :results output
 yarn add --dev browserify
 #+END_SRC
@@ -1002,7 +999,6 @@ The Node.js ecosystem has a great tool for automating our build process,
 Let's install it.
 
 #+NAME:install Gulp.js
-#+HEADER: :eval query-export
 #+BEGIN_SRC sh :dir snapterest :exports both :results output
 yarn add --dev gulp
 #+END_SRC
@@ -1080,7 +1076,6 @@ version 6.  Version 7 introduced some [[https://github.com/fedosejev/react-essen
 
 
 #+NAME:install Babelify
-#+HEADER: :eval query-export
 #+BEGIN_SRC sh :dir snapterest :exports both :results output
 yarn add --dev babelify@^6.2.0
 #+END_SRC
@@ -1099,7 +1094,6 @@ works, go to [[https://www.npmjs.com/package/vinyl-source-stream][Vinyl-Source-S
 dependency module:
 
 #+NAME:install Vinyl Source Stream module
-#+HEADER: :eval query-export
 #+BEGIN_SRC sh :dir snapterest :exports both :results output
 yarn add --dev vinyl-source-stream
 #+END_SRC
@@ -6060,7 +6054,6 @@ latest and see how things go:
   : Yarn add jest-cli --dev
 
 #+NAME:Install Latest Jest-CLI
-#+HEADER: :eval query-export
 #+BEGIN_SRC sh :dir snapterest :results output :exports both
 yarn add --dev jest-cli
 #+END_SRC
@@ -6080,7 +6073,6 @@ perhaps because it was created with Yarn?], replacing it with:
 
 #+NAME:add test script to package.json
 #+CAPTION: Adding a =test= Script Command to ~Package.json~
-#+HEADER: :eval query-export
 #+HEADER: :results output
 #+HEADER: :exports both
 #+HEADER: :dir snapterest
@@ -6435,7 +6427,6 @@ with any test framework that you choose.  Naturally, it works great with Jest.
 Let's install it:
 
 #+NAME:install react-addons-test-utils
-#+HEADER: :eval query-export
 #+BEGIN_SRC sh :dir snapterest :results output :exports both
 yarn add --dev react-addons-test-utils
 #+END_SRC
@@ -6649,7 +6640,7 @@ jest = {
 #+HEADER: :results output
 #+HEADER: :exports both
 #+HEADER: :dir snapterest
-#+BEGIN_SRC js :eval query-export
+#+BEGIN_SRC js
 var fs = require('fs');
 var p = JSON.parse(fs.readFileSync('package.json', 'utf8'));
 p.jest = {
@@ -6665,7 +6656,6 @@ console.log(p);
 Install ~babel-jest~:
 
 #+NAME:install babel-jest
-#+HEADER: :eval query-export
 #+BEGIN_SRC sh :dir snapterest :results output :exports both
 yarn add --dev babel-jest
 #+END_SRC
@@ -8454,6 +8444,12 @@ Navigate to {{{file(<dir>/snapterest/)}}} and run the following command in
 your terminal:
 
 You should see an output similar to this:
+
+#+NAME:run project
+#+HEADER: :eval query-export
+#+BEGIN_SRC sh :dir snapterest
+gulp
+#+END_SRC
 
 #+CINDEX:@file{Snapkite Engine}
 Make sure that you're running the {{{file(Snapkite Engine)}}} application that
