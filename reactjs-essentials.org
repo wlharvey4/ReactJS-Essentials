@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-28 Thu 15:23>
+#+DATE: <2019-03-28 Thu 17:00>
 
 #+TEXINFO: @insertcopying
 
@@ -777,9 +777,9 @@ if (c === 1) {
       "snapkite-filter-has-text"
   ];
   fs.writeFileSync('config.json', JSON.stringify(cjson,null,2));
-console.log(JSON.stringify(cjson,null,2));
+  console.log("Snapkite filters installed");
 } else {
-  console.log("filters already installed");
+  console.log("Snapkite filters already installed");
 }
 #+END_SRC
 
@@ -1388,6 +1388,12 @@ install)}}} to install React:
 
    : npm install --save react@0.14.8 react-dom@0.14.8
 
+#+NAME:install React
+#+HEADER: :results output :exports both
+#+BEGIN_SRC sh :dir snapterest
+yarn add react@0.14.8 react-dom@0.14.8
+#+END_SRC
+
 2. Then, open the ~<dir>/snapterest/source/app.js~ file in your text editor and
    import the React and ReactDOM libraries to the ~React~ and ~ReactDOM~
    variables, respectively:
@@ -1395,6 +1401,7 @@ install)}}} to install React:
    : var React = require('react');
    : var ReactDOM = require('react-dom');
 
+   [[app.js creation][app.js creation]].
 
 The ~react~ package contains methods that are concerned with the key idea
 behind React, that is, describing what you want to render in a declarative way.
@@ -2861,9 +2868,9 @@ Now that we have a plan, we can start implementing.
 
 #+CINDEX:main application file, @file{app.js}
 #+CINDEX:@file{app.js}
-Let's start by editing our application's main JavaScript file.  Replace the
-contents of the ~<dir>/snapterest/source/app.js~ file with the following code
-snippet:
+<<app.js creation>>Let's start by editing our application's main JavaScript
+file.  Replace the contents of the ~<dir>/snapterest/source/app.js~ file with
+the following code snippet:
 
 #+NAME:app root container component
 #+CAPTION[<App Root Container>]:The React Application Root Container File
@@ -2906,7 +2913,7 @@ Let's take a look at the contents of the ~Application.react.js~ file:
 
 #+CAPTION[<Application Component>]:The Application Component
 #+NAME:Application component
-#+HEADER: :noweb yes :eval no
+#+HEADER: :noweb tangle :eval no
 #+BEGIN_SRC js :tangle snapterest/source/components/Application.react.js :mkdirp yes
 <<Application Dependencies>>
 
@@ -2994,14 +3001,14 @@ what this component renders inside its ~render()~ method.
 
 #+NAME:Application.render
 #+BEGIN_SRC js :noweb yes :eval no
-<<Application.render start>>
+<<Application.render-start>>
                     <<Stream with props>>
-<<Application.render mid>>
+<<Application.render-mid>>
                     <<Collection with props>>
-<<Application.render end>>
+<<Application.render-end>>
 #+END_SRC
 
-#+NAME:Application.render start
+#+NAME:Application.render-start
 #+BEGIN_SRC js :exports none :eval no
 render: function () {
     return (
@@ -3011,7 +3018,7 @@ render: function () {
 
 #+END_SRC
 
-#+NAME:Application.render mid
+#+NAME:Application.render-mid
 #+BEGIN_SRC js :exports none :eval no
 
                 </div>
@@ -3019,7 +3026,7 @@ render: function () {
 
 #+END_SRC
 
-#+NAME:Application.render end
+#+NAME:Application.render-end
 #+BEGIN_SRC js :exports none :eval no
 
                 </div>
@@ -3300,69 +3307,16 @@ module.
 #+CINDEX:@code{snapkite-stream-client} module, install
 Navigate to the ~<dir>/snapterest/~ directory and run the following command:
 
+: npm install --save snapkite-stream-client
 
 It will install the ~snapkite-stream-client~ module, and add it to
 ~package.json~ as a dependency.
 
 #+NAME:snapkite-stream-client
 #+CAPTION[snapkite-stream-client]:After Installing the ~snapkite-stream-client~ Module
-#+BEGIN_src sh :eval no
-$ yarn add snapkite-stream-client
-yarn add v1.13.0
-[1/4] 🔍  Resolving packages...
-[2/4] 🚚  Fetching packages...
-[3/4] 🔗  Linking dependencies...
-[4/4] 🔨  Building fresh packages...
-success Saved lockfile.
-success Saved 25 new dependencies.
-info Direct dependencies
-└─ snapkite-stream-client@1.0.3
-info All dependencies
-├─ after@0.8.2
-├─ arraybuffer.slice@0.0.6
-├─ backo2@1.0.2
-├─ base64-arraybuffer@0.1.5
-├─ blob@0.0.4
-├─ callsite@1.0.0
-├─ component-bind@1.0.0
-├─ component-inherit@0.0.3
-├─ engine.io-client@1.8.5
-├─ engine.io-parser@1.3.2
-├─ has-cors@1.1.0
-├─ json3@3.3.2
-├─ object-component@0.0.3
-├─ options@0.0.6
-├─ parsejson@0.0.3
-├─ parseqs@0.0.5
-├─ snapkite-stream-client@1.0.3
-├─ socket.io-client@1.7.4
-├─ socket.io-parser@2.3.1
-├─ to-array@0.1.4
-├─ ultron@1.0.2
-├─ ws@1.1.5
-├─ wtf-8@1.0.0
-├─ xmlhttprequest-ssl@1.5.3
-└─ yeast@0.1.2
-   Done in 2.23s.
-
-$ cat package.json
-{
-  "name": "snapterest",
-  "version": "1.0.0",
-  "main": "index.js",
-  "license": "MIT",
-  "devDependencies": {
-    "babelify": "^6.2.0",
-    "browserify": "^16.2.3",
-    "gulp": "^4.0.0",
-    "vinyl-source-stream": "^2.0.0"
-  },
-  "dependencies": {
-    "react": "0.14.8",
-    "react-dom": "0.14.8",
-    "snapkite-stream-client": "^1.0.3"
-  }
-}
+#+BEGIN_src sh :dir snapterest :results output :exports both
+yarn add snapkite-stream-client
+cat package.json
 #+END_SRC
 
 Now we're ready to reuse the ~snapkite-stream-client~ module in one of our
@@ -4641,9 +4595,9 @@ render: function () {
 
     if (numberOfTweetsInCollection > 0) {
 
-        <<Collection.render Variables>>
+        <<Collection.render-variables>>
 
-        <<Collection.render return when not empty>>
+        <<Collection.render-when not empty>>
     }
 
     return (<Header text='Your Collection is empty' />);
@@ -4704,7 +4658,7 @@ What do all these components render?
 The idea is to only show a collection when it is not empty.  In that case,
 we're creating [[(four-variables)][four variables]]:
 
-#+NAME:Collection.render Variables
+#+NAME:Collection.render-variables
 #+BEGIN_SRC js :eval no
 var tweets = this.props.tweets;
 var htmlMarkup = this.createHtmlMarkupStringOfTweetsList();
@@ -4798,7 +4752,7 @@ file, even outside the ~React.createClass()~ method.
 Take a closer look at what the ~Collection~ component returns when our
 collection [[(Collection-notempty)][is /not/ empty]].
 
-#+NAME:Collection.render return when not empty
+#+NAME:Collection.render-when not empty
 #+BEGIN_SRC js :eval no
 return (
     <div>
@@ -9105,7 +9059,7 @@ with React.js
 {{{noindent}}} Prepared by WLHarvey \copy {{{date(%Y)}}}
 
 * MACROS                                                           :noexport:
-#+MACRO:VERSION 0.0.5 {{{date(%F %R)}}}
+#+MACRO:VERSION 0.0.6 {{{date(%F %R)}}}
 #+MACRO:heading @@texinfo:@heading @@$1
 #+MACRO:subheading @@texinfo:@subheading @@$1
 #+MACRO:tiauthor @@texinfo:@author @@$1
