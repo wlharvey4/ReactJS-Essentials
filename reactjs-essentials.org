@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-28 Thu 14:05>
+#+DATE: <2019-03-28 Thu 14:59>
 
 #+TEXINFO: @insertcopying
 
@@ -567,7 +567,6 @@ that socket connection and process tweets as they arrive.
    This should create the ~<dir>/snapkite-engine~ folder.
 
 #+NAME:mkdir snapkite
-##+HEADER: :eval query-export
 #+BEGIN_SRC sh :results output :exports both
 [ -d snapkite ] && echo snapkite dir exists || mkdir -v snapkite
 cd snapkite
@@ -584,7 +583,6 @@ cd .. && tree snapkite
    install other tools that are listed on [[https://github.com/TooTallNate/node-gyp#installation][node-gyp installation]].
 
 #+NAME:install Node-Gyp
-##+HEADER: :eval query-export
 #+BEGIN_SRC sh :results output :exports both :dir snapkite/snapkite-engine
 [ -d node_modules/node-gyp ] && echo node-gyp already installed || yarn add node-gyp
 #+END_SRC
@@ -598,7 +596,6 @@ cd .. && tree snapkite
    : npm install
 
 #+NAME:install snapkite-engine modules
-##+HEADER: :eval query-export
 #+BEGIN_SRC sh :results output :exports both :dir snapkite/snapkite-engine
 [ -d node_modules ] && echo node_modules installed || yarn
 #+END_SRC
@@ -611,7 +608,6 @@ cd .. && tree snapkite
    : cp example.config.json config.json
 
 #+NAME:configure Snapkite-Engine
-##+HEADER: :eval query-export
 #+BEGIN_SRC sh :results output :exports both :dir snapkite/snapkite-engine
 [ -e config.json ] && echo config.json already copied || cp -v example.config.json config.json
 #+END_SRC
@@ -859,7 +855,6 @@ echo creating project structure
 [ -e snapterest/app.js ] || touch snapterest/source/app.js
 #+END_SRC
 
-
 ** Building the Project
 
    #+CINDEX:DRY
@@ -937,9 +932,7 @@ Accept all the defaults.
 
 #+NAME:run yarn init
 #+HEADER: :eval query-export
-#+BEGIN_SRC sh :exports both :results output
-[ -d snapterest ] || mkdir -v snapterest
-cd snapterest
+#+BEGIN_SRC sh :exports both :results output :dir snapterest
 [ -e package.json ] || yarn init --yes
 #+END_SRC
 
@@ -978,10 +971,10 @@ To install Browserify, run the following command from inside the
 ~<dir>/snapterest/~ directory:
 
 #+NAME:install Browserify
-#+BEGIN_SRC sh :dir snapterest :exports both :results output :eval query-export
+#+HEADER: :eval query-export
+#+BEGIN_SRC sh :dir snapterest :exports both :results output
 yarn add --dev browserify
 #+END_SRC
-
 
 Browserify will allow us to use Node.js modules in our client-side JavaScript
 applications.  It will be a part of our build process.
@@ -1009,10 +1002,10 @@ The Node.js ecosystem has a great tool for automating our build process,
 Let's install it.
 
 #+NAME:install Gulp.js
-#+BEGIN_SRC sh :dir snapterest :exports both :results output :eval query-export
+#+HEADER: :eval query-export
+#+BEGIN_SRC sh :dir snapterest :exports both :results output
 yarn add --dev gulp
 #+END_SRC
-
 
 {{{subheading(An Example ~gulpfile.js~)}}}
 
@@ -1076,7 +1069,6 @@ gulp.task('default', function(cb) {
 });
 #+END_SRC
 
-
 **** Install Babelify
 
 #+CINDEX:Babelify
@@ -1088,10 +1080,10 @@ version 6.  Version 7 introduced some [[https://github.com/fedosejev/react-essen
 
 
 #+NAME:install Babelify
-#+BEGIN_SRC sh :dir snapterest :exports both :results output :eval query-export
+#+HEADER: :eval query-export
+#+BEGIN_SRC sh :dir snapterest :exports both :results output
 yarn add --dev babelify@^6.2.0
 #+END_SRC
-
 
 #+CINDEX:JSX
 The ~babelify~ module allows us to write the JSX syntax that we'll introduce in
@@ -1107,10 +1099,10 @@ works, go to [[https://www.npmjs.com/package/vinyl-source-stream][Vinyl-Source-S
 dependency module:
 
 #+NAME:install Vinyl Source Stream module
-#+BEGIN_SRC sh :dir snapterest :exports both :results output :eval query-export
+#+HEADER: :eval query-export
+#+BEGIN_SRC sh :dir snapterest :exports both :results output
 yarn add --dev vinyl-source-stream
 #+END_SRC
-
 
 **** Test Default Gulp Task
 
@@ -1125,10 +1117,10 @@ $ gulp
 #+END_EXAMPLE
 
 #+NAME:run gulp
-#+BEGIN_SRC sh :dir snapterest :results output :exports none :eval query-export
+#+HEADER: :eval query-export
+#+BEGIN_SRC sh :dir snapterest :results output :exports both
 gulp
 #+END_SRC
-
 
 #+CINDEX:@file{build} directory
 #+CINDEX:@file{snapterest.js} file
@@ -4314,7 +4306,8 @@ Navigate to ~<dir>/snapterest/source/components/~ and create the
 
 #+NAME:Header component
 #+CAPTION[<Header Component>]:The ~Header~ Component (~Header.react.js~)
-#+BEGIN_SRC js -r :tangle snapterest/source/components/Header.react.js :mkdirp yes :eval no
+#+HEADER: :mkdirp yes :eval no
+#+BEGIN_SRC js -r :tangle snapterest/source/components/Header.react.js
 var React = require('react');
 
 var headerStyle = {
@@ -4411,7 +4404,8 @@ Next, let's create our ~Tweet~ component.  Navigate to
 
 #+NAME:Tweet component
 #+CAPTION[<Tweet Component>]:The ~Tweet~ Component (~Tweet.react.js~)
-#+BEGIN_SRC js -r :tangle snapterest/source/components/Tweet.react.js :mkdirp yes :eval no
+#+HEADER: :mkdirp yes :eval no
+#+BEGIN_SRC js -r :tangle snapterest/source/components/Tweet.react.js
 var React = require('react');
 
 var tweetStyle = {
@@ -5794,7 +5788,8 @@ Then, open a new Terminal window, navigate to ~<dir>/snapterest/~, and run this
 command:
 
 #+NAME:run gulp command
-#+BEGIN_SRC sh :dir snapterest :eval query-export :exports both :result output
+#+HEADER: :eval query-export
+#+BEGIN_SRC sh :dir snapterest :exports both :results output
 gulp
 #+END_SRC
 
@@ -6065,7 +6060,8 @@ latest and see how things go:
   : Yarn add jest-cli --dev
 
 #+NAME:Install Latest Jest-CLI
-#+BEGIN_SRC sh :dir snapterest :eval query-export :results output :exports both
+#+HEADER: :eval query-export
+#+BEGIN_SRC sh :dir snapterest :results output :exports both
 yarn add --dev jest-cli
 #+END_SRC
 
@@ -6439,7 +6435,8 @@ with any test framework that you choose.  Naturally, it works great with Jest.
 Let's install it:
 
 #+NAME:install react-addons-test-utils
-#+BEGIN_SRC sh :eval query-export :results output :dir snapterest
+#+HEADER: :eval query-export
+#+BEGIN_SRC sh :dir snapterest :results output :exports both
 yarn add --dev react-addons-test-utils
 #+END_SRC
 
@@ -6668,7 +6665,8 @@ console.log(p);
 Install ~babel-jest~:
 
 #+NAME:install babel-jest
-#+BEGIN_SRC sh :eval query-export :dir snapterest :results output
+#+HEADER: :eval query-export
+#+BEGIN_SRC sh :dir snapterest :results output :exports both
 yarn add --dev babel-jest
 #+END_SRC
 
@@ -6957,7 +6955,7 @@ Let's create a new folder called ~actions~ in our project's
 #+CINDEX:@code{TweetActionCreators.js} file
 #+NAME:TweetActionCreators module
 #+CAPTION[<TweetActionCreators Module>]:The ~TweetActionCreators~ Module
-#+BEGIN_SRC js :tangle snapterest/source/actions/TweetActionCreators.js :mkdir yes :eval no
+#+BEGIN_SRC js :tangle snapterest/source/actions/TweetActionCreators.js :mkdirp yes :eval no
 var AppDispatcher = require('../dispatcher/AppDispatcher');
 
 function receiveTweet(tweet) {
@@ -7011,7 +7009,8 @@ directory, then create the ~TweetStore.js~ file in it.
 #+CINDEX:@code{TweetStore.js} file
 #+NAME:TweetStore module
 #+CAPTION[<TweetStore Module>]:The ~TweetStore~ Module
-#+BEGIN_SRC js :tangle snapterest/source/stores/TweetStore.js :mkdirp yes :eval no
+#+HEADER: :mkdirp yes :eval no
+#+BEGIN_SRC js :tangle snapterest/source/stores/TweetStore.js
 var AppDispatcher = require('../dispatcher/AppDispatcher');
 var EventEmitter = require('events').EventEmitter;
 var assign = require('object-assign');
@@ -7615,14 +7614,14 @@ file:
 #+NAME:CollectionStore file
 #+CAPTION[<Collection.js File>]:The ~Collection.js~ File
 #+HEADER: :mkdirp yes :noweb yes :eval no
-#+BEGIN_SRC js :tangle snapterest/source/stores/Collection.js
+#+BEGIN_SRC js :tangle snapterest/source/stores/CollectionStore.js
 <<CollectionStore imports>>
 
 var CHANGE_EVENT = 'change';
 
 <<CollectionStore data and private methods>>
 
-<<CollectionStore>>
+<<CollectionStore store>>
 
 <<CollectionStore.handleAction func>>
 
@@ -7714,6 +7713,7 @@ function emitChange () {
 #+CINDEX:@code{CollectionStore} object, create
 Then, we create the =CollectionStore= Object
 
+#+NAME:CollectionStore store
 #+BEGIN_SRC js :eval no
 var CollectionStore = assign({}, EventEmitter.prototype, {
 
@@ -7816,7 +7816,7 @@ Navigate to ~<dir>/snapterest/source/actions/~ and create the
 #+NAME:CollectionActionCreators file
 #+CAPTION[<CollectionActionCreators.js>]:The ~CollectionActionCreators~ File
 #+HEADER: :mkdirp yes :noweb yes :eval no
-#+BEGIN_SRC js :tangle: snapterest/source/actions/CollectionActionCreators.js
+#+BEGIN_SRC js :tangle snapterest/source/actions/CollectionActionCreators.js
 var AppDispatcher = require('../dispatcher/AppDispatcher');
 
 module.exports = {
@@ -8351,7 +8351,7 @@ tweet image.
 #+NAME:StreamTweet Flux component
 #+HEADER: :noweb no-export :eval no
 #+HEADER: :comments both
-#+BEGIN_SRC js :tangle snapterest/source/components/StreamTweet.flux.react.js :mkdirp yes
+#+BEGIN_SRC js :tangl esnapterest/source/components/StreamTweet.flux.react.js :mkdirp yes
 <<StreamTweet imports>>
 <<StreamTweet additional import>>
 
