@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-27 Wed 19:44>
+#+DATE: <2019-03-27 Wed 23:46>
 
 #+TEXINFO: @insertcopying
 
@@ -640,105 +640,26 @@ cd .. && tree snapkite
    - other properties can be set to their defaults[fn::check out the Snapkite
      Engine [[https://github.com/snapkite/snapkite-engine][documentation]]]
 
-# #+NAME: add keys to config.json
-# #+HEADER: :eval query-export
-# #+HEADER: :dir snapkite/snapkite-engine  :results output :exports both
-# #+BEGIN_SRC js
-# var fs = require('fs');
-# var cjson = JSON.parse(fs.readFileSync('config.json', 'utf8'));
-# cjson.application.trackKeywords = "my";
-# cjson.twitter.api = {
-#     "consumerKey": process.env.TWITTER_CONSUMER_KEY,
-#     "consumerSecret": process.env.TWITTER_CONSUMER_SECRET,
-#     "accessTokenKey": process.env.TWITTER_ACCESS_TOKEN_KEY,
-#     "accessTokenSecret": process.env.TWITTER_ACCESS_TOKEN_SECRET
-# }
-# fs.writeFileSync('config.json', JSON.stringify(cjson,null,2));
-# console.log(JSON.stringify(cjson,null,2));
-# #+END_SRC
-
 #+NAME: add keys to config.json
-#+HEADER: :eval query-export
-#+BEGIN_SRC sh :dir snapkite/snapkite-engine :results output :exports both
-. ~/.bashrc
-echo TWITTER_CONSUMER_KEY is $TWITTER_CONSUMER_KEY
-sed -E -i '.bak' -e '/api/ s/\{\}/\{\
-      \"consumerKey\": \"'$TWITTER_CONSUMER_KEY'\",\
-      \"consumerSecret\": \"'$TWITTER_CONSUMER_SECRET'\",\
-      \"accessTokenKey\": \"'$TWITTER_ACCESS_TOKEN_KEY'\",\
-      \"accessTokenSecret\": \"'$TWITTER_ACCESS_TOKEN_SECRET'\"\
-    \}/' -e '/trackKeywords/ s/\"trackKeywords\".*/\"trackKeywords\": \"my\",/' \
-config.json
-cat config.json
+##+HEADER: :eval query-export
+#+HEADER: :dir snapkite/snapkite-engine :exports results :results output silent
+#+BEGIN_SRC js
+var fs = require('fs');
+fs.copyFileSync('config.json','config.json.bak',fs.constants.COPYFILE_EXCL);
+
+var cjson = JSON.parse(fs.readFileSync('config.json', 'utf8'));
+cjson.application.trackKeywords = "my";
+cjson.twitter.api = {
+    "consumerKey": process.env.TWITTER_CONSUMER_KEY,
+    "consumerSecret": process.env.TWITTER_CONSUMER_SECRET,
+    "accessTokenKey": process.env.TWITTER_ACCESS_TOKEN_KEY,
+    "accessTokenSecret": process.env.TWITTER_ACCESS_TOKEN_SECRET
+}
+cjson = JSON.stringify(cjson,null,2);
+
+fs.writeFileSync('config.json', cjson);
+console.log(cjson);
 #+END_SRC
-
-#+RESULTS: add keys to config.json
-#+begin_example
-TWITTER_CONSUMER_KEY is PcBwCyec2ue7aQwRaklWaprvA
-{
-  "application": {
-    "pushTweets": true,
-    "storeTweets": false,
-    "pushKeywords": false,
-    "storeKeywords": false,
-    "trackKeywords": "my",
-    "excludeKeywords": "",
-    "filters": []
-  },
-  "twitter": {
-    "api": {
-      "consumerKey": "",
-      "consumerSecret": "",
-      "accessTokenKey": "",
-      "accessTokenSecret": ""
-    }
-  },
-  "database": {
-    "hostname": "127.0.0.1",
-    "port": "27017",
-    "username": "",
-    "password": "",
-    "name": "snapkite"
-  },
-  "socket": {
-    "port": 3000
-  }
-}
-#+end_example
-
-#+RESULTS:
-#+begin_example
-TWITTER_CONSUMER_KEY is PcBwCyec2ue7aQwRaklWaprvA
-{
-  "application": {
-    "pushTweets": true,
-    "storeTweets": false,
-    "pushKeywords": false,
-    "storeKeywords": false,
-    "trackKeywords": "my",
-    "excludeKeywords": "",
-    "filters": []
-  },
-  "twitter": {
-    "api": {
-      "consumerKey": "",
-      "consumerSecret": "",
-      "accessTokenKey": "",
-      "accessTokenSecret": ""
-    }
-  },
-  "database": {
-    "hostname": "127.0.0.1",
-    "port": "27017",
-    "username": "",
-    "password": "",
-    "name": "snapkite"
-  },
-  "socket": {
-    "port": 3000
-  }
-}
-#+end_example
 
    #+CINDEX:Snapkite Filter module
    #+CINDEX:Snapkite Filters, list
@@ -778,7 +699,7 @@ TWITTER_CONSUMER_KEY is PcBwCyec2ue7aQwRaklWaprvA
 
 #+NAME:install Snapkite filters
 ##+HEADER: :eval query-export
-#+HEADER: :dir snapkite/snapkite-engine/filters :exports code
+#+HEADER: :dir snapkite/snapkite-engine/filters :exports both
 #+BEGIN_SRC sh
 [ -d snapkite-filter-is-possibly-sensitive ] && echo filters already added || { \
   git clone https://github.com/snapkite/snapkite-filter-is-possibly-sensitive
@@ -787,9 +708,6 @@ TWITTER_CONSUMER_KEY is PcBwCyec2ue7aQwRaklWaprvA
   git clone https://github.com/snapkite/snapkite-filter-has-text
 }
 #+END_SRC
-
-#+RESULTS: install Snapkite filters
-: filters already added
 
    #+CINDEX:Snapkite filters, configure
    #+CINDEX:configure Snapkite filters
@@ -829,9 +747,6 @@ TWITTER_CONSUMER_KEY is PcBwCyec2ue7aQwRaklWaprvA
 }
 #+END_SRC
 
-#+RESULTS: configure Snapkite Filters
-: filters already configured
-
 10. <<Snapkite-config.json>>Tell Snapkite Engine which Snapkite Filters it
     should use.  Open the ~<dir>/snapkite-engine/config.json~ file in a text
     editor and look for this:
@@ -856,39 +771,6 @@ cjson.application.filters = [
 fs.writeFileSync('config.json', JSON.stringify(cjson,null,2));
 console.log(JSON.stringify(cjson,null,2));
 #+END_SRC
-
-#+RESULTS: Add filters to Snapkite Engine config
-#+begin_example
-{
-  "application": {
-    "pushTweets": true,
-    "storeTweets": false,
-    "pushKeywords": false,
-    "storeKeywords": false,
-    "trackKeywords": "my",
-    "excludeKeywords": "",
-    "filters": [
-      "snapkite-filter-is-possibly-sensitive",
-      "snapkite-filter-has-mobile-photo",
-      "snapkite-filter-is-retweet",
-      "snapkite-filter-has-text"
-    ]
-  },
-  "twitter": {
-    "api": {}
-  },
-  "database": {
-    "hostname": "127.0.0.1",
-    "port": "27017",
-    "username": "",
-    "password": "",
-    "name": "snapkite"
-  },
-  "socket": {
-    "port": 3000
-  }
-}
-#+end_example
 
 *** Run the Snapkite Engine
 
