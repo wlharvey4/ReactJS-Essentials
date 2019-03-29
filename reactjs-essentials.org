@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-28 Thu 19:17>
+#+DATE: <2019-03-29 Fri 12:54>
 
 #+TEXINFO: @insertcopying
 
@@ -559,74 +559,106 @@ that socket connection and process tweets as they arrive.
 :CUSTOM_ID: install Snapkite Engine
 :END:
 
-   #+CINDEX:Snapkite Engine, install
-1. Clone the Snapkite Engine repository into a directory of your choice[fn::I
-   will set ~<dir>~ to be ~snapkite~ and clone Snapkite-Engine in it.]:
-   : cd <dir>
-   : git clone https://github.com/snapkite/snapkite-engine.git
-   This should create the ~<dir>/snapkite-engine~ folder.
+Installation of the Snapkite Engine involves the following steps:
+
+1. Cloning the Snapkite Engine repository into a directory structure;
+2. Adding the dependency module Node-Gyp to {{{file(package.json)}}}
+3. Installing the {{{command(node-gyp)}}} command (either globally or locally)
+4. Installing the modules required by {{{file(package.json)}}}
+5. Creating a configuration file for Snapkite Engine
+6. Adding tracking keywords to the configuration file
+7. Adding Twitter consumer and access token keys to the configuration file
+8. Installing filters to the Snapkite Engine
+9. Configuring the installed filters
+10. Configuring Snapkite Engine to use the installed filters
+
+
+**** Clone the Snapkite Engine Repository
+
+#+CINDEX:Snapkite Engine, install
+Clone the Snapkite Engine repository into a directory of your choice[fn::I will
+set ~<dir>~ to be ~snapkite~ and clone Snapkite-Engine in it.]:
+: cd <dir> (i.e. snapkite/)
+: git clone https://github.com/snapkite/snapkite-engine.git
+This should create the ~<dir>/snapkite-engine~ folder.
 
 #+NAME:mkdir snapkite
 #+BEGIN_SRC sh :results output :exports both
 [ -d snapkite ] && echo snapkite dir exists || mkdir -v snapkite
 cd snapkite
 [ -d snapkite-engine ] && echo snapkite-engine exists || { \
-  echo cloning snapkite-engine;
+  echo Now cloning snapkite-engine...
   git clone https://github.com/snapkite/snapkite-engine.git; \
 }
 cd .. && tree snapkite
 #+END_SRC
 
-   #+CINDEX:Node-Gyp module
-2. <<install-node-gyp>>Now install the other node modules that
-   ~snapkite-engine~ depends on.  One of them is the ~node-gyp~ module.  Also
-   install other tools that are listed on [[https://github.com/TooTallNate/node-gyp#installation][node-gyp installation]].
+**** Install Node-Gyp
+
+#+CINDEX:Node-Gyp module
+<<install-node-gyp>>Now install the other node modules that ~snapkite-engine~
+depends on.  One of them is the ~node-gyp~ module.  Also install other tools
+that are listed on [[https://github.com/TooTallNate/node-gyp#installation][node-gyp installation]].
 
 #+NAME:install Node-Gyp
 #+BEGIN_SRC sh :results output :exports both :dir snapkite/snapkite-engine
 [ -d node_modules/node-gyp ] && echo node-gyp already installed || yarn add node-gyp
 #+END_SRC
 
-3. Once you install them, you're ready to install the ~node-gyp~ command:
-   : npm install --global node-gyp
+**** Install the {{{command(node-gyp)}}} Command
+Once you install them, you're ready to install the ~node-gyp~ command:
+: npm install --global node-gyp
 
-4. Navigate to the ~<dir>/snapkite-engine~ directory to install the Node.js
-   modules that Snapkite Engine depends on:
-   : cd <dir>/snapkite-engine/
-   : npm install
+**** Install the Dependency Modules for Snapkite Engine
+
+Navigate to the ~<dir>/snapkite-engine~ directory to install the Node.js
+modules that Snapkite Engine depends on:
+: cd <dir>/snapkite-engine/
+: npm install
 
 #+NAME:install snapkite-engine modules
 #+BEGIN_SRC sh :results output :exports both :dir snapkite/snapkite-engine
-[ -d node_modules ] && echo node_modules installed || yarn
+yarn
 #+END_SRC
 
-   #+CINDEX:Snapkite Engine, configure
-   #+CINDEX:configure Snapkite Engine
-5. <<configure-Snapkite>>Configure Snapkite Engine.  Assuming you are in the
-   ~<dir>/snapkite-engine/~ directory, copy the ~./example.config.json~ file to
-   ~./config.json~ by the following command:
-   : cp example.config.json config.json
+**** Configure Snapkite Engine
+
+#+CINDEX:Snapkite Engine, configure
+#+CINDEX:configure Snapkite Engine
+<<configure-Snapkite>>Configure Snapkite Engine.  Assuming you are in the
+~<dir>/snapkite-engine/~ directory, copy the ~./example.config.json~ file to
+~./config.json~ by the following command:
+: cp example.config.json config.json
 
 #+NAME:configure Snapkite-Engine
 #+BEGIN_SRC sh :results output :exports both :dir snapkite/snapkite-engine
 [ -e config.json ] && echo config.json already copied || cp -v example.config.json config.json
 #+END_SRC
 
+**** Add Tracking Keywords
 
-   #+CINDEX:@file{config.json}
-6. <<config.json>>Open ~config.json~ in your editor to edit the configuration
-   properties.
+#+CINDEX:@file{config.json}
+#+CINDEX:@code{trackKeywords}
+<<config.json>>Open ~config.json~ in your editor to edit the configuration
+properties and look for the <<trackKeywords>> =trackKeywords= key (marked by
+=<<<<=).  This is where we will tell what keywords we want to track.  If we
+want to track the keyword =my=, then set it as follows:
+  : "trackKeywords": "my"
 
-      #+CINDEX:@code{trackKeywords}
-   - <<trackKeywords>>~trackKeywords~ ::
-        This is where we will tell what keywords we want to track.  If we want
-        to track the keyword =my=, then set it as follows:
-        : "trackKeywords": "my"
+#+BEGIN_SRC sh :dir snapkite/snapkite-engine :results output :exports results
+cat config.json | sed -E \
+  -e '/^.*trackKeywords.*$/s//&  <<<</' \
+  -e '/("consumerKey": |"consumerSecret": |"accessTokenKey": |"accessTokenSecret": ).*$/s//\1SECRET/'
+#+END_SRC
 
-   #+CINDEX:Twitter Streaming API keys, access token
-   #+CINDEX:keys, Twitter Streaming API
-   #+CINDEX:access token, Twitter Streaming API
-7. <<Twitter-keys-and-token>>Set our Twitter Streaming API keys.  Set:
+Note: This step is combined with the next step; see line [[(add-my-keyword)]].
+
+**** Add Consumer and Access Token Keys to Configuration
+
+#+CINDEX:Twitter Streaming API keys, access token
+#+CINDEX:keys, Twitter Streaming API
+#+CINDEX:access token, Twitter Streaming API
+<<Twitter-keys-and-token>>Set our Twitter Streaming API keys.  Set:
    - ~consumerKey~
    - ~consumerSecret~
    - ~accessTokenKey~
@@ -636,21 +668,22 @@ cd .. && tree snapkite
    - other properties can be set to their defaults[fn::check out the Snapkite
      Engine [[https://github.com/snapkite/snapkite-engine][documentation]]]
 
+
 #+NAME:check-config-keys
-#+BEGIN_SRC sh :dir snapkite/snapkite-engine :results value :exports code
+#+BEGIN_SRC sh :dir snapkite/snapkite-engine
 grep --silent '"consumerKey": ""' config.json && echo 1 || echo 0
 #+END_SRC
 
 #+NAME: add-keys-to-config.json
-#+HEADER: :var c=check-config-keys()
-#+HEADER: :dir snapkite/snapkite-engine :results output :exports both
-#+BEGIN_SRC js
-if (c===1) {
+#+HEADER: :noweb yes :results output :exports both
+#+HEADER: :dir snapkite/snapkite-engine
+#+BEGIN_SRC js -n
+if (<<check-config-keys()>> === 1) {
   var fs = require('fs');
   fs.copyFileSync('config.json','config.json.bak',fs.constants.COPYFILE_EXCL);
 
   var cjson = JSON.parse(fs.readFileSync('config.json', 'utf8'));
-  cjson.application.trackKeywords = "my";
+  cjson.application.trackKeywords = "my";	(ref:add-my-keyword)
   cjson.twitter.api = {
       "consumerKey": process.env.TWITTER_CONSUMER_KEY,
       "consumerSecret": process.env.TWITTER_CONSUMER_SECRET,
@@ -666,17 +699,18 @@ if (c===1) {
 }
 #+END_SRC
 
-   #+CINDEX:Snapkite Filter module
-   #+CINDEX:Snapkite Filters, list
-8. <<install-Snapkite-filters>>Install Snapkite Filters.  =Snapkite Filter= is
-   a Node.js module that validates tweets according to a set of rules.  There
-   are a number of Snapkite Filters out there, and we can use any combination
-   of them to filter our stream of tweets as we like.  You can find a list of
-   all available Snapkite Filters at
-   https://github.com/snapkite/snapkite-filters.
+**** Install Snapkite Filters
 
-   #+CINDEX:Snapkite Filters, used in project
-   In our application, we'll use the following Snapkite Filters:
+#+CINDEX:Snapkite Filter module
+#+CINDEX:Snapkite Filters, list
+<<install-Snapkite-filters>>Install Snapkite Filters.  =Snapkite Filter= is a
+Node.js module that validates tweets according to a set of rules.  There are a
+number of Snapkite Filters out there, and we can use any combination of them to
+filter our stream of tweets as we like.  You can find a list of all available
+Snapkite Filters at https://github.com/snapkite/snapkite-filters.
+
+#+CINDEX:Snapkite Filters, used in project
+In our application, we'll use the following Snapkite Filters:
 
      #+CINDEX:@code{is-possibly-sensitive} Snapkite filter
    - <<is-possibly-sensitive-filter>>Is Possibly Sensitive ::
@@ -695,12 +729,12 @@ if (c===1) {
         https://github.com/snapkite/snapkite-filter-has-text
 
 
-   #+CINDEX:install Snapkite filters
-   #+CINDEX:Snapkite filters, install
-   Install them.  Navigate to the ~<dir>/snapkite-engine/filters/~ directory:
-   : cd <dir>/snapkite-engine/filters/
+#+CINDEX:install Snapkite filters
+#+CINDEX:Snapkite filters, install
+Install them.  Navigate to the ~<dir>/snapkite-engine/filters/~ directory:
+: cd <dir>/snapkite-engine/filters/
 
-   Clone all Snapkite Filters by running these commands:
+Clone all Snapkite Filters by running these commands:
 
 #+NAME:install Snapkite filters
 #+HEADER: :dir snapkite/snapkite-engine/filters :results silent :exports both
@@ -713,30 +747,30 @@ if (c===1) {
 }
 #+END_SRC
 
-   #+CINDEX:Snapkite filters, configure
-   #+CINDEX:configure Snapkite filters
-9. <<configure-Snapkite-filters>>Configure them.  In order to do so, you need
-   to create a configuration file for each Snapkite Filter in JSON format and
-   define some properties in it.  Each Snapkite Filter comes with an example
-   configuration file that we can duplicate and edit as needed.
+#+CINDEX:Snapkite filters, configure
+#+CINDEX:configure Snapkite filters
+<<configure-Snapkite-filters>>Configure them.  In order to do so, you need to
+create a configuration file for each Snapkite Filter in JSON format and define
+some properties in it.  Each Snapkite Filter comes with an example
+configuration file that we can duplicate and edit as needed.
 
-   While in the ~<dir>/snapkite-engine/filters/~ directory, run the following
-   commands:
+While in the ~<dir>/snapkite-engine/filters/~ directory, run the following
+commands:
 
-   : cp snapkite-filter-is-possibly-sensitive/example.config.json
-   : snapkite-filter-is-possibly-sensitive/config.json
+: cp snapkite-filter-is-possibly-sensitive/example.config.json
+: snapkite-filter-is-possibly-sensitive/config.json
 
-   : cp snapkite-filter-has-mobile-photo/example.config.json
-   : snapkite/snapkite-filter-has-mobile-photo/config.json
+: cp snapkite-filter-has-mobile-photo/example.config.json
+: snapkite/snapkite-filter-has-mobile-photo/config.json
 
-   : cp snapkite-filter-is-retweet/example.config.json
-   : snapkite-filter-is-retweet/config.json
+: cp snapkite-filter-is-retweet/example.config.json
+: snapkite-filter-is-retweet/config.json
 
-   : cp snapkite-filter-has-text/example.config.json
-   : snapkite-filter-has-text/config.json
+: cp snapkite-filter-has-text/example.config.json
+: snapkite-filter-has-text/config.json
 
-   We don't need to change any of the default settings in these ~config.json~
-   files, as they are already configured to fit our purposes.
+We don't need to change any of the default settings in these ~config.json~
+files, as they are already configured to fit our purposes.
 
 #+NAME:configure Snapkite Filters
 #+HEADER: :dir snapkite/snapkite-engine/filters
@@ -750,12 +784,14 @@ if (c===1) {
 }
 #+END_SRC
 
-10. <<Snapkite-config.json>>Tell Snapkite Engine which Snapkite Filters it
-    should use.  Open the ~<dir>/snapkite-engine/config.json~ file in a text
-    editor and look for this:
-    : "filters" : []
+**** Configure Snapkite Engine to Use Filters
 
-    Now replace that with the following:
+<<Snapkite-config.json>>Tell Snapkite Engine which Snapkite Filters it should
+use.  Open the ~<dir>/snapkite-engine/config.json~ file in a text editor and
+look for this:
+: "filters" : []
+
+Now replace that with the following:
 
 #+NAME:check-filters-config
 #+BEGIN_SRC sh :dir snapkite/snapkite-engine :results value :exports code
