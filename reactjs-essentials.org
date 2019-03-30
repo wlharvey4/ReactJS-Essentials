@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-30 Sat 13:14>
+#+DATE: <2019-03-30 Sat 19:40>
 
 #+TEXINFO: @insertcopying
 
@@ -921,15 +921,17 @@ named {{{file(snapterest/)}}} inside a directory of your choice:
      place the main application file in the ~source/~ directory.  This file
      will be the entry point to our application.  Leave it empty for now.
 
-*** Shell Script to Create Project Structure
+{{{subheading(Shell Script to Create Project Structure)}}}
 
 #+NAME:shell script to create project structure
 #+BEGIN_SRC sh :results output :exports both
-echo creating project structure
+echo Creating the project structure...
 [ -d snapterest ]        || mkdir -v snapterest
 [ -d snapterest/build ]  || mkdir -v snapterest/build
 [ -d snapterest/source ] || mkdir -v snapterest/source
 [ -e snapterest/app.js ] || touch snapterest/source/app.js
+echo
+tree snapterest
 #+END_SRC
 
 ** Building the Project
@@ -952,12 +954,16 @@ When it comes to not writing code, we can apply the following strategies:
 - Reusing the code written by someone else
 
 
+{{{subheading(Coding Declaratively)}}}
+
 #+CINDEX:jQuery
 We'll be using both these techniques.  The first one is covered by React
 itself.  React leaves us no choice but to write our JavaScript code in a
 /declarative/ style.  This means that instead of telling our web browser how to
-do what we want (like we do in jQuery), we just tell it what we want it to do
-and the how part is explained by React.
+do what we want (like we do in jQuery), we just tell it =what= we want it to do
+and the =how= part is explained by React.
+
+{{{subheading(Reusing Code Already Written)}}}
 
 #+CINDEX:npm
 Node.js and npm cover the second technique.  There are over a hundred thousand
@@ -975,7 +981,7 @@ that we want to reuse.  We can install them via the ~npm install
 *package*, and each *npm package* has a ~package.json~ file that describes the
 metadata associated with that package.[fn::[[https://docs.npmjs.com/files/package.json][package.json docs]]]
 
-*** Create ~package.json~
+*** Create a ~package.json~ For Our Snapterest Project
 :PROPERTIES:
 :CUSTOM_ID: create package.json
 :END:
@@ -1005,12 +1011,24 @@ our answers, creates ~package.json~ for our project.
 #+CINDEX:@command{npm init}
 #+CINDEX:initialize @file{package.json}
 <<run-npm-init>>From the ~<dir>/snapterest/~ directory, run:
-Accept all the defaults.
+: npm init
+or
+: yarn init
+
+{{{noindent}}}Accept all the defaults.
+
+{{{subheading(Shell Script to Create a Project ~package.json~)}}}
 
 #+NAME:run yarn init
 #+BEGIN_SRC sh :exports both :results output :dir snapterest
 [ -e package.json ] || yarn init --yes
+echo
+echo Package.json
+echo ============
+cat package.json
 #+END_SRC
+
+{{{subheading(Modular Programming)}}}
 
 #+CINDEX:modular application
 #+CINDEX:modules
@@ -1034,7 +1052,7 @@ not creating a Node.js application, but yet we're talking about reusing Node.js
 modules.  Does this mean that we'll be reusing Node.js modules in a non-Node.js
 application?  Is that even possible?  Yes, there is a way of doing that.
 
-**** Installing Browserify
+*** Installing Browserify
 
 #+CINDEX:Browserify
 #+CINDEX:bundling, Browserify
@@ -1268,7 +1286,7 @@ React.js.''
     - [[has-mobile-photo-filter][has mobile photo]]
     - [[is-retweet-filter][is retweet]]
     - [[has-text-filter][has text]]
-  + [[configure-Snapkite-filters][Configure Snapkite Filters]]
+n  + [[configure-Snapkite-filters][Configure Snapkite Filters]]
     - [[Snapkite-config.json][~config.json~]]
   + [[test-Snapkite-Engine][Test Snapkite Engine]]
 - [[*Creating the Project Structure][Create Snapterest Project Structure]]
