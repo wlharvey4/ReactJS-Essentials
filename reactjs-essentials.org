@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-29 Fri 12:54>
+#+DATE: <2019-03-30 Sat 13:14>
 
 #+TEXINFO: @insertcopying
 
@@ -264,6 +264,7 @@ write software.  Yet, half a century later, we're still figuring out why we end
 up with spaghetti code or the ``spaghetti mental model.''
 
 {{{heading(Writing Softward for the Future)}}}
+{{{subheading(Create a Simple Mental Model that Does Not Change)}}}
 
 #+CINDEX:mental model
 #+CINDEX:complexity remains the same
@@ -273,7 +274,7 @@ project becomes over time.  When the size of your project grows, the complexity
 always stays the same.  This mental model is your blueprint, and once you
 understand it you will understand how your whole piece of software works.
 
-{{{heading(Facebook Releases React in 2013)}}}
+{{{subheading(Programming with React is Programming Declaratively)}}}
 
 #+CINDEX:Facebook
 #+CINDEX:Occhino, Tom
@@ -281,8 +282,6 @@ In 2013, Facebook released React---an open source JavaScript library for
 building user interfaces.  You can read more about it at
 http://facebook.github.io/react/.  In early 2015, Tom Occhino from Facebook
 summarized what makes React so powerful:
-
-{{{heading(Declarative vs Imperative Programming)}}}
 
 #+BEGIN_QUOTE
 React wraps an imperative API with a declarative one.  React's real power lies
@@ -299,46 +298,49 @@ what to do without specifying how, while an imperative style of programming
 describes how to do it.  JavaScript's call to the DOM API is an example of
 imperative programming.  jQuery is another such example.
 
-{{{heading(React is Good for Small Projects)}}}
+{{{subheading(React is Good for Small Projects)}}}
 
 #+CINDEX:small React project
 #+CINDEX:shopping list
-It works for small projects too; here is an example of a [[http://fedosejev.github.io/shopping-list-react][shopping list]] build
+It works for small projects too; here is an example of a [[http://fedosejev.github.io/shopping-list-react][shopping list]] built
 with React.  React is one of the best JavaScript libraries used for building
 user interfaces that is available for developers today.
 
-{{{heading(The Goal of this Book)}}}
+** The Goal of this Book---Understand React
 
 #+CINDEX:goal
 #+CINDEX:fundamental principles of React
 #+CINDEX:React's fundamental principles
 #+CINDEX:principles, fundamental
 #+CINDEX:project, real-time web application
-Goal is for you to understand the fundamental principles of React.  To achieve
-this, you will be introduced to one React component at a time, explained it,
-and shown how you can apply it.  Step by step, you'll build a real-time web
-application, raise important questions along the way, and discuss solutions
-that React provides us with.
+The goal of this book is for you to understand the fundamental principles of
+React.  To achieve this, you will be introduced to one React component at a
+time, shown how it works, and shown how you can apply it.  Step by step, you'll
+build a real-time web application, discuss important questions along the way,
+and look at solutions that React provides.
 
-{{{heading(Flux)}}}
+{{{heading(And Understand Flux)}}}
 
 #+CINDEX:Flux
 #+CINDEX:mental model
-You will learn about [[*Flux][Flux]], which implements a unidirectional flow of data.
-Together with Flux and React, you'll create a predictable and manageable code
-base that you will be able to expand by adding new features, without scaling
-its complexity.  The mental model of how your web application works will stay
-the same, no matter how many new features you add later.
+You will learn about Flux, [[*Flux][Flux]], which implements a /unidirectional flow of
+data/.  Together with Flux and React, you'll create a predictable and
+manageable code base that you will be able to expand upon by adding new
+features /without scaling its complexity/.  The mental model of how your web
+application works will stay the same, no matter how many new features you add
+later.
 
-** Approaching our Project
+** Approaching the Project
 
 The best motivation for learning new technology is a project that excites you
-and that you can't wait to build.  In this book the author wants you to build a
-project that feels like a breath of fresh air.  A project which you most likely
-wouldn't build in your day-to-day work.  It has to be a fun endeavor, which not
+and that you can't wait to build.  In this book the author helps you build a
+project that feels like a breath of fresh air---a project which you most likely
+wouldn't build in your day-to-day work.  It will be a fun endeavor, which not
 only educates you but also satisfies your curiosity and stretches your
-imagination.  This project shouldn't be a time consuming long-term commitment
-for you either.
+imagination.  This project won't be a time consuming, long-term commitment for
+you either.
+
+{{{heading(Snapterest---A Web App to Collect Twitter Photos)}}}
 
 #+CINDEX:Snapterest
 #+CINDEX:project Snapterest
@@ -358,12 +360,20 @@ the following core functionalities:
 
 - Exporting a collection of tweets as an HTML snippet that you can share
 
-
+** Gathering Tools
 #+CINDEX:tools
 When you start working on a new project, the very first thing that you do is
 get your tools ready.  For this project, we will be using a number of tools.
 
-** Installing Node.js and npm
+- Node.js and {{{command(npm)}}} or {{{command(yarn)}}} for installing and
+  running React
+- Git for installing tools
+- The Twitter Streaming API for obtaining data
+  + Twitter account
+  + Twitter app
+- The Snapkite Engine for filtering data
+
+*** Node.js and npm
 
   #+CINDEX:Node.js, installation
 - [[https://nodejs.org][Node.js]] ::
@@ -421,7 +431,7 @@ Node.js, so it was installed by the previous step.  To test:
      [fn::Currently installed npm version as of {{{date}}} is src_sh[:exports
      results]{npm -v}]
 
-** Installing Git
+*** Git
 
 #+CINDEX:Git
 #+CINDEX:install Git
@@ -436,7 +446,7 @@ can also be installed using Homebrew or from the
 git installed is src_sh[:exports results]{git --version} using the
 {{{command(git-osx-installer)}}}.]
 
-** Getting Data from the Twitter Streaming API
+*** The Twitter Streaming API
 
 #+CINDEX:Twitter Streaming API
 #+CINDEX:Streaming API, Twitter
@@ -499,7 +509,7 @@ token)}}}.  It creates two pieces of information:
 Take a note of them too.  An access token is unique to you and you should not
 share it with anyone.  Keep it private.
 
-** Filtering Data with Snapkite Engine
+*** Snapkite Engine
 :PROPERTIES:
 :CUSTOM_ID: Snapkite Engine
 :END:
@@ -510,12 +520,24 @@ meaningful set of tweets that we can display and interact with.
 
 #+CINDEX:Twitter Streaming API documentation
 You should first take a quick look at the [[https://dev.twitter.com/streaming][Twitter Streaming API]] [fn::no longer
-exists.] documentation[fn::See [[*My Notes][My Notes]] for some current documentation.].  In
+exists.] documentation[fn::See [[my-notes][My Notes]] for some current documentation.].  In
 particular take a look at the page that describes how to [[https://dev.twitter.com/streaming/reference/post/statuses/filter][filter]] [fn::no longer
 exists.] an incoming stream.  Twitter provides very few filters that we can
 apply, so we need to find a way to filter that stream of data even further.
 
-*** TODO My Notes [0/13]
+{{{heading(Snapkite Engine)}}}
+
+#+CINDEX:Snapkite Engine Node.js application
+#+CINDEX:Twitter Streaming API, filter engine for
+#+CINDEX:tweets, filtered
+#+CINDEX:web socket connection for filtered tweets
+There is a Node.js application just for this.  It's called [[https://github.com/snapkite/snapkite-engine][Snapkite Engine]].
+It connects to the Twitter Streaming API, filters it using the available
+filters and according to the rules that you define, and outputs the filtered
+tweets to a web socket connection.  Our React app can listen to the events on
+that socket connection and process tweets as they arrive.
+
+<<my-notes>>My Notes [0/13]
 - [ ] [[https://developer.twitter.com/en/docs][Developer Docs]]
 - [ ] [[https://developer.twitter.com/en/docs/tutorials][Tutorials]]
 - [ ] [[https://developer.twitter.com/en/docs/tweets/filter-realtime/overview][Filter realtime Tweets]]
@@ -532,32 +554,8 @@ apply, so we need to find a way to filter that stream of data even further.
   Node.js to communicate with Twitter via the Twit NPM package, including
   setup.
 
-Many changes have been made to the Twitter API.  Perhaps of most importance is
-something that occurred on June 12, 2018:
-#+BEGIN_QUOTE
-Today, we started requiring that you whitelist the [[https://developer.twitter.com/en/docs/basics/callback_url][callback URLs]] that you use
-with the Sign in with Twitter process. You can read more about this update
-here.
-#+END_QUOTE
-There have been many deprecations as well.  At this point I will need to review
-the tutorials and docs and then begin to investigate the state of the app.
-
-** Snapkite Engine
-
-#+CINDEX:Snapkite Engine Node.js application
-#+CINDEX:Twitter Streaming API, filter engine for
-#+CINDEX:tweets, filtered
-#+CINDEX:web socket connection for filtered tweets
-There is a Node.js application just for this.  It's called [[https://github.com/snapkite/snapkite-engine][Snapkite Engine]].
-It connects to the Twitter Streaming API, filters it using the available
-filters and according to the rules that you define, and outputs the filtered
-tweets to a web socket connection.  Our React app can listen to the events on
-that socket connection and process tweets as they arrive.
-
-*** Install the Snapkite Engine
-:PROPERTIES:
-:CUSTOM_ID: install Snapkite Engine
-:END:
+{{{heading(Install the Snapkite Engine)}}}
+<<install Snapkite Engine>>
 
 Installation of the Snapkite Engine involves the following steps:
 
@@ -576,11 +574,14 @@ Installation of the Snapkite Engine involves the following steps:
 **** Clone the Snapkite Engine Repository
 
 #+CINDEX:Snapkite Engine, install
-Clone the Snapkite Engine repository into a directory of your choice[fn::I will
-set ~<dir>~ to be ~snapkite~ and clone Snapkite-Engine in it.]:
+Clone the Snapkite Engine repository into a directory of your choice[fn::For
+this project, ~<dir>~ will be set to ~snapkite/~ and Snapkite-Engine cloned
+into it.]:
 : cd <dir> (i.e. snapkite/)
 : git clone https://github.com/snapkite/snapkite-engine.git
-This should create the ~<dir>/snapkite-engine~ folder.
+
+This will create the ~<dir>/snapkite-engine/~
+folder.
 
 #+NAME:mkdir snapkite
 #+BEGIN_SRC sh :results output :exports both
@@ -588,9 +589,11 @@ This should create the ~<dir>/snapkite-engine~ folder.
 cd snapkite
 [ -d snapkite-engine ] && echo snapkite-engine exists || { \
   echo Now cloning snapkite-engine...
-  git clone https://github.com/snapkite/snapkite-engine.git; \
+  git clone https://github.com/snapkite/snapkite-engine.git;
+  echo
+  cd ..
+  tree snapkite
 }
-cd .. && tree snapkite
 #+END_SRC
 
 **** Install Node-Gyp
@@ -619,20 +622,45 @@ modules that Snapkite Engine depends on:
 #+NAME:install snapkite-engine modules
 #+BEGIN_SRC sh :results output :exports both :dir snapkite/snapkite-engine
 yarn
+cd ../..
+echo
+tree -I node_modules snapkite
+#+END_SRC
+*Note* that the {{{file(node_modules)}}} directory is not shown in the tree
+display.
+
+
+**** Configure the Snapkite-Engine
+
+#+CINDEX:Snapkite-Engine, configure
+#+CINDEX:configure Snapkite-Engine
+The =README= file inside ~<dir>/snapkite-engine/~ provides some instructions on
+how to configure the Snapkite-Engine:
+
+{{{heading(Snapkite-Engine README)}}}
+
+#+BEGIN_SRC sh :dir snapkite/snapkite-engine/ :results output :exports results
+echo ========================================
+echo Snapkite-Engine README
+echo ========================================
+cat README.md
+echo ========================================
+echo
 #+END_SRC
 
-**** Configure Snapkite Engine
+{{{heading(Configure the Snapkite-Engine)}}}
 
-#+CINDEX:Snapkite Engine, configure
-#+CINDEX:configure Snapkite Engine
-<<configure-Snapkite>>Configure Snapkite Engine.  Assuming you are in the
+<<configure-Snapkite>>To configure the Snapkite Engine, assuming you are in the
 ~<dir>/snapkite-engine/~ directory, copy the ~./example.config.json~ file to
 ~./config.json~ by the following command:
 : cp example.config.json config.json
 
+{{{subheading(The Snapkite-Engine ~config.json~ File)}}}
+
 #+NAME:configure Snapkite-Engine
-#+BEGIN_SRC sh :results output :exports both :dir snapkite/snapkite-engine
+#+BEGIN_SRC sh :dir snapkite/snapkite-engine :results output :exports results
 [ -e config.json ] && echo config.json already copied || cp -v example.config.json config.json
+cat config.json
 #+END_SRC
 
 **** Add Tracking Keywords
@@ -670,12 +698,12 @@ Note: This step is combined with the next step; see line [[(add-my-keyword)]].
 
 
 #+NAME:check-config-keys
-#+BEGIN_SRC sh :dir snapkite/snapkite-engine
+#+BEGIN_SRC sh :dir snapkite/snapkite-engine :results value :exports none
 grep --silent '"consumerKey": ""' config.json && echo 1 || echo 0
 #+END_SRC
 
 #+NAME: add-keys-to-config.json
-#+HEADER: :noweb yes :results output :exports both
+#+HEADER: :noweb eval :results output :exports both
 #+HEADER: :dir snapkite/snapkite-engine
 #+BEGIN_SRC js -n
 if (<<check-config-keys()>> === 1) {
@@ -731,7 +759,8 @@ In our application, we'll use the following Snapkite Filters:
 
 #+CINDEX:install Snapkite filters
 #+CINDEX:Snapkite filters, install
-Install them.  Navigate to the ~<dir>/snapkite-engine/filters/~ directory:
+{{{heading(Install the Snapkite Filters)}}}
+Navigate to the ~<dir>/snapkite-engine/filters/~ directory:
 : cd <dir>/snapkite-engine/filters/
 
 Clone all Snapkite Filters by running these commands:
@@ -749,10 +778,12 @@ Clone all Snapkite Filters by running these commands:
 
 #+CINDEX:Snapkite filters, configure
 #+CINDEX:configure Snapkite filters
-<<configure-Snapkite-filters>>Configure them.  In order to do so, you need to
-create a configuration file for each Snapkite Filter in JSON format and define
-some properties in it.  Each Snapkite Filter comes with an example
-configuration file that we can duplicate and edit as needed.
+{{{heading(Configure the Snapkite Filters)}}}
+
+<<configure-Snapkite-filters>>In order to do so, you need to create a
+configuration file for each Snapkite Filter in JSON format and define some
+properties in it.  Each Snapkite Filter comes with an example configuration
+file that we can duplicate and edit as needed.
 
 While in the ~<dir>/snapkite-engine/filters/~ directory, run the following
 commands:
@@ -793,16 +824,27 @@ look for this:
 
 Now replace that with the following:
 
+#+BEGIN_EXAMPLE
+"filters": [
+      "snapkite-filter-is-possibly-sensitive",
+      "snapkite-filter-has-mobile-photo",
+      "snapkite-filter-is-retweet",
+      "snapkite-filter-has-text"
+]
+#+END_EXAMPLE
+
 #+NAME:check-filters-config
-#+BEGIN_SRC sh :dir snapkite/snapkite-engine :results value :exports code
+#+BEGIN_SRC sh :dir snapkite/snapkite-engine :results value :exports none
 grep --silent '"filters": \[\]' config.json && echo 1 || echo 0
 #+END_SRC
 
+{{{heading(Add the Snapkite Filters)}}}
+
 #+NAME:Add filters to Snapkite Engine config
-#+HEADER: :var c=check-filters-config()
+#+HEADER: :noweb eval
 #+HEADER: :dir snapkite/snapkite-engine :results output :exports both
 #+BEGIN_SRC js
-if (c === 1) {
+if (<<check-filters-config()>> === 1) {
   var fs = require('fs');
   fs.copyFileSync('config.json', 'config.json.bak2', fs.constants.COPYFILE_EXCL);
   var cjson = JSON.parse(fs.readFileSync('config.json', 'utf8'));
@@ -819,7 +861,7 @@ if (c === 1) {
 }
 #+END_SRC
 
-*** Run the Snapkite Engine
+**** Run the Snapkite Engine
 
 #+CINDEX:Snapkite Engine, test run
 <<test-Snapkite-Engine>>With that you have successfully installed Snapkite
@@ -1215,7 +1257,7 @@ React.js.''
     - [[twitter-keys][Keys]]
     - [[twitter-token][Token]]
 - [[#Snapkite Engine][Snapkite Engine]]
-  + [[#install Snapkite Engine][Install Snapkite Engine]]
+  + [[install Snapkite Engine][Install Snapkite Engine]]
   + [[install-node-gyp][Install =node-gyp= module and command]]
   + [[configure-Snapkite][Configure Snapkite Engine]]
     - [[config.json][~config.json~]]
@@ -5765,7 +5807,7 @@ with React.  Let's see how it works.
 
 #+CINDEX:Snapkite Engine, run
 First, make sure that the Snapkite Engine that we installed and configured in
-Chapter 1 is [[*Run the Snapkite Engine][running]].  Navigate to ~<dir>/snapkite-engine/~ and run the
+Chapter 1 is [[test-Snapkite-Engine][running]].  Navigate to ~<dir>/snapkite-engine/~ and run the
 following command:
 
 Then, open a new Terminal window, navigate to ~<dir>/snapterest/~, and run this
