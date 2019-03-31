@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-30 Sat 21:29>
+#+DATE: <2019-03-31 Sun 09:36>
 
 #+TEXINFO: @insertcopying
 
@@ -673,10 +673,14 @@ properties and look for the <<trackKeywords>> =trackKeywords= key (marked by
 want to track the keyword =my=, then set it as follows:
   : "trackKeywords": "my"
 
+#+NAME:show-config-with-secrets
 #+BEGIN_SRC sh :dir snapkite/snapkite-engine :results output :exports results
+echo CONFIG.JSON
+echo =========================================
 cat config.json | sed -E \
   -e '/^.*trackKeywords.*$/s//&  <<<</' \
   -e '/("consumerKey": |"consumerSecret": |"accessTokenKey": |"accessTokenSecret": ).*$/s//\1SECRET/'
+echo =========================================
 #+END_SRC
 
 Note: This step is combined with the next step; see line [[(add-my-keyword)]].
@@ -710,6 +714,7 @@ if (<<check-config-keys()>> === 1) {
   var fs = require('fs');
   fs.copyFileSync('config.json','config.json.bak',fs.constants.COPYFILE_EXCL);
 
+  console.log("Configuring 'config.json' with secret keys.");
   var cjson = JSON.parse(fs.readFileSync('config.json', 'utf8'));
   cjson.application.trackKeywords = "my";	(ref:add-my-keyword)
   cjson.twitter.api = {
@@ -723,9 +728,11 @@ if (<<check-config-keys()>> === 1) {
   fs.writeFileSync('config.json', cjson);
   console.log("keys installed");
 } else {
-  console.log("keys already installed");
+  console.log("Not configuring 'config.json'; keys already installed.");
 }
 #+END_SRC
+
+#+CALL:show-config-with-secrets()
 
 **** Install Snapkite Filters
 
