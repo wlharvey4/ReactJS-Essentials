@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-03-31 Sun 09:36>
+#+DATE: <2019-04-01 Mon 21:10>
 
 #+TEXINFO: @insertcopying
 
@@ -240,6 +240,54 @@ spam.)
 
 ** Set Variables
 
+This source file is set up to export as a Texinfo file (using the
+{{{command(org-export-dispatch (C-c C-e i))}}} command) and to produce
+documentation in the following formats:
+- Info
+- Pdf
+- Html
+
+During the export process, numerous scripts are evaluated (run for their side
+effects, i.e., to produce the directory structure, clone git modules, install
+Node modules, set up configuration variables, etc.).  To allow this evaluation
+process to work properly and without intervention, two Emacs variables must be
+set up properly.
+
+- ~org-confirm-babel-evaluate~ ::
+     This variable should be set to =nil= in order to allow all of the scripts
+     to process automatically without user intervention, which would quickly
+     get tedious otherwise.  If this variable is set to =t= when the source
+     file is exported, therefore, the first script will ask for your permission
+     to run, and if you confirm 'yes', then this script will toggle this
+     variable to =nil= and proceed to process the remainder of the source file
+     without further user intervention.
+
+#+NAME:setup org confirm babel evaluate variable
+#+BEGIN_SRC emacs-lisp :exports both :results output
+(if org-confirm-babel-evaluate
+  (progn
+    (print "org-confirm-babel-evaluate is 'true'; setting to 'nil'...")
+    (setq org-confirm-babel-evaluate nil))
+  (print "org-confirm-babel-evaluate is 'nil'; proceeding..."))
+#+END_SRC
+
+- ~org-babel-load-languages~ ::
+     This variable must have the following languages enabled:
+  - Elisp ~emacs-lisp~ (enabled by default)
+  - JavaScript ~js~
+  - Shell ~sh~
+
+    After the preceding code runs, the second script will check whether
+    JavaScript and Shell code evaluation are enabled.  If any of the required
+    languages are not enabled, then it will enable them as necessary and then
+    continue processing the remainder of the file.
+
+#+NAME:setup org babel load languages variable
+#+BEGIN_SRC emacs-lisp :exports both :results output
+(if (not (assq 'js org-babel-load-languages)) (and (require 'ob-js) (print "JavaScript enabled.")))
+(if (not (assq 'sh org-babel-load-languages)) (and (require 'ob-shell) (print "Shell enabled.")))
+#+END_SRC
+
 #+NAME:use quick and dirty
 #+HEADER: :exports results
 #+HEADER: :results silent
@@ -263,7 +311,7 @@ important piece of advice way before we even started thinking about how to
 write software.  Yet, half a century later, we're still figuring out why we end
 up with spaghetti code or the ``spaghetti mental model.''
 
-{{{heading(Writing Softward for the Future)}}}
+{{{heading(Writing Software for the Future)}}}
 {{{subheading(Create a Simple Mental Model that Does Not Change)}}}
 
 #+CINDEX:mental model
