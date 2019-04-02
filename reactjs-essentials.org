@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-04-01 Mon 21:58>
+#+DATE: <2019-04-02 Tue 11:04>
 
 #+TEXINFO: @insertcopying
 
@@ -5195,8 +5195,8 @@ following ~<dir>/snapterest/source/components/CollectionControls.react.js~
 file:
 
 <<CollectionControls component>>
-#+NAME:CollectionControls component
 #+CAPTION[<CollectionControls Component>]:The ~CollectionControls~ Component (~CollectionControls.react.js~)
+#+NAME:CollectionControls component
 #+HEADER: :noweb tangle :mkdirp yes :eval no
 #+BEGIN_SRC js :tangle snapterest/source/components/CollectionControls.react.js
 <<CollectionControls imports>>
@@ -5263,8 +5263,8 @@ name, when the ~CollectionControls~ component is mounted.
 #+CINDEX:@code{render} method of @file{CollectionControls} component
 Let's take a look at its ~render()~ method:
 
-#+NAME:CollectionControls render method
 #+CAPTION[CollectionControls render()]:The ~render()~ Method of ~CollectionControls~ Component
+#+NAME:CollectionControls render method
 #+BEGIN_SRC js :noweb yes :eval no
 render: function () {
     if (this.state.isEditingName) {
@@ -5293,8 +5293,8 @@ First we check whether the component state's property
 ~CollectionControls~ component returns the ~CollectionRenameForm~ component
 that renders a form to change the collection name:
 
-#+NAME:CollectionControls render CollectionRenameForm
 #+CAPTION:CollectionControls render CollectionRenameForm
+#+NAME:CollectionControls render CollectionRenameForm
 #+BEGIN_SRC js :eval no
 <CollectionRenameForm
     name={this.state.name}
@@ -5318,8 +5318,8 @@ We'll implement the ~CollectionRenameForm~ component [[*Creating the ~Collection
 #+CINDEX:@code{setCollectionName()} method
 Now let's take a closer look at the ~setCollectionName~ method.
 
-#+NAME:CollectionControls setCollectionName method
 #+CAPTION:The ~setCollectionName()~ Method of ~CollectionList~
+#+NAME:CollectionControls setCollectionName method
 #+BEGIN_SRC js :eval no
     setCollectionName: function (name) {
         this.setState({
@@ -5339,8 +5339,8 @@ method when the user submits a new collection name.
 #+CINDEX:@code{toggleEditCollectionName()} method
 Now, let's take a look at the ~toggleEditCollectionName()~ method.
 
-#+NAME:CollectionControls toggleEditCollectionName method
 #+CAPTION:The ~toggleEditCollectionName()~ Method
+#+NAME:CollectionControls toggleEditCollectionName method
 #+BEGIN_SRC js :eval no
 toggleEditCollectionName: function () {
     this.setState({
@@ -5373,8 +5373,8 @@ with a ~Header~ component from the [[Header component][previous chapter]].  It r
 property that references a string.  However, in this case, we do not directly
 pass a string, but rather a call to the ~this.getHeaderText()~ method.
 
-#+NAME:CollectionControls getHeaderText method
 #+CAPTION[CollectionControls getHeaderText() Method]:The ~getHeaderText()~ Method of ~CollectionControls~ Component
+#+NAME:CollectionControls getHeaderText method
 #+BEGIN_SRC js :noweb yes :eval no
 getHeaderText: function () {
     var numberOfTweetsInCollection = this.props.numberOfTweetsInCollection;
@@ -5438,8 +5438,8 @@ as a property to a ~Header~ component.
 Our next collection control element in the ~CollectionControls~'s ~render()~
 method is ~Button~.
 
-#+NAME:CollectionControls render Rename Button component
 #+CAPTION:Rendering the Rename ~Button~ Component
+#+NAME:CollectionControls render Rename Button component
 #+BEGIN_SRC js :eval no
 <Button
      label="Rename collection"
@@ -5463,8 +5463,8 @@ a form to change the collection name.
 The next collection control element is our second ~Button~, =Empty collection=.
 It will remove all the tweets from a collection.
 
-#+NAME:CollectionControls render Empty Button component
 #+CAPTION:Rendering the Empty ~Button~ Component
+#+NAME:CollectionControls render Empty Button component
 #+BEGIN_SRC js :eval no
 <Button
      label="Empty collection"
@@ -5477,8 +5477,8 @@ It will remove all the tweets from a collection.
 #+CINDEX:@file{CollectionExportForm} component, rendering to
 Our final collection control element is =CollectionExportForm=.
 
-#+NAME:CollectionControls render Export component
 #+CAPTION:Rendering the ~ExportForm~ Component
+#+NAME:CollectionControls render Export component
 #+BEGIN_SRC js :eval no
 <CollectionExportForm htmlMarkup={this.props.htmlMarkup} />
 #+END_SRC
@@ -5497,8 +5497,8 @@ First, let's create the
 
 <<CollectionRenameForm-component>>
 #+CINDEX:@file{CollectionRenameForm} component
-#+NAME:CollectionRenameForm component
 #+CAPTION[<CollectionRenameForm Component>]:The ~CollectionRenameForm~ Component (~CollectionRenameForm.react.js~)
+#+NAME:CollectionRenameForm component
 #+HEADER: :noweb tangle :mkdirp yes :eval no
 #+BEGIN_SRC js :tangle snapterest/source/components/CollectionRenameForm.react.js
 <<CollectionRenameForm imports>>
@@ -5534,8 +5534,8 @@ var Button = require('./Button.react');
 #+CINDEX:@code{render()} method of @file{CollectionRenameForm} component
 This component renders a form to change the collection name:
 
-#+NAME:CollectionRenameForm render method
 #+CAPTION[CollectionRenameForm render() Method]:The ~render()~ Method of ~CollectionRenameForm~ Component
+#+NAME:CollectionRenameForm render method
 #+BEGIN_SRC js :eval no
 render: function () {
     return (
@@ -5626,8 +5626,8 @@ works as usual, and the user can freely change its value.
 For this, we provide our ~<input>~ element with the =onChange= property that
 references the component's ~this.handleInputValueChange~ method:
 
-#+NAME:CollectionRenameForm handleInputValueChange method
 #+CAPTION[CollectionRenameForm handleInputValueChange() Method]:handleInputValueChange Method
+#+NAME:CollectionRenameForm handleInputValueChange method
 #+BEGIN_SRC js :eval no
 handleInputValueChange: function (event) {
     var inputValue = event.target.value
@@ -5647,8 +5647,8 @@ object with a =target= property that has a =value= property.  This =value=
 property stores a string that a user has typed in our input field.  We pass
 that string into our ~this.setInputValue()~ method:
 
-#+NAME:CollectionRenameForm setInputValue method
 #+CAPTION[CollectionRenameForm setInputValue]:The ~setInputValue()~ Method of ~CollectionRenameForm~ Component
+#+NAME:CollectionRenameForm setInputValue method
 #+BEGIN_SRC js :eval no
 setInputValue: function (inputValue) {
     this.setState({
@@ -5666,8 +5666,8 @@ What is the initial input's value when the ~CollectionRenameForm~ component is
 mounted?  Let's take a look at this:
 
 #+CINDEX:@code{getInitialState()} method
-#+NAME:CollectionRenameForm getInitialState method
 #+CAPTION[CollectionRenameForm getInitialState() Method]:The ~getInitialState()~ Method of ~CollectionRenameForm~ Component
+#+NAME:CollectionRenameForm getInitialState method
 #+BEGIN_SRC js :eval no
 getInitialState: function () {
     return ({
@@ -5689,8 +5689,8 @@ once a component is inserted into the DOM, React calls its
 focus:
 
 #+CINDEX:@code{componentDidMount()} method
-#+NAME:CollectionRenameForm componentDidMount method
 #+CAPTION[CollectionRenameForm componentDidMount() Method]:The ~componentDidMount()~ Method of ~CollectionRenameForm~ Component
+#+NAME:CollectionRenameForm componentDidMount method
 #+BEGIN_SRC js :eval no
 componentDidMount: function () {
     this.refs.collectionName.focus();
@@ -5724,8 +5724,8 @@ We'll start with a ~Change~ button.  When a user clicks on it, the
 
 <<CollectionRenameForm.handleFormSubmit method>>
 #+CINDEX:@code{handleFormSubmit()} method
-#+NAME:CollectionRenameForm handleFormSubmit method
 #+CAPTION[CollectionRenameForm handleFormSubmit Method]:The ~handleFormSubmit()~ Method of ~CollectionRenameForm~ Component
+#+NAME:CollectionRenameForm handleFormSubmit method
 #+BEGIN_SRC js :eval no
 handleFormSubmit: function (event) {
     event.preventDefault();
@@ -5751,8 +5751,8 @@ Now let's discuss our second form button.
 When a user clicks on it, the ~this.handleFormCancel()~ method is called:
 
 <<CollectionRenameForm handleFormCancel method>>
-#+NAME:CollectionRenameForm handleFormCancel method
 #+CAPTION[CollectionRenameForm handleFormCancel() Method]:The ~handleFormCancel()~ Method of ~CollectionRenameForm~ Component
+#+NAME:CollectionRenameForm handleFormCancel method
 #+BEGIN_SRC js :eval no
 handleFormCancel: function (event) {
     event.preventDefault();
@@ -5782,8 +5782,8 @@ component that we reused twice in our ~CollectionRenameForm~ Component.
 Create the following file at
 ~<dir>/snapterest/source/components/Button.react.js~:
 
-#+NAME:Button component
 #+CAPTION[<Button Component>]:The ~Button~ Component (~Button.react.js~)
+#+NAME:Button component
 #+BEGIN_SRC js :tangle snapterest/source/components/Button.react.js :mkdirp yes :eval no
 var React = require('react');
 
@@ -5837,8 +5837,8 @@ this can be done.
 Create the ~<dir>/snapterest/source/components/CollectionExportForm.react.js~
 file:
 
-#+NAME:CollectionExportForm component
 #+CAPTION[<CollectionExportForm Component>]:The ~CollectionExportForm~ Component (~CollectionExportForm.react.js~)
+#+NAME:CollectionExportForm component
 #+BEGIN_SRC js :tangle snapterest/source/components/CollectionExportForm.react.js :mkdirp yes :eval no
 var React = require('react');
 
@@ -5996,8 +5996,8 @@ example.
 First, create the ~<dir>/snapterest/source/utils/~ directory.  Then, create a
 new ~TweetUtils.js~ file in it:
 
-#+NAME:TweetUtils module
 #+CAPTION[<TweetUtils Module>]:The ~TweetUtils~ Module in ~source/utils/~
+#+NAME:TweetUtils module
 #+BEGIN_SRC js :tangle snapterest/source/utils/TweetUtils.js :mkdirp yes :eval no
 exports.getListOfTweetIds = function (tweets) {
     return (Object.keys(tweets));
@@ -6025,8 +6025,9 @@ structure.  So, it's important to name your directories with ~__tests__~.
 #+CINDEX:@file{TweetUtils-test.js} file
 Create a ~TweetUtils-test.js~ file inside ~__tests__~.
 
+#+CINDEX:@code{TweetUtils-test} test module
+#+CAPTION[<TweetUtils-test Module>]:The ~TweetUtils-test~ Test Module
 #+NAME:TweetUtils-test module
-#+CINDEX[<TweetUtils-test Module>]:The ~TweetUtils-test~ Test Module
 #+BEGIN_SRC js :tangle snapterest/source/utils/__tests__/TweetUtil-test.js :mkdirp yes :eval no
 jest.dontMock('../TweetUtils');
 
@@ -6191,8 +6192,8 @@ perhaps because it was created with Yarn?], replacing it with:
 },
 #+END_SRC
 
-#+NAME:add test script to package.json
 #+CAPTION: Adding a =test= Script Command to ~Package.json~
+#+NAME:add test script to package.json
 #+HEADER: :results output
 #+HEADER: :exports both
 #+HEADER: :dir snapterest
@@ -6239,8 +6240,8 @@ another one!
 utility module.  Create the ~CollectionUtils.js~ file in the
 ~<dir>/snapterest/source/utils/~ directory:
 
-#+NAME:CollectionUtils module
 #+CAPTION[<CollectionUtils Module>]:The ~CollectionUtils~ Module for Testing
+#+NAME:CollectionUtils module
 #+BEGIN_SRC js :tangle snapterest/source/utils/CollectionUtils.js :mkdirp yes :eval no
 function getNumberOfTweetsInCollection (collection) {
     var TweetUtils = require('./TweetUtils');
@@ -6293,8 +6294,8 @@ We just created our ~CollectionUtils~ module.  Our next task is to test it.
 Inside the ~<dir>/snapterest/source/utils/__tests__/~ directory, create the
 following ~CollectionUtils-test.js~ file:
 
-#+NAME:CollectionUtils-test file
 #+CAPTION[<CollectionUtils-test File>]:The ~CollectionUtils-test~ File
+#+NAME:CollectionUtils-test file
 #+BEGIN_SRC js :tangle snapterest/source/utils/__tests__/CollectionUtils-test.js :mkdirp yes :eval no
 jest.autoMockOff();
 
@@ -6497,8 +6498,8 @@ The first React component that we'll test will be our ~Header~ component.
 Create the ~Header-test.js~ in the
 ~<dir>/snapterest/source/components/__tests__~ directory.
 
-#+NAME:Header-test file
 #+CAPTION[<Header-test File>]:The ~Header-test.js~ File
+#+NAME:Header-test file
 #+BEGIN_SRC js :tangle snapterest/source/components/__tests__/Header-test.js :mkdirp yes :eval no
 jest.dontMock('../Header.react');
 
@@ -6619,8 +6620,8 @@ next.
 Create the ~Button-test.js~ file in the
 ~<dir>/snapterest/source/components/__tests__/~ directory.
 
-#+NAME:Button-test file
 #+CAPTION[<Button-test.js File>]:The ~Button-test.js~ File
+#+NAME:Button-test file
 #+BEGIN_SRC js :tangle snapterest/source/components/__tests__/Button-test.js :mkdirp yes :eval no
 jest.dontMock('../Button.react');
 
@@ -6755,8 +6756,8 @@ jest = {
 };
 #+END_EXAMPLE
 
-#+NAME:add babel preprocessor for jest to package.json
 #+CAPTION[<jest-preprocessor>]:Adding the Babel Proprocessor to Jest
+#+NAME:add babel preprocessor for jest to package.json
 #+HEADER: :results output
 #+HEADER: :exports both
 #+HEADER: :dir snapterest
@@ -6983,8 +6984,8 @@ new state.
 
 Here is an example of an /action/ object:
 
-#+NAME:example-action
 #+CAPTION:An example of a Flux /action/ object
+#+NAME:example-action
 #+BEGIN_SRC js :eval no
 var action = {
     type: 'receive_tweet',
@@ -7063,8 +7064,8 @@ Let's create a new folder called ~actions~ in our project's
 ~TweetActionCreators.js~ file in it.
 
 #+CINDEX:@code{TweetActionCreators.js} file
-#+NAME:TweetActionCreators module
 #+CAPTION[<TweetActionCreators Module>]:The ~TweetActionCreators~ Module
+#+NAME:TweetActionCreators module
 #+BEGIN_SRC js :tangle snapterest/source/actions/TweetActionCreators.js :mkdirp yes :eval no
 var AppDispatcher = require('../dispatcher/AppDispatcher');
 
@@ -7117,8 +7118,8 @@ Create a new folder called ~stores~ in our project's ~<dir>/snapterest/source/~
 directory, then create the ~TweetStore.js~ file in it.
 
 #+CINDEX:@code{TweetStore.js} file
-#+NAME:TweetStore module
 #+CAPTION[<TweetStore Module>]:The ~TweetStore~ Module
+#+NAME:TweetStore module
 #+HEADER: :mkdirp yes :eval no
 #+BEGIN_SRC js :tangle snapterest/source/stores/TweetStore.js
 var AppDispatcher = require('../dispatcher/AppDispatcher');
@@ -7375,8 +7376,8 @@ First, we'll create a new utility module called ~WebAPIUtils~.  Create
 {{{file(WebAPIUtils.js)}}} in the ~<dir>/snapterest/source/utils/~ directory:
 
 #+CINDEX:@code{WebAPIUtils} module
-#+NAME:WebAPIUtils module
 #+CAPTION[<WebAPIUtils Module>]:The ~WebAPIUtils~ Module for Flux
+#+NAME:WebAPIUtils module
 #+BEGIN_SRC js :tangle snapterest/source/utils/WebAPIUtils.js :mkdirp yes :eval no
 var SnapkiteStreamClient = require('snapkite-stream-client');
 var TweetActionCreators = require('../actions/TweetActionCreators');
@@ -7415,8 +7416,8 @@ at all, we can use it even before React renders anything.  Let's use it in our
 {{{file(app.js)}}} file:
 
 #+COMMENT: <<WebAPIUtils in app.js>>
-#+NAME:WebAPIUtils in app.js
 #+CAPTION:Adding ~WebAPIUtils~ to ~app.js~
+#+NAME:WebAPIUtils in app.js
 #+BEGIN_SRC js :eval no
 var WebAPIUtils = require('./utils/WebAPIUtils');
 
@@ -7571,8 +7572,8 @@ Since we need to add the =change= event listener to =TweetStore= only once per
 component lifecycle, it makes ~componentDidMount()~ a perfect candidate.  Add
 the following ~componentDidMount()~ method to the ~Stream~ component:
 
-#+NAME:Flux Stream.componentDidMount method
 #+CAPTION:Adding the ~componentDidMount()~ Method to the ~Stream~ Component
+#+NAME:Flux Stream.componentDidMount method
 #+BEGIN_SRC js :eval no
 componentDidMount: function () {
     TweetSTore.addChangeListener(this.onTweetChange);
@@ -7592,8 +7593,8 @@ Don't forget that we need to remove any event listeners before we unmount our
 React component.  To to this, add the following ~componentWillUnmount()~
 method to the ~Stream~ component:
 
-#+NAME:Flux Stream.componentWillUnmount method
 #+CAPTION:Adding the ~componentWillUnmount~ Method to the ~Stream~ Component
+#+NAME:Flux Stream.componentWillUnmount method
 #+BEGIN_SRC js :eval no
 componentWillUnmount: function () {
     TweetStore.removeChangeListener(this.onTweetChange);
@@ -7609,8 +7610,8 @@ method as an argument.
 #+CINDEX:@code{onTweetChange()} method
 It's time to create the ~onTweetChange()~ method in our ~Stream~ component.
 
-#+NAME:Stream.onTweetChange method
 #+CAPTION:Creating the ~onTweetChange()~ Method of the ~Stream~ Component
+#+NAME:Stream.onTweetChange method
 #+BEGIN_SRC js :eval no
 onTweetChange: function () {
     this.setState ({
@@ -7631,8 +7632,8 @@ Later in this chapter, you'll learn to that our ~StreamTweet~ component doesn't
 need the ~onAddTweetToCollection()~ callback function anymore; therefore, in
 this component, we're going to change the ~return~.  Replace it with:
 
-#+NAME:Flux Stream.render method
 #+CAPTION:Changing the ~return~ of the ~Stream~ Component
+#+NAME:Flux Stream.render method
 #+BEGIN_SRC js :eval no
 render: function () {
     var tweet = this.state.tweet;
@@ -7650,8 +7651,8 @@ render: function () {
 #+CINDEX:@code{Stream} component refactored for Flux
 Now let's take a look at our newly refactored ~Stream~ component.
 
-#+NAME:Flux Stream Component
 #+CAPTION:The ~Stream~ Component Refactored for Flux
+#+NAME:Flux Stream Component
 #+HEADER: :noweb yes :mkdirp yes :eval no
 #+BEGIN_SRC js :tangle snapterest/source/components/Stream.flux.react.js
 <<Flux Stream component imports>>
@@ -7721,8 +7722,8 @@ First, let's create a collection store.  Navigate to the
 ~<dir>/snapterest/source/stores/~ directory and create the ~CollectionStore.js~
 file:
 
-#+NAME:CollectionStore file
 #+CAPTION[<Collection.js File>]:The ~Collection.js~ File
+#+NAME:CollectionStore file
 #+HEADER: :mkdirp yes :noweb yes :eval no
 #+BEGIN_SRC js :tangle snapterest/source/stores/CollectionStore.js
 <<CollectionStore imports>>
@@ -7923,8 +7924,8 @@ functions next.
 Navigate to ~<dir>/snapterest/source/actions/~ and create the
 ~CollectionActionCreators.js~ file:
 
-#+NAME:CollectionActionCreators file
 #+CAPTION[<CollectionActionCreators.js>]:The ~CollectionActionCreators~ File
+#+NAME:CollectionActionCreators file
 #+HEADER: :mkdirp yes :noweb yes :eval no
 #+BEGIN_SRC js :tangle snapterest/source/actions/CollectionActionCreators.js
 var AppDispatcher = require('../dispatcher/AppDispatcher');
@@ -8298,7 +8299,7 @@ var inputStyle = {
 
 var CollectionRenameForm = React.createClass({
 
-     <<CollectionRenameForm.getInitialState flux>>
+     <<CollectionRenameForm.getInitialState-flux-method>>
      <<CollectionRenameForm setInputValue method>>
      <<CollectionRenameForm handleInputValueChange method>>
      <<CollectionRenameForm.handleFormSubmit flux>>
@@ -8326,7 +8327,7 @@ var CollectionStore = require('../stores/CollectionStore');
 
 Now, we need to update the ~getInitialState()~ method as follows:
 
-#+NAME:CollectionRenameForm.getInitialState flux
+#+NAME:CollectionRenameForm.getInitialState-flux-method
 #+BEGIN_SRC js :eval no
 getInitialState: function () {
     return ({
@@ -9030,8 +9031,8 @@ There are four[sic] main classes exposed in Flux Utils:
 
 These base classes can be imported from ~flux/utils~ like this:
 
-#+NAME:flux-utils.js
 #+CAPTION:Importing base classes from ~flux/utils~
+#+NAME:flux-utils.js
 #+BEGIN_SRC js :eval no
 import {ReduceStore} from 'flux/utils';
 
@@ -9221,7 +9222,7 @@ with React.js
 {{{noindent}}} Prepared by WLHarvey \copy {{{date(%Y)}}}
 
 * MACROS                                                           :noexport:
-#+MACRO:VERSION 0.0.6 {{{date(%F %R)}}}
+#+MACRO:VERSION 0.0.7 {{{date(%F %R)}}}
 #+MACRO:heading @@texinfo:@heading @@$1
 #+MACRO:subheading @@texinfo:@subheading @@$1
 #+MACRO:tiauthor @@texinfo:@author @@$1
