@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-04-01 Mon 21:10>
+#+DATE: <2019-04-01 Mon 21:58>
 
 #+TEXINFO: @insertcopying
 
@@ -1155,7 +1155,7 @@ The Node.js ecosystem has a great tool for automating our build process,
 
 #+CINDEX:install Gulp.js
 #+CINDEX:Gulp.js installation
-Let's install it using {{{command(npm)}}} or {{{command(yarn)}}}:
+Let's install Gulp using {{{command(npm)}}} or {{{command(yarn)}}}:
 : npm install --save-dev gulp
 or
 : yarn add --dev gelp
@@ -1187,8 +1187,10 @@ exports.default = defaultTask;
 #+END_SRC
 
 #+CINDEX:@command{gulp} command
-<<gulp-command>>Now if you run the ~gulp~ command, you will see output that
-looks like this:
+<<gulp-command>>Now if you run the ~gulp~ command:
+: yarn run gulp
+
+{{{noindent}}} you will see output thatlooks like this:
 
 #+BEGIN_EXAMPLE
 Using gulpfile ~/<dir>/snapterest/gulpfile.js
@@ -1268,7 +1270,7 @@ yarn add --dev vinyl-source-stream
 <<test-gulp-default-task>>Now we're ready to test our ~default~ task.  Run:
 
 #+BEGIN_EXAMPLE
-$ gulp
+$ yarn run gulp
 [19:06:03] Using gulpfile ~/Dev/Programming/WebDev/React/ReactJS-Essentials/snapterest/gulpfile.js
 [19:06:03] Starting 'default'...
 [19:06:03] Finished 'default' after 40 ms
@@ -1277,7 +1279,7 @@ $ gulp
 #+NAME:run gulp
 #+HEADER: :eval query-export
 #+BEGIN_SRC sh :exports none
-gulp
+yarn run gulp
 #+END_SRC
 
 #+CINDEX:@file{build} directory
@@ -5493,7 +5495,7 @@ let's take a closer look at its child components.
 First, let's create the
 ~<dir>/snapterest/source/components/CollectionRenameForm.react.js~ file:
 
-<<CollectionRenameForm component>>
+<<CollectionRenameForm-component>>
 #+CINDEX:@file{CollectionRenameForm} component
 #+NAME:CollectionRenameForm component
 #+CAPTION[<CollectionRenameForm Component>]:The ~CollectionRenameForm~ Component (~CollectionRenameForm.react.js~)
@@ -8104,7 +8106,7 @@ What did we change here?  A few things.  First, we imported two new modules:
 #+NAME:Collection utils imports
 #+BEGIN_SRC js :eval no
 var CollectionUtils = require('../utils/CollectionUtils');
-var CollectionStore = require('../stores/CollectionStore')'
+var CollectionStore = require('../stores/CollectionStore');
 #+END_SRC
 
 We created the [[CollectionUtils module][~CollectionUtils~ module in Chapter 8]] and in this chapter, we're
@@ -8277,7 +8279,7 @@ tweets from the collection and emits the =change= event.
 
 #+CINDEX:refactor @file{CollectionRenameForm} component
 #+CINDEX:@file{CollectionRenameForm} component, refactor for Flux
-~CollectionRenameForm~ ([[CollectionRenameForm component][CollectionRenameForm component]]) is a controlled form
+~CollectionRenameForm~ ([[CollectionRenameForm-component][CollectionRenameForm component]]) is a controlled form
 component.  This means that its input value is stored in the component's state,
 and the only way to update that value is to update the component's state.  It
 has the initial value that it should get from =CollectionStore=, so let's make
