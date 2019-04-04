@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-04-02 Tue 11:04>
+#+DATE: <2019-04-03 Wed 20:30>
 
 #+TEXINFO: @insertcopying
 
@@ -5893,6 +5893,11 @@ that collection.
 Congratulations! At this point, we've build a fully functional web application
 with React.  Let's see how it works.
 
+#+NAME:tangle all files
+#+begin_src emacs-list :exports results :results output
+(org-babel-tangle)
+#+end_src
+
 #+CINDEX:Snapkite Engine, run
 First, make sure that the Snapkite Engine that we installed and configured in
 Chapter 1 is [[test-Snapkite-Engine][running]].  Navigate to ~<dir>/snapkite-engine/~ and run the
@@ -5902,12 +5907,17 @@ Then, open a new Terminal window, navigate to ~<dir>/snapterest/~, and run this
 command:
 
 #+NAME:run gulp command
-#+HEADER: :eval query-export
-#+BEGIN_SRC sh :exports none
-gulp
+#+HEADER: :exports results :results output
+#+BEGIN_SRC sh :dir snapterest
+yarn run gulp
 #+END_SRC
 
 Now, open ~<dir>/snapterest/build/index.html~ in your web browser.
+
+#+NAME:open index.html in browser
+#+begin_src sh :exports results :results output silent :dir snapterest/build
+open index.html
+#+end_src
 
 [[file:snapterest/build/index.html][index.html]]
 
