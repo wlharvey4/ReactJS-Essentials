@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-04-03 Wed 20:30>
+#+DATE: <2019-04-06 Sat 06:12>
 
 #+TEXINFO: @insertcopying
 
@@ -284,8 +284,12 @@ set up properly.
 
 #+NAME:setup org babel load languages variable
 #+BEGIN_SRC emacs-lisp :exports both :results output
-(if (not (assq 'js org-babel-load-languages)) (and (require 'ob-js) (print "JavaScript enabled.")))
-(if (not (assq 'sh org-babel-load-languages)) (and (require 'ob-shell) (print "Shell enabled.")))
+(if (assq 'js org-babel-load-languages)
+    (print "JavaScript already enabled.")
+    (and (require 'ob-js) (print "JavaScript enabled.")))
+(if (assq 'shell org-babel-load-languages)
+    (print "Shell already enabled.")
+    (and (require 'ob-shell) (print "Shell enabled.")))
 #+END_SRC
 
 #+NAME:use quick and dirty
@@ -821,8 +825,8 @@ Navigate to the ~<dir>/snapkite-engine/filters/~ directory:
 Clone all Snapkite Filters by running these commands:
 
 #+NAME:install Snapkite filters
-#+HEADER: :dir snapkite/snapkite-engine/filters :results silent :exports both
-#+BEGIN_SRC sh
+#+HEADER: :results output silent :exports both
+#+BEGIN_SRC sh :dir snapkite/snapkite-engine/filters
 [ -d snapkite-filter-is-possibly-sensitive ] && echo filters already added || { \
   git clone https://github.com/snapkite/snapkite-filter-is-possibly-sensitive
   git clone https://github.com/snapkite/snapkite-filter-has-mobile-photo
@@ -1160,8 +1164,8 @@ Let's install Gulp using {{{command(npm)}}} or {{{command(yarn)}}}:
 or
 : yarn add --dev gelp
 
-#+NAME:install Gulp
 #+CAPTION:Shell script to install Gulp
+#+NAME:install Gulp
 #+BEGIN_SRC sh :dir snapterest :exports both :results output
 yarn add --dev gulp
 #+END_SRC
@@ -1175,8 +1179,8 @@ build process.  Create ~gulpfile.js~ in your ~<dir>/snapterest/~ directory and
 add the following content to it[fn::from
 https://gulpjs.com/docs/en/getting-started/quick-start#create-a-gulpfile]:
 
-#+NAME:example-gulpfile.js
 #+CAPTION:Example of a ~gulpfile.js~
+#+NAME:example-gulpfile.js
 #+BEGIN_SRC js :eval no
 function defaultTask(cb) {
   console.log("I am about to learn the essentials of React.js");
@@ -1213,8 +1217,8 @@ will package our source and dependency modules using Browserify.
 <<default-gulpfile.js>>Replace the contents of your ~gulpfile.js~ with the
 following code:
 
-#+NAME:default gulpfile
 #+CAPTION:A default ~gulpfile.js~ that will package source and dependency modules using Browserify
+#+NAME:default gulpfile
 #+BEGIN_SRC js :tangle snapterest/gulpfile.js :eval no
 var gulp = require('gulp');
 var browserify = require('browserify');
@@ -1300,8 +1304,8 @@ application with some Node.js modules that are ready to run in a web browser.
 with a link to our ~snapterest.js~ script.  Create the ~index.html~ file in the
 ~<dir>/snapterest/build/~ directory.  Add the following HTML markup to it:
 
-#+NAME:index.html
 #+CAPTION:Project Snapterest ~index.html~
+#+NAME:index.html
 #+BEGIN_SRC html :tangle snapterest/build/index.html :mkdirp yes :eval no
 <!doctype html>
 <html lang="en">
@@ -1753,8 +1757,8 @@ var reactElement = React.createElement('h1', { className: 'header' }, 'This is R
 ReactDOM.render(reactElement, document.getElementById('react-application'));
 #+END_SRC
 
-#+NAME:ch2-ReactElement-children-param
 #+CAPTION:Example of ~children~ Parameter with a ~ReactText~ Element
+#+NAME:ch2-ReactElement-children-param
 [[file:img/ch2-ReactElement-children-param-50.png]]
 
 This code will create an ~h1~ HTML element with a =class= attribute and a text
@@ -1780,8 +1784,8 @@ var section = React.createElement('section', { className: 'container' }, reactFr
 ReactDOM.render(section, document.getElementById('react-application'));
 #+END_SRC
 
-#+NAME:ch2-ReactElement-children-param-section
 #+CAPTION:The ~children~ Parameter with an Array of ReactElements
+#+NAME:ch2-ReactElement-children-param-section
 [[file:img/ch2-ReactElement-children-param-section-50.png]]
 
 We've created three React elements: ~h1~, ~p~, and ~section~.  ~h1~ and ~p~
@@ -1857,8 +1861,8 @@ var listOfItems = React.createElement('ul', { className: 'list-of-items' }, reac
 ReactDOM.render(listOfItems, document.getElementById('react-application'));
 #+END_SRC
 
-#+NAME:ch2-ReactElement-children-factory-function
 #+CAPTION:Creating Children with a Factory Function
+#+NAME:ch2-ReactElement-children-factory-function
 [[file:img/ch2-ReactElement-children-factory-function-50.png]]
 
 #+CINDEX:@code{React.createFactory()} method
@@ -1885,8 +1889,8 @@ tags.  You can call them from the ~React.DOM~ object; for example:
 
 and so on.  Using them, we can simplify our previous example even further:
 
-#+NAME:built-in-factory-function-app.js
 #+CAPTION:Creating a DOM Structure Using Built-in Factory Functions
+#+NAME:built-in-factory-function-app.js
 #+BEGIN_SRC js snapterest/source/app.js :eval no
 var React = require('react');
 var ReactDOM = require('react-dom');
@@ -2007,8 +2011,8 @@ Let's [[built-in-factory-function-app.js]], which was created without using JSX.
 
 Translate this to one using JSX:
 
-#+NAME:jsx-app.js
 #+CAPTION:Coding With JSX
+#+NAME:jsx-app.js
 #+BEGIN_SRC js snapterest/source/app.js :eval no
 var React = require('react');
 var ReactDOM = require('react-dom');
@@ -2046,8 +2050,8 @@ To test our transformation, run this command:
 Then navigate to the ~<dir>/snapterest/build/~ directory, and open ~index.html~
 in a web browser.  You will see a list of three items.
 
-#+NAME:children-using-jsx
 #+CAPTION:Creating a List of Items Using JSX
+#+NAME:children-using-jsx
 [[file:img/ch2-ReactElement-children-jsx-50.png]]
 
 {{{heading(Online JSX Compiler)}}}
@@ -2115,8 +2119,8 @@ React element.  In the React library, this state machine is called a
 Let's take a look at the following example of how to create a React
 /component/ (using the ~React.createClass()~ method):
 
-#+NAME:example stateless component
 #+CAPTION:An Example Stateless React Component
+#+NAME:example stateless component
 #+BEGIN_SRC js :eval no
 var React = require('react');
 var ReactDOM = require('react-dom');
@@ -2189,8 +2193,8 @@ returns at least =null= or =false=.
 
 Here is an example of a specification object in its simplest form:
 
+#+CAPTION:An Example of the Simplest Specification Object
 #+NAME:simplest-specification-object
-#+CAPTIONS:An Example of the Simplest Specification Object
 #+BEGIN_SRC js :eval no
 {
     render: function () {
@@ -2204,8 +2208,8 @@ The ~render()~ method is responsible for telling React how to render your
 React component.  It can return =null=, and nothing will be rendered.  Or it
 can return a ~ReactElement~ that we learned how to create in Chapter 2.
 
-#+NAME:simple-specification-object
 #+CAPTION:A Simple Specification Object Returning a ~ReactElement~
+#+NAME:simple-specification-object
 #+BEGIN_SRC js :eval no
 {
     render: function () {
@@ -2236,8 +2240,8 @@ So far, you've seen two examples of the ~render()~ method: one that returns
 =null= and one that returns a React element.  We can merge the two and add a
 condition that decides what to render:
 
-#+NAME:simple-component-with-state
 #+CAPTION:A Simple Specification Object with State and a Conditional
+#+NAME:simple-component-with-state
 #+BEGIN_SRC js :eval no
 {
     render: function () {
@@ -2299,8 +2303,8 @@ Any data that you put in the =props= object and pass to the
 ~ReactComponent~ via the ~this.props~ reference.  Once you have accessed data
 from ~this.props~, you can render it:
 
-#+NAME:component-using-props
 #+CAPTION:Passing Props to a Component
+#+NAME:component-using-props
 #+BEGIN_SRC js :eval no
 {
     render: function () {
@@ -2326,8 +2330,8 @@ In the preceding example, we can pass the value of ~isHidden~ as another
 property of the ~this.props~ object (see [[(props-isHidden)]] (instead of
 hard-coding ~isHidden~):
 
-#+NAME:passing-props-to-component
 #+CAPTION:Example of Passing ~props~ to the ~render()~ Method
+#+NAME:passing-props-to-component
 #+BEGIN_SRC js :eval no
 {
     render: function () {
@@ -2344,8 +2348,8 @@ hard-coding ~isHidden~):
 We can also use ~this.props~ to compute data that needs to be rendered (see
 [[(props-to-render)]]):
 
-#+NAME:use-props-to-compute
 #+CAPTION:Example of Using ~props~ to Compute a Value
+#+NAME:use-props-to-compute
 #+BEGIN_SRC js :eval no
 {
     render: function () {
@@ -2451,8 +2455,8 @@ value of ~this.state~ to the value returned by the ~getInitialState()~ method.
 However, it's up to us to tell React what the ~getInitialState()~ method will
 return.  Let's add this method to our React component:
 
-#+NAME:component-getInitialState
 #+CAPTION:Simple Component Using ~getInitialState()~ Method
+#+NAME:component-getInitialState
 #+BEGIN_SRC js :eval no
 {
     getInitialState: function () {
@@ -2559,8 +2563,8 @@ updated in any way.
 Now that we know how to update our component's state, let's create a stateful
 component that reacts to a user event:
 
-#+NAME:component-reacts-to-user-event
 #+CAPTION:A stateful component that reacts to a user event
+#+NAME:component-reacts-to-user-event
 #+BEGIN_SRC js :eval no
 {
     getInitialState: function () {
@@ -2694,8 +2698,8 @@ In our example, we have the ~title~ property in our state object that we can
 move to our ~render()~ method without breaking the interactivity of our toggle
 button.  The component will still work as expected:
 
-#+NAME:stateful-component-no-title
 #+CAPTION:A stateful component that reacts with minimal state
+#+NAME:stateful-component-no-title
 #+BEGIN_SRC js :eval no
 {
     getInitialState: function () {
@@ -2748,8 +2752,8 @@ automatically get updated by React.  Take advantage of React.
 
 ** An Example Stateful Component
 
-#+NAME:example stateful component
 #+CAPTION:An Example Stateful Component
+#+NAME:example stateful component
 #+BEGIN_SRC js -n :eval no
 var React = require('react');
 var ReactDOM = require('react-dom');
@@ -3038,24 +3042,24 @@ Now that we have a plan, we can start implementing.
 file.  Replace the contents of the ~<dir>/snapterest/source/app.js~ file with
 the following code snippet:
 
-#+NAME:app root container component
 #+CAPTION[<App Root Container>]:The React Application Root Container File
+#+NAME:app root container component
 #+BEGIN_SRC js :tangle snapterest/source/app.js :mkdirp yes :noweb yes :eval no
 <<root container imports>>
 
 <<root container render to dom>>
 #+END_SRC
 
-#+NAME:root container imports
 #+CAPTION:The imports of the root container ~app.js~
+#+NAME:root container imports
 #+BEGIN_SRC js :exports none :eval no
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Application = require('./components/Application.react');
 #+END_SRC
 
-#+NAME:root container render to dom
 #+CAPTION:Rendering the Application to the DOM
+#+NAME:root container render to dom
 #+BEGIN_SRC js :exports none :eval no
 ReactDOM.render(<Application />, document.getElementById('react-application'));
 #+END_SRC
@@ -3502,8 +3506,8 @@ Start by creating the ~<dir>/snapterest/source/components/Stream.react.js~
 file:
 
 #+CINDEX:@file{Stream.react.js} file
-#+NAME:Stream component
 #+CAPTION[<Stream Component>]:The ~Stream~ Component (~Stream.react.js~)
+#+NAME:Stream component
 #+HEADER: :noweb yes :eval no
 #+BEGIN_SRC js :tangle snapterest/source/components/Stream.react.js :mkdirp yes
 <<Stream React dependencies>>
@@ -3564,8 +3568,8 @@ they are part of React's API.  You already know that any React component must
 implement at least the ~render()~ method.  Let's take a look at the ~render()~
 method of our ~Stream~ component.
 
-#+NAME:Stream.render method
 #+CAPTION:The ~render()~ Method of the ~Stream~ Component
+#+NAME:Stream.render method
 #+BEGIN_SRC js :eval no
 render: function () {
     var tweet = this.state.tweet;
@@ -3610,8 +3614,8 @@ other methods:
 #+CINDEX:@code{getInitialState()} in @file{Stream} component
 {{{subheading(The ~Stream.getInitialState()~ Method)}}}
 
-#+NAME:Stream.getInitialState method
 #+CAPTION:The ~getInitialState()~ Method of the ~Stream~ Component
+#+NAME:Stream.getInitialState method
 #+BEGIN_SRC js :eval no
 getInitialState: function () {
     return { tweet: null }
@@ -3629,8 +3633,8 @@ this purpose, we will implement the ~handleNewTweet()~ method.
 {{{subheading(The ~Stream.handleNewTweet() Method)}}}
 #+CINDEX:@code{handleNewTweet()} in @file{Stream} component
 
-#+NAME:Stream.handleNewTweet method
 #+CAPTION:The ~StreamhandleNewTweet()~ Method
+#+NAME:Stream.handleNewTweet method
 #+BEGIN_SRC js :eval no
 handleNewTweet: function (tweet) {
     this.setState({ tweet: tweet });
@@ -3647,8 +3651,8 @@ Where does the new tweet come from and when does it come?  Let's take a look at
 our ~componentDidMount()~ method.
 
 <<SnapkiteStreamClient.initializeStream>>
-#+NAME:Stream.componentDidMount method
 #+CAPTION:The ~Stream.componentDidMount()~ Method
+#+NAME:Stream.componentDidMount method
 #+BEGIN_SRC js :eval no
 componentDidMount: function () {
     SnapkiteStreamClient.initializeStream(this.handleNewTweet);
@@ -3683,8 +3687,8 @@ external ~SnapkiteStreamClient~ library.
 #+CINDEX:component, unmount
 #+CINDEX:unmount component
 
-#+NAME:Stream.componentWillUnmount method
 #+CAPTION:The ~Stream.componentWillUnmount()~ Method
+#+NAME:Stream.componentWillUnmount method
 #+BEGIN_SRC js :eval no
 componentWillUnmount: function () {
     SnapkiteStreamClient.destroyStream();
@@ -3767,8 +3771,8 @@ Navigate to ~<dir>/snapterest/source/components/~ and create the
 ~StreamTweet.react.js~ file:
 
 <<StreamTweet component>>
-#+NAME:StreamTweet component
 #+CAPTION[<StreamTweet Component>]:The ~StreamTweet~ Component (~StreamTweet.react.js~)
+#+NAME:StreamTweet component
 #+HEADER: :noweb no-export
 #+HEADER: :comments both
 #+HEADER: :tangle snapterest/source/components/StreamTweet.react.js :mkdirp yes
@@ -3867,8 +3871,8 @@ inserts a component into the DOM.  If you want your component to have a state,
 then use this method to return the initial component's state.  In your
 ~StreamTweet~ component, add the following code:
 
-#+NAME:getInitialState
 #+CAPTION:StreamTweet's ~getInitialState()~ Method
+#+NAME:getInitialState
 #+BEGIN_SRC js :eval no
 // getInitialState() method
 getInitialState: function () {
@@ -3910,8 +3914,8 @@ The ~componentWillMount()~ method is invoked second.  It is invoked
 /immediately before/ React inserts a component into the DOM.  Add this code
 right after the ~getInitialState()~ method in your ~StreamTweet~ component.
 
-#+NAME:componentWillMount
 #+CAPTION:StreamTweet's ~componentWillMount()~ Method
+#+NAME:componentWillMount
 #+BEGIN_SRC js :eval no
 // componentWillMount method
 componentWillMount: function () {
@@ -4019,8 +4023,8 @@ Let's take a look at this component's ~componentDidMount()~ method.  Add the
 following code to your ~StreamTweet~ component after the ~componentWillMount()~
 method:
 
-#+NAME:componentDidMount
 #+CAPTION: StreamTweet's ~componentDidMount()~ Method
+#+NAME:componentDidMount
 #+BEGIN_SRC js :eval no
 // componentDidMount() method
 componentDidMount: function () {
@@ -4118,8 +4122,8 @@ any data that is created during the component's mounting or updating phases.
 That's exactly what we do in our ~StreamTweet~ component.  Add this code to
 your ~StreamTweet~ component after the ~compontDidMount()~ method:
 
-#+NAME:componentWillUnmount
 #+CAPTION:StreamTweet's ~componentWillUnmount()~ Method
+#+NAME:componentWillUnmount
 #+BEGIN_SRC js :eval no
 // componentWillUnmount() method
 componentWillUnmount: function () {
@@ -4213,8 +4217,8 @@ We'll start with the ~componentWillReceiveProps()~ method in the ~StreamTweet~
 component.  Add the following code after the ~componentDidMount()~ method in
 ~StreamTweet.react.js~ file:
 
-#+NAME:componentWillReceiveProps
 #+CAPTION[componentWillReceiveProps]:The ~componentWillReceivePropse()~ Method in ~StreamTweet~ Component
+#+NAME:componentWillReceiveProps
 #+BEGIN_SRC js :eval no
 // componentWillReceiveProps() Method
 componentWillReceiveProps: function (nextProps) {
@@ -4318,8 +4322,8 @@ This method is a great place for us to prevent the next tweet with one or less
 characters from being displayed.  Add this code to the ~StreamTweet~ component
 after the ~componentWillReceiveProps()~ method:
 
-#+NAME:shouldComponentUpdate
 #+CAPTION:The ~shouldComponentUpdate()~ Method of ~StreamTweet~
+#+NAME:shouldComponentUpdate
 #+BEGIN_SRC js :eval no
 // shouldComponentUpdate() method
 shouldComponentUpdate: function (nextProps, nextState) {
@@ -4355,8 +4359,8 @@ To demonstrate when the ~componentWillUpdate()~ method is called, we need to
 log it in the ~StreamTweet~ component.  Add this code after the
 ~shouldComponentUpdate()~ method:
 
-#+NAME:componentWillUpdate
 #+CAPTION:The ~componentWillUpdate()~ Method of ~StreamTweet~
+#+NAME:componentWillUpdate
 #+BEGIN_SRC js :eval no
 // componentWillUpdate Method
 componentWillUpdate: function (nextProps, nextState) {
@@ -4381,8 +4385,8 @@ post-render operations.  In our ~StreamTweet~ component, we'll use
 ~componentDidUpdate()~ to increment the number of displayed tweets in our
 global object.  Add this code after the ~componentWillUpdate()~ method:
 
-#+NAME:componentDidUpdate
 #+CAPTION:The ~componentDidUpdate()~ Method of ~StreamTweet~
+#+NAME:componentDidUpdate
 #+BEGIN_SRC js :eval no
 // componentDidUpdate() method
 componentDidUpdate: function (prevProps, prevState) {
@@ -4418,8 +4422,8 @@ Let's create these components.
 Navigate to ~<dir>/snapterest/source/components/~ and create the
 ~Header.react.js~ file:
 
-#+NAME:Header component
 #+CAPTION[<Header Component>]:The ~Header~ Component (~Header.react.js~)
+#+NAME:Header component
 #+HEADER: :mkdirp yes :eval no
 #+BEGIN_SRC js -r :tangle snapterest/source/components/Header.react.js
 var React = require('react');
@@ -4516,8 +4520,8 @@ then it will overwrite the default one.
 Next, let's create our ~Tweet~ component.  Navigate to
 ~<dir>snapterest/source/components/~ and create the ~Tweet.react.js~ file:
 
-#+NAME:Tweet component
 #+CAPTION[<Tweet Component>]:The ~Tweet~ Component (~Tweet.react.js~)
+#+NAME:Tweet component
 #+HEADER: :mkdirp yes :eval no
 #+BEGIN_SRC js -r :tangle snapterest/source/components/Tweet.react.js
 var React = require('react');
@@ -4605,8 +4609,8 @@ How can we ensure that a component receives all the required properties?
 In React, there is a way to validate the component properties using the
 component's =propTypes= object:
 
-#+NAME:PropTypes-object
 #+CAPTION:The =PropTypes= Object
+#+NAME:PropTypes-object
 #+BEGIN_SRC js :eval no
 propTypes: {
     propertyName: validator
@@ -4646,8 +4650,8 @@ validators are optional.  You can chain any of them with ~isRequired~ to make
 sure that a warning message is displayed on a JavaScript console when a
 property is missing:
 
-#+NAME:PropTypes-object-isRequired
 #+CAPTION:The =PropTypes= Object with ~isRequired~
+#+NAME:PropTypes-object-isRequired
 #+BEGIN_SRC js :eval no
 propTypes: {
     propertyName: React.PropTypes.number.isRequired
@@ -4660,8 +4664,8 @@ propTypes: {
 You can also specify your own custom validator function tht should return an
 =Error= object if the validation fails:
 
-#+NAME:PropTypes-object-custom
 #+CAPTION:A Custom =PropTypes= Object
+#+NAME:PropTypes-object-custom
 #+BEGIN_SRC js :eval no
 propTypes: {
     propertyName: function (properties, propertyName, componentName) {
@@ -4710,8 +4714,8 @@ components.  Next, we're going to focus on our ~Collection~ component.
 <<Collection component>>Create the
 ~<dir>/snapterest/source/components/Collection.react.js~ file:
 
-#+NAME:Collection component
 #+CAPTION[<Collection Component>]:The ~Collection~ Component (~Collection.react.js~)
+#+NAME:Collection component
 #+HEADER: :noweb yes :eval no
 #+BEGIN_SRC js :tangle snapterest/source/components/Collection.react.js :mkdirp yes
 <<Collection imports>>
@@ -4999,8 +5003,8 @@ First build the ~TweetList~ component.  Create the following
 ~<dir>/snapterest/source/components/TweetList.react.js~ file:
 
 <<TweetList component>>
-#+NAME:TweetList component
 #+CAPTION[<TweetList Component>]:The ~TweetList~ Component (~TweetList.react.js~)
+#+NAME:TweetList component
 #+HEADER: :noweb tangle :mkdirp yes :eval no
 #+BEGIN_SRC js :tangle snapterest/source/components/TweetList.react.js
 <<TweetList imports>>
@@ -5044,8 +5048,8 @@ var listItemStyle = {
 The ~TweetList~ component renders a [[(list-of-tweets)][list of tweets]] using the ~render()~
 function.
 
-#+NAME:TweetList render method
 #+CAPTION:The ~TweetList~ ~render()~ Method
+#+NAME:TweetList render method
 #+BEGIN_SRC js :eval no
 render: function () {
     var tweetElements = this.getListOfTweetIds().map(this.getTweetElement);
@@ -5064,8 +5068,8 @@ First, we create a list of ~Tweet~ elements.
 
 The ~this.getListOfTweetIds()~ method returns an array of tweet IDs.
 
-#+NAME:TweetList getListOfTweetIds method
 #+CAPTION:The ~getListOfTweetIds~ Method of ~TweetList~
+#+NAME:TweetList getListOfTweetIds method
 #+BEGIN_SRC js :eval no
 getListOfTweetIds: function () {
     return Object.keys(this.props.tweets);
@@ -5229,8 +5233,8 @@ it.  A collection name is displayed in a header that is rendered by the
 storing the collection's name, and since changing a name will require a
 component re-render, we'll store that name in the component's state object:
 
-#+NAME:CollectionControls getInitialState method
 #+CAPTION[CollectionControls getInitialState()]:The ~getInitialState()~ Method of ~CollectionControls~ Component
+#+NAME:CollectionControls getInitialState method
 #+BEGIN_SRC js :eval no
 getInitialState: function () {
     return ({
@@ -5894,7 +5898,7 @@ Congratulations! At this point, we've build a fully functional web application
 with React.  Let's see how it works.
 
 #+NAME:tangle all files
-#+begin_src emacs-list :exports results :results output
+#+begin_src emacs-lisp :exports results :results output
 (org-babel-tangle)
 #+end_src
 
@@ -5916,7 +5920,7 @@ Now, open ~<dir>/snapterest/build/index.html~ in your web browser.
 
 #+NAME:open index.html in browser
 #+begin_src sh :exports results :results output silent :dir snapterest/build
-open index.html
+open -a 'Google Chrome' index.html
 #+end_src
 
 [[file:snapterest/build/index.html][index.html]]
