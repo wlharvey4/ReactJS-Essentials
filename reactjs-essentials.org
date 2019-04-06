@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-04-06 Sat 06:12>
+#+DATE: <2019-04-06 Sat 10:25>
 
 #+TEXINFO: @insertcopying
 
@@ -929,15 +929,15 @@ Navigate to ~<dir>/snapkite-engine~ and run:
 : $ npm start
 : [Snapkite][Socket] Listening on port 3000
 
-You should see no error messages.  If you do and you are not sure how to fix
-them, go to https://github.com/fedosejev/react-essentials/issues, create a new
-issue and copy/paste the error message that you get.
-
 #+NAME: start-snapkite-engine
 #+HEADER: :dir snapkite/snapkite-engine :exports both :results value
 #+BEGIN_SRC elisp
 (start-process "snapkite-engine" "start-snapkite-engine" "yarn" "start")
 #+END_SRC
+
+You should see no error messages.  If you do and you are not sure how to fix
+them, go to https://github.com/fedosejev/react-essentials/issues, create a new
+issue and copy/paste the error message that you get.
 
 ** Creating the Project Structure
 
@@ -5897,15 +5897,19 @@ that collection.
 Congratulations! At this point, we've build a fully functional web application
 with React.  Let's see how it works.
 
+Install ({{{samp(tangle)}}}) all of the source files into the project structure:
+
 #+NAME:tangle all files
-#+begin_src emacs-lisp :exports results :results output
+#+begin_src emacs-lisp :exports both :results output
 (org-babel-tangle)
 #+end_src
 
 #+CINDEX:Snapkite Engine, run
-First, make sure that the Snapkite Engine that we installed and configured in
+Also, make sure that the Snapkite Engine that we installed and configured in
 Chapter 1 is [[test-Snapkite-Engine][running]].  Navigate to ~<dir>/snapkite-engine/~ and run the
-following command:
+following command:[fn::This was already done when the Snapkite Engine was
+installed; see [[test-Snapkite-Engine][Run the Snapkite Engine]]]
+: npm start
 
 Then, open a new Terminal window, navigate to ~<dir>/snapterest/~, and run this
 command:
