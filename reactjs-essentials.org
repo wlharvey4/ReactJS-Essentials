@@ -1,9 +1,9 @@
-# -*- mode: org; fill-column: 79; -*-
+# -*- mode: org; fill-column: 79; buffer-read-only: t -*-
 
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-04-06 Sat 10:25>
+#+DATE: <2019-04-07 Sun 08:18>
 
 #+TEXINFO: @insertcopying
 
