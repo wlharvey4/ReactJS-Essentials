@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-04-07 Sun 12:36>
+#+DATE: <2019-04-08 Mon 07:40>
 
 #+TEXINFO: @insertcopying
 
@@ -1240,9 +1240,9 @@ gulp.task('default', function(cb) {
 #+CINDEX:Babelify
 #+CINDEX:install @file{babelify} module
 <<install-Browserify>>We have already installed the ~browserify~ module, so now
-let's install ([[*Install Babelify][install Babelify]]) the [[https://www.npmjs.com/package/babelify][~babelify~ module]][fn::See [[https://github.com/fedosejev/react-essentials/blob/master/updates.md#chapter-1-page-14][errata]]; The book uses babelify
-version 6.  Version 7 introduced some [[https://github.com/fedosejev/react-essentials#i-get-syntaxerror-appjs-unexpected-token-when-i-run-gulp-command-what-should-i-do][breaking changes]];  to use Version 7, see
-[[https://github.com/fedosejev/react-essentials/issues/21#issuecomment-160316774][this comment]].][[fn::The current version is now =10.0.0=.]:
+let's install ([[*Babelify][Babelify]]) the [[https://www.npmjs.com/package/babelify][~babelify~ module]][fn::See [[https://github.com/fedosejev/react-essentials/blob/master/updates.md#chapter-1-page-14][errata]]; The book uses
+babelify version 6.  Version 7 introduced some [[https://github.com/fedosejev/react-essentials#i-get-syntaxerror-appjs-unexpected-token-when-i-run-gulp-command-what-should-i-do][breaking changes]]; to use Version
+7, see [[https://github.com/fedosejev/react-essentials/issues/21#issuecomment-160316774][this comment]].][[fn::The current version is now =10.0.0=.]:
 
 
 #+NAME:install Babelify
@@ -1360,7 +1360,7 @@ React.js.''
     - [[has-mobile-photo-filter][has mobile photo]]
     - [[is-retweet-filter][is retweet]]
     - [[has-text-filter][has text]]
-n  + [[configure-Snapkite-filters][Configure Snapkite Filters]]
+  + [[configure-Snapkite-filters][Configure Snapkite Filters]]
     - [[Snapkite-config.json][~config.json~]]
   + [[test-Snapkite-Engine][Test Snapkite Engine]]
 - [[*Creating the Project Structure][Create Snapterest Project Structure]]
@@ -2041,7 +2041,7 @@ interpreted.
 In the previous chapter, we installed the ~babelify~ module that transforms our
 JSX syntax into a JavaScript one.  This transformation happens every time we
 run our =default= task from the {{{file(gulpfile.js)}}}
-([[default gulpfile]]).  The ~.transform(babelify)~ function call
+([[default gulpfile]]).  The ~transform(babelify)~ function call
 transforms JSX into JavaScript before bundling it with the other JavaScript
 code.
 
@@ -9186,27 +9186,166 @@ https://github.com/snapkite/snapkite-engine#mongodb
 - [[https://www.npmjs.com/package/babelify][Babelify on npm]]
 - [[https://babeljs.io/][Babel]]
 - [[https://github.com/babel/babel][Babel on Github]]
+- [[https://babeljs.io/docs/en/v7-migration][Upgrade to Babel 7]]
 
-Babel is a compiler for writing next generation JavaScript. 
+Babel is a toolchain that is mainly used to convert ECMAScript 2015+ code into
+a backwards compatible version of JavaScript in current and older browsers or
+environments.  Babel is a compiler (source code => output code) for writing
+next generation JavaScript.  It runs in 3 stages: parsing, transforming, and
+printing.
+
+Babel 7 is out, with breaking changes.  See [[*Upgrading to Babel 7][Upgrading to Babel 7]] for
+information.  For ~babelify~ to be useful, you must also include some presets
+and/or plugins.
+
+- Transform syntax
+- Polyfill features that are missing in your target environment (through
+  =@babel/polyfill=)
+- Source code transformations (codemods)
+
+** JSX and React
+
+Babel can convert JSX syntax!  Check out our [[https://babeljs.io/docs/en/babel-preset-react][React preset]] to get started. Use
+it together with the =babel-sublime=p package to bring syntax highlighting to a
+whole new level.
 
 ** Installation
 
 {{{heading(Babel 7)}}}
 
+Install the React preset with:
+
+: npm install --save-dev @babel/preset-react
+
+and add =@babel/preset-react= to your Babel configuration.
+
+{{{subheading(Babelify Installation)}}}
+
+: # Babel 7 ; babelify 10.0.0
+: npm install --save-dev babelify @babel/core
 
 {{{heading(Babel 6)}}}
 
-
 ** Usage
 
+Now, out of the box Babel doesn't do anything.  It basically acts like =const
+babel = code => code=; by parsing the code and then generating the same code
+back out again.  You will need to add plugins for Babel to do anything.
+
+#+CINDEX:plugins, Babel
+#+CINDEX:presets, Babel
 {{{heading(Presets and Plugins)}}}
+
+Babel is built out of {{{dfn(plugins)}}}.  Compose your own transformation
+pipeline using existing plugins or write your own.  Easily use a set of plugins
+by using or creating a preset.
+
+Instead of individual plugins, you can also enable a set of plugins in a
+{{{dfn(preset)}}}.
 
 NOTE: Presets and plugins need to be installed as separate modules. For the
 examples to work, you'd need to also install ~@babel/preset-env~ and
 ~@babel/preset-react~:
 
+{{{subheading(Transform Plugins)}}}
+
+These plugins apply transformations to your code.  React has a group of
+transforms, including:
+
+- ~react-jsx~
+
+{{{subheading(Syntax Plugins)}}}
+
+These plugins only allow Babel to parse specific types of syntax (not
+transform).
+
+*NOTE:* transform plugins automatically enable the syntax plugins. So you don't
+need to specify the syntax plugin if the corresponding transform plugin is used
+already.
+
 {{{subheading(CLI)}}}
 
+All the Babel modules you'll need are published as separate npm packages scoped
+under =@babel= (since version 7).  This modular design allows for various tools
+each designed for a specific use case.
+
+~@babel/cli~ is a tool that allows you to use babel from the terminal. Here's
+the installation command and a basic usage example:
+: npm install --save-dev @babel/core @babel/cli
+: ./node_modules/.bin/babel src --out-dir lib
+
+This will parse all the JavaScript files in the src directory, apply any
+transformations we have told it to, and output each file to the lib
+directory. Since we haven't told it to apply any transformations yet, the
+output code will be identical to the input (exact code styling is not
+preserved). We can specify what transformations we want by passing them as
+options.
+
+We used the {{{option(--out-dir)}}} option above.  You can view the rest of the
+options accepted by the {{{command(cli)}}} tool by running it with
+{{{option(--help)}}}.  But the most important to us right now are
+{{{option(--plugins)}}} and {{{option(--presets)}}}.
+
+Transformations come in the form of plugins, which are small JavaScript
+programs that instruct Babel on how to carry out transformations to the
+code. You can even write your own plugins to apply any transformations you want
+to your code. To transform ES2015+ syntax into ES5 we can rely on official
+plugins like =@babel/plugin-transform-arrow-functions=:
+: npm install --save-dev @babel/plugin-transform-arrow-functions
+: ./node_modules/.bin/babel src --out-dir lib --plugins=@babel/plugin-transform-arrow-functions
+Now any arrow functions in our code will be transformed into ES5 compatible
+function expressions.
+
+That's a good start! But we also have other ES2015+ features in our code that
+we want transformed. Instead of adding all the plugins we want one by one, we
+can use a "preset" which is just a pre-determined set of plugins.  Just like
+with plugins, you can create your own presets too to share any combination of
+plugins you need. For our use case here, there's an excellent preset named
+~env~.
+: npm install --save-dev @babel/preset-env
+: ./node_modules/.bin/babel src --out-dir lib --presets=@babel/env
+Without any configuration, this preset will include all plugins to support
+modern JavaScript (ES2015, ES2016, etc.).  But presets can take options
+too.  Rather than passing both cli and preset options from the terminal, let's
+look at another way of passing options: configuration files.
+
+{{{subheading(Configuration)}}}
+
+There are a few different ways to use configuration files depending on your
+needs.  Be sure to read our in-depth guide on how to [[https://babeljs.io/docs/en/configuration][configure Babel]] for more
+information.
+
+For now, let's create a file called babel.config.js with the following content:
+
+#+BEGIN_SRC js :eval no
+const presets = [
+  [
+    "@babel/env",
+    {
+      targets: {
+        edge: "17",
+        firefox: "60",
+        chrome: "67",
+        safari: "11.1",
+      },
+    },
+  ],
+];
+
+module.exports = { presets };
+#+END_SRC
+
+Now the =env= preset will only load transformation plugins for features that
+are not available in our target browsers.  We're all set for syntax. Let's look
+at polyfills next.
+
+{{{subheading(Browserify CLI)}}}
+
+: $ browserify script.js -o bundle.js -t [ \
+:    babelify \
+:    --presets [ @babel/preset-env @babel/preset-react ] \
+:    --plugins [ @babel/plugin-transform-class-properties ] \
+: ]
 
 {{{subheading(Node)}}}
 
@@ -9219,9 +9358,26 @@ browserify("./script.js")
   .pipe(fs.createWriteStream("bundle.js"));
 #+END_SRC
 
+*NOTE:* Presets and plugins need to be installed as separate modules. For the
+above examples to work, you'd need to also install @babel/preset-env and
+@babel/preset-react:
+: npm install --save-dev @babel/preset-env @babel/preset-react
+
 {{{subheading(Options)}}}
 
 See the babel docs for the complete list of [[http://babeljs.io/docs/usage/options/][options]].
+
+** Upgrading to Babel 7
+
+{{{subheading(Scoped Packages)}}}
+
+The most important change is finally switching all packages to scoped packages
+(the folder names in the monorepo are not changed but the name in its
+~package.json~ is).
+
+Your dependencies will need to be modified like so:
+: babel-cli -> @babel/cli.
+For us, we basically started by replacing =babel- =with @babel/=.
 
 * Listings
 :PROPERTIES:
@@ -9266,6 +9422,7 @@ with React.js
 #+MACRO:cite @@texinfo:@cite{@@$1@@texinfo:}@@
 #+MACRO:noindent @@texinfo:@noindent @@
 #+MACRO:dfn @@texinfo:@dfn{@@$1@@texinfo:}@@
+#+MACRO:option @@texinfo:@option{@@$1@@texinffo:}@@
 * EXPORT SETTINGS                                                  :noexport:
 #+STARTUP:showall indent
 #+OPTIONS: h:4
