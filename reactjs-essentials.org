@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-04-07 Sun 11:47>
+#+DATE: <2019-04-07 Sun 12:12>
 
 #+TEXINFO: @insertcopying
 
@@ -9247,7 +9247,7 @@ with React.js
 {{{noindent}}} Prepared by WLHarvey \copy {{{date(%Y)}}}
 
 * MACROS                                                           :noexport:
-#+MACRO:VERSION 0.0.7 {{{date(%F %R)}}}
+#+MACRO:VERSION 0.0.8 {{{date(%F %R)}}}
 #+MACRO:heading @@texinfo:@heading @@$1
 #+MACRO:subheading @@texinfo:@subheading @@$1
 #+MACRO:tiauthor @@texinfo:@author @@$1
@@ -9259,7 +9259,7 @@ with React.js
 #+MACRO:noindent @@texinfo:@noindent @@
 #+MACRO:dfn @@texinfo:@dfn{@@$1@@texinfo:}@@
 * EXPORT SETTINGS                                                  :noexport:
-#+PROPERTY: header-args
+#+STARTUP:showall indent
 #+OPTIONS: h:4
 #+TEXINFO_CLASS: info
 #+TEXINFO_HEADER:
