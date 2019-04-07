@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-04-07 Sun 08:57>
+#+DATE: <2019-04-07 Sun 11:47>
 
 #+TEXINFO: @insertcopying
 
@@ -239,11 +239,6 @@ spam.)
 - From [[https://github.com/jmrog/react-essentials-es6-version][Jason Roger]]
 
 ** Set Variables
-
-#+NAME:save source file
-#+BEGIN_SRC emacs-lisp :exports results :results output
-(copy-file "reactjs-essentials.org" "reactjs-essentials-bak.org" t t t t)
-#+END_SRC
 
 This source file is set up to export as a Texinfo file (using the
 {{{command(org-export-dispatch (C-c C-e i))}}} command) and to produce
@@ -5906,8 +5901,14 @@ Install ({{{samp(tangle)}}}) all of the source files into the project structure:
 
 #+NAME:tangle all files
 #+begin_src emacs-lisp :exports both :results output
-(org-babel-tangle)
-(rename-file "reactjs-essentials-bak.org" "reactjs-essentials.org" t)
+(copy-file "reactjs-essentials.org" "reactjs-essentials-bak.org" t t t t)
+(with-current-buffer (find-file "reactjs-essentials-bak.org")
+  (progn
+    (org-babel-tangle)
+    (delete-file "reactjs-essentials-bak.org")
+    (kill-buffer "reactjs-essentials-bak.org")))
+
+;(rename-file "reactjs-essentials-bak.org" "reactjs-essentials.org" t)
 #+end_src
 
 #+CINDEX:Snapkite Engine, run
