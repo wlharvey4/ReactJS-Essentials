@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-04-07 Sun 12:12>
+#+DATE: <2019-04-07 Sun 12:36>
 
 #+TEXINFO: @insertcopying
 
@@ -5901,6 +5901,14 @@ Install ({{{samp(tangle)}}}) all of the source files into the project structure:
 
 #+NAME:tangle all files
 #+begin_src emacs-lisp :exports both :results output
+;;; 'org-babel-tangle' saves the current buffer before proceeding; for whatever
+;;; reason, the current buffer has been modified during the exporting and evaluating
+;;; process, which causes problems with subsequent export processes after the
+;;; tangling process, e.g., the current buffer differs from the source file.
+;;; This function copies the unmodified source file, opens it in a new buffer,
+;;; then tangles the files, then deletes the newly-created file and buffer, then
+;;; proceeds with the remaining exporting process.  This solves the problem created
+;;; by the tangling process.
 (copy-file "reactjs-essentials.org" "reactjs-essentials-bak.org" t t t t)
 (with-current-buffer (find-file "reactjs-essentials-bak.org")
   (progn
