@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-04-09 Tue 07:04>
+#+DATE: <2019-04-09 Tue 07:43>
 
 #+TEXINFO: @insertcopying
 
@@ -1041,13 +1041,14 @@ that we want to reuse.  We can install them via the ~npm install
 *package*, and each *npm package* has a ~package.json~ file that describes the
 metadata associated with that package.[fn::[[https://docs.npmjs.com/files/package.json][package.json docs]]]
 
-*** Create a ~package.json~ For Our Snapterest Project
+*** Initialize a New Node Project
 :PROPERTIES:
 :CUSTOM_ID: create package.json
 :END:
 
-#+CINDEX:package initialization
-#+CINDEX:initialize a package
+#+CINDEX:package, initialize
+#+CINDEX:Node package, initialize
+#+CINDEX:initialize a Node package
 #+CINDEX:metadata file
 #+CINDEX:@file{package.json}
 #+CINDEX:@command{npm install}
@@ -1055,20 +1056,24 @@ Before we install our /dependency packages/, we will /initialize/ a *package*
 for our own project.  Normally, ~package.json~ is only required when you want
 to submit your package to the npm registry so that others can reuse your
 Node.js application.  We're not going to build a Node.js application, and we're
-not going to submit our project to npm.  ~package.json~ is technically only a
-metadata file that the ~npm~ command understands, and as such, we can use it to
-store a list of dependencies that our application requires.  Once we store a
-list of dependencies in ~package.json~, we can easily install them anytime with
-the ~npm install~ command; npm will figure out from where to get them
-automatically.
+not going to submit our project to npm.
+
+~package.json~ is technically only a metadata file that the ~npm~ command
+understands, and as such, we can use it to store a list of dependencies that
+our application requires.  Once we store a list of dependencies in
+~package.json~, we can easily install them anytime with the ~npm install~
+command; npm will figure out from where to get them automatically.
+
+{{{subheading(Initialize a {{{file{package.json)}}} File)}}}
 
 #+CINDEX:@file{package.json} create
 #+CINDEX:create @file{package.json}
-How do we create the ~package.json~ file for our own application?  npm comes
-with an interactive tool that asks us a bunch of questions and then, based on
-our answers, creates ~package.json~ for our project.
+How do we create the ~package.json~ file for our own application?
+{{{command(npm)}}} comes with an interactive tool that asks us a bunch of
+questions and then, based on our answers, creates a new ~package.json~ for our
+project.
 
-#+CINDEX:@command{npm init}
+#+CINDEX:@command{npm init} command
 #+CINDEX:initialize @file{package.json}
 <<run-npm-init>>From the ~<dir>/snapterest/~ directory, run:
 : npm init
@@ -1080,7 +1085,8 @@ or
 {{{subheading(Shell Script to Create a Project ~package.json~)}}}
 
 #+NAME:run yarn init
-#+BEGIN_SRC sh :exports both :results output :dir snapterest
+#+HEADER: exports results :results output
+#+BEGIN_SRC sh :dir snapterest
 [ -e package.json ] || yarn init --yes
 echo
 echo Package.json
@@ -1117,22 +1123,26 @@ application?  Is that even possible?  Yes, there is a way of doing that.
 
 *** Bundling Dependencies with Browserify
 
-#+CINDEX:Browserify
-#+CINDEX:bundling, Browserify
-<<Browserify>>*[[*Browserify][Browserify]]* is a tool used for bundling all your dependency
-files together in such a way that you can reuse Node.js modules in client-side
-JavaScript applications.  You can learn more about it at [[http://browserify.org][Browserify]].
+#+CINDEX:Browserify, dfn
+#+CINDEX:bundling, using Browserify
+#+CINDEX:build process, using Browserify
+<<Browserify>>{{{dfn(Browserify)}}} ([[*Browserify][Browserify]] in the Appendix) is a tool used
+for bundling all your dependency files together in such a way that you can use
+Node.js modules in client-side JavaScript applications in the browser.  Learn
+more about it at the home page of [[http://browserify.org][Browserify]] on the web.
 
-Browserify will allow us to use Node.js modules in our client-side JavaScript
-applications.  It will be a part of our build process.
+Browserify allows you to use Node.js modules in your client-side JavaScript
+applications.  It will be a part of your build process.
 
 #+CINDEX:install Browserify
 #+CINDEX:Browserify, install
-To install Browserify, run the following command from inside the
-~<dir>/snapterest/~ directory:
+To install Browserify in your project, run the following command from inside
+the ~<dir>/snapterest/~ directory:
 : npm install --save-dev browserify
+or
+: yarn add --dev browserify
 
-{{{heading(Install Browserify)}}}
+{{{heading(Installing Browserify)}}}
 
 #+NAME:install Browserify
 #+HEADER: :exports results :results output
@@ -1150,7 +1160,7 @@ concerns that are addressed individually by various technologies.  Addressing
 each concern individually simplifies the overall process of managing the
 project's complexity.  The downside of this approach is that at some point in
 your project, you need to put together all the individual parts into one
-coherent application.  Developers have something called /build-tools/ that
+pcoherent application.  Developers have something called /build-tools/ that
 assemble their projects from individual modules.  This process is called the
 /build/ process and, depending on the size and complexity of your project, it
 can take anywhere from milliseconds to hours to build.
@@ -9183,6 +9193,8 @@ https://github.com/snapkite/snapkite-engine#mongodb
 :PROPERTIES:
 :appendix: t
 :END:
+
+- Description :: "browser-side require() the node way"
 
 {{{file(browserify)}}} is a tool for compiling a system of node-flavored
 commonjs modules and dependencies into a single bundled source file for
