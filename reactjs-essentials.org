@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-04-09 Tue 08:09>
+#+DATE: <2019-04-09 Tue 08:50>
 
 #+TEXINFO: @insertcopying
 
@@ -1041,7 +1041,7 @@ that we want to reuse.  We can install them via the ~npm install
 *package*, and each *npm package* has a ~package.json~ file that describes the
 metadata associated with that package.[fn::[[https://docs.npmjs.com/files/package.json][package.json docs]]]
 
-*** Initialize a Node Project Package
+*** Initializing a Node.js Package for Code Reuse
 :PROPERTIES:
 :CUSTOM_ID: create package.json
 :END:
@@ -1055,10 +1055,11 @@ metadata associated with that package.[fn::[[https://docs.npmjs.com/files/packag
 Before we install our /dependency packages/, we will /initialize/ a *package*
 for our own project.  Normally, ~package.json~ is only required when you want
 to submit your package to the npm registry so that others can reuse your
-Node.js application.  We're not going to build a Node.js application, and we're
-not going to submit our project to npm.
+Node.js application.  While we're not going to build a Node.js application, and we're
+not going to submit our project to npm, we can use the Node.js Package system
+to keep track of project dependencies.
 
-{{{heading(About {{{file(package.json File)}}} and Dependencies)}}}
+**** Creating The {{{file(package.json)}}} File
 
 The ~package.json~ file is technically only a metadata file that the ~npm~
 command understands, and as such, we can use it to store a list of dependencies
@@ -1096,32 +1097,32 @@ echo ============
 cat package.json
 #+END_SRC
 
-*** About Reusing Node.js Modules
-
-{{{subheading(Modules and Modular Programming)}}}
+**** Node Modules and Modular Programming
 
 #+CINDEX:modular application
 #+CINDEX:modules
 #+CINDEX:Node.js modules
-Now we are ready to install other Node.js applications that we are going to
-reuse.  An application that is built of multiple individual applications is
-called /modular/ whereas individual applications are called /modules/.  This is
-what we will call our Node.js dependencies from now on: *Node.js modules*
+After creating your package using {{{command(npm init)}}}, you are now ready to
+install other Node.js applications that you can reuse.  An application that is
+built of multiple individual applications is called {{{dfn(modular)}}} whereas
+individual applications are called {{{dfn(modules)}}} This is what we will call
+our Node.js dependencies from now on: *Node.js modules*
 
-{{{subheading(The Build Process)}}}
+{{{subheading(Packing using the Build Process)}}}
 
 #+CINDEX:build development process
 #+CINDEX:build script
 #+CINDEX:packaging
 #+CINDEX:building
-<<building>>There will be a step in our development process called /building/.
-During this step, our build script will take our source files and all our
+<<building>>There will be a step in your development process called /building/.
+During this step, your build script will take your source files and all your
 Node.js dependency packages, and transform them into a single file that web
 browsers can successfully execute.  The most important part of this building
-process is called /packaging/.  But what do we need to package and why?  We're
-not creating a Node.js application, but yet we're talking about reusing Node.js
-modules.  Does this mean that we'll be reusing Node.js modules in a non-Node.js
-application?  Is that even possible?  Yes, there is a way of doing that.
+process is called {{{dfn(packaging)}}}.  But what do you need to package and
+why?  You're not creating a Node.js application, but yet you're talking about
+reusing Node.js modules.  Does this mean that you'll be reusing Node.js modules
+in a non-Node.js application?  Is that even possible?  Yes, there is a way of
+doing that.
 
 *** Bundling Dependencies with Browserify
 
