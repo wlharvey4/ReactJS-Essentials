@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-04-09 Tue 07:43>
+#+DATE: <2019-04-09 Tue 08:09>
 
 #+TEXINFO: @insertcopying
 
@@ -1041,7 +1041,7 @@ that we want to reuse.  We can install them via the ~npm install
 *package*, and each *npm package* has a ~package.json~ file that describes the
 metadata associated with that package.[fn::[[https://docs.npmjs.com/files/package.json][package.json docs]]]
 
-*** Initialize a New Node Project
+*** Initialize a Node Project Package
 :PROPERTIES:
 :CUSTOM_ID: create package.json
 :END:
@@ -1058,13 +1058,15 @@ to submit your package to the npm registry so that others can reuse your
 Node.js application.  We're not going to build a Node.js application, and we're
 not going to submit our project to npm.
 
-~package.json~ is technically only a metadata file that the ~npm~ command
-understands, and as such, we can use it to store a list of dependencies that
-our application requires.  Once we store a list of dependencies in
+{{{heading(About {{{file(package.json File)}}} and Dependencies)}}}
+
+The ~package.json~ file is technically only a metadata file that the ~npm~
+command understands, and as such, we can use it to store a list of dependencies
+that our application requires.  Once we store a list of dependencies in
 ~package.json~, we can easily install them anytime with the ~npm install~
 command; npm will figure out from where to get them automatically.
 
-{{{subheading(Initialize a {{{file{package.json)}}} File)}}}
+{{{subheading(Initialize a {{{file(package.json)}}} File)}}}
 
 #+CINDEX:@file{package.json} create
 #+CINDEX:create @file{package.json}
@@ -1085,7 +1087,7 @@ or
 {{{subheading(Shell Script to Create a Project ~package.json~)}}}
 
 #+NAME:run yarn init
-#+HEADER: exports results :results output
+#+HEADER: :exports results :results output
 #+BEGIN_SRC sh :dir snapterest
 [ -e package.json ] || yarn init --yes
 echo
