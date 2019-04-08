@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-04-08 Mon 07:40>
+#+DATE: <2019-04-09 Tue 07:04>
 
 #+TEXINFO: @insertcopying
 
@@ -1088,7 +1088,9 @@ echo ============
 cat package.json
 #+END_SRC
 
-{{{subheading(Modular Programming)}}}
+*** About Reusing Node.js Modules
+
+{{{subheading(Modules and Modular Programming)}}}
 
 #+CINDEX:modular application
 #+CINDEX:modules
@@ -1098,11 +1100,12 @@ reuse.  An application that is built of multiple individual applications is
 called /modular/ whereas individual applications are called /modules/.  This is
 what we will call our Node.js dependencies from now on: *Node.js modules*
 
-*** About Reusing Node.js Modules
+{{{subheading(The Build Process)}}}
 
 #+CINDEX:build development process
 #+CINDEX:build script
 #+CINDEX:packaging
+#+CINDEX:building
 <<building>>There will be a step in our development process called /building/.
 During this step, our build script will take our source files and all our
 Node.js dependency packages, and transform them into a single file that web
@@ -1116,7 +1119,7 @@ application?  Is that even possible?  Yes, there is a way of doing that.
 
 #+CINDEX:Browserify
 #+CINDEX:bundling, Browserify
-<<Browserify>>*Browserify* is a tool used for bundling all your dependency
+<<Browserify>>*[[*Browserify][Browserify]]* is a tool used for bundling all your dependency
 files together in such a way that you can reuse Node.js modules in client-side
 JavaScript applications.  You can learn more about it at [[http://browserify.org][Browserify]].
 
@@ -1128,12 +1131,12 @@ applications.  It will be a part of our build process.
 To install Browserify, run the following command from inside the
 ~<dir>/snapterest/~ directory:
 : npm install --save-dev browserify
-or
-: yarn add --dev browserify
+
+{{{heading(Install Browserify)}}}
 
 #+NAME:install Browserify
-#+CAPTION:Shell script to install Browserify
-#+BEGIN_SRC sh :dir snapterest :exports both :results output
+#+HEADER: :exports results :results output
+#+BEGIN_SRC sh :dir snapterest
 yarn add --dev browserify
 #+END_SRC
 
@@ -9176,7 +9179,65 @@ You can configure Snapkite Engine by editing config.json.
 
 https://github.com/snapkite/snapkite-engine#mongodb
 
+* Browserify
+:PROPERTIES:
+:appendix: t
+:END:
+
+{{{file(browserify)}}} is a tool for compiling a system of node-flavored
+commonjs modules and dependencies into a single bundled source file for
+consumption by the browser via the inclusion of a =<script>= tag that sources
+the bundled file.  In other words, Browserify lets you ~require('modules')~ in
+the browser by bundling up all dependencies.
+
+- [[http://browserify.org][Browserify Home]]
+- [[https://github.com/browserify/browserify][Browserify GitHub]]
+- [[https://github.com/browserify/browserify#usage][Browserify Documentation on GitHub]]
+- [[https://github.com/browserify/browserify-handbook][Browserify Handbook]] :: This document written by @substack covers how to use
+     browserify to build modular applications. Recommended as a starting point.
+- [[http://lincolnloop.com/blog/untangle-your-javascript-browserify/][Untangle Your JavaScript with Browserify]] :: A straightforward introduction to
+     browserify, including integration with Grunt and Gulp.
+
+
+You can use {{{file(browserify)}}} to organize your code and use third-party
+libraries even if you don't use Node itself in any other capacity except for
+bundling and installing packages with {{{command(npm)}}}.
+
+Browsers don't have the ~require~ method defined, but Node.js does.  With
+Browserify you can write code that uses ~require~ in the same way that you
+would use it in Node.
+
+** Installing and Using Browserify
+
+The {{{command(browserify)}}} command can be installed globally, allowing one
+to use Browserify from the command line.  The command {{{command(browserify)}}}
+depends upon Node being installed.  After that, to install
+{{{command(browserify)}}} globally:
+
+: npm install -g browserify
+
+To use {{{command(browserify)}}} globally:
+
+: browserify main.js -o bundle.js
+: <script src="bundle.js"></script>
+
+The {{{command(browserify)}}} command parses the AST for ~require()~ calls in
+order to traverse the entire dependency graph of your project and produce a
+single bundled, compiled file.  That is, Browserify recursively bundles up all
+the required modules starting at ~main.js~ into a single file called
+~bundle.js~.  The =<script>= tag sources the bundled file in a browser,
+allowing the code to run.
+
+
 * Babelify
+:PROPERTIES:
+:appendix: t
+:END:
+
+- [[https://www.npmjs.com/package/babelify][Babelify Home]]
+- [[https://github.com/browserify/browserify][Babelify GitHub]]
+
+* Babelify (old)
 :PROPERTIES:
 :APPENDIX: t
 :END:
@@ -9379,6 +9440,14 @@ Your dependencies will need to be modified like so:
 : babel-cli -> @babel/cli.
 For us, we basically started by replacing =babel- =with @babel/=.
 
+* Gulp
+:PROPERTIES:
+:appendix: t
+:END:
+
+- [[https://gulpjs.com][Gulp Home]]
+- [[https://github.com/gulpjs/gulp][Gulp GitHub]]
+
 * Listings
 :PROPERTIES:
 :APPENDIX: t
@@ -9422,7 +9491,7 @@ with React.js
 #+MACRO:cite @@texinfo:@cite{@@$1@@texinfo:}@@
 #+MACRO:noindent @@texinfo:@noindent @@
 #+MACRO:dfn @@texinfo:@dfn{@@$1@@texinfo:}@@
-#+MACRO:option @@texinfo:@option{@@$1@@texinffo:}@@
+#+MACRO:option @@texinfo:@option{@@$1@@texinfo:}@@
 * EXPORT SETTINGS                                                  :noexport:
 #+STARTUP:showall indent
 #+OPTIONS: h:4
