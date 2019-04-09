@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-04-09 Tue 08:50>
+#+DATE: <2019-04-09 Tue 10:22>
 
 #+TEXINFO: @insertcopying
 
@@ -299,7 +299,7 @@ set up properly.
 (setq org-babel-use-quick-and-dirty-noweb-expansion t)
 #+END_SRC
 
-* Installing Powerful Tools for your Project~
+* Installing Powerful Tools for your Project
 
 #+CINDEX:Kettering, Charles
 #+BEGIN_QUOTE
@@ -996,14 +996,15 @@ tree snapterest -I node_modules
 
 ** Building the Project
 
-   #+CINDEX:DRY
-   #+CINDEX:code reuse
-- *DRY*: *Don't Repeat Yourself* ::
+{{{heading(DRY---Don't Repeat Yourself)}}}
 
-     One of the core principles in software development --- code reuse: The
-     best code is the one that you don't need to write.  One of the goals in
-     this project is to write as little code as possible.  React helps us
-     achieve this goal.
+#+CINDEX:DRY
+#+CINDEX:code reuse
+#+BEGIN_QUOTE
+One of the core principles in software development --- code reuse: The best
+code is the one that you don't need to write.  One of the goals in this project
+is to write as little code as possible.  React helps us achieve this goal.
+#+END_QUOTE
 
 #+CINDEX:declarative programming style
 #+CINDEX:programming style, declarative
@@ -1041,7 +1042,7 @@ that we want to reuse.  We can install them via the ~npm install
 *package*, and each *npm package* has a ~package.json~ file that describes the
 metadata associated with that package.[fn::[[https://docs.npmjs.com/files/package.json][package.json docs]]]
 
-*** Initializing a Node.js Package for Code Reuse
+*** Code Reuse using Node.js Module Packages
 :PROPERTIES:
 :CUSTOM_ID: create package.json
 :END:
@@ -1108,7 +1109,7 @@ built of multiple individual applications is called {{{dfn(modular)}}} whereas
 individual applications are called {{{dfn(modules)}}} This is what we will call
 our Node.js dependencies from now on: *Node.js modules*
 
-{{{subheading(Packing using the Build Process)}}}
+{{{subheading(Packaging using the Build Process)}}}
 
 #+CINDEX:build development process
 #+CINDEX:build script
@@ -1124,28 +1125,31 @@ reusing Node.js modules.  Does this mean that you'll be reusing Node.js modules
 in a non-Node.js application?  Is that even possible?  Yes, there is a way of
 doing that.
 
-*** Bundling Dependencies with Browserify
+**** Bundling Dependency Node Modules using Browserify
 
 #+CINDEX:Browserify, dfn
 #+CINDEX:bundling, using Browserify
 #+CINDEX:build process, using Browserify
 <<Browserify>>{{{dfn(Browserify)}}} ([[*Browserify][Browserify]] in the Appendix) is a tool used
-for bundling all your dependency files together in such a way that you can use
-Node.js modules in client-side JavaScript applications in the browser.  Learn
-more about it at the home page of [[http://browserify.org][Browserify]] on the web.
+for {{{dfn(bundling)}}} all your dependency files together in such a way that
+you can use Node.js modules in client-side JavaScript applications in the
+browser.  Learn more about it at the home page of [[http://browserify.org][Browserify]] on the web.
 
-Browserify allows you to use Node.js modules in your client-side JavaScript
-applications.  It will be a part of your build process.
+In other words, Browserify enables you to use Node.js modules in your
+client-side JavaScript applications in the browser using the =module=,
+=module.exports=, and ~require()~ functionality of Node.js.  Browserify will be
+a part of your build process.
+
+{{{subheading(Installing Browserify in your Project)}}}
 
 #+CINDEX:install Browserify
 #+CINDEX:Browserify, install
-To install Browserify in your project, run the following command from inside
-the ~<dir>/snapterest/~ directory:
+To use Browserify, you must install it into your project.  To install
+Browserify in your project, run the following command from inside the
+~<dir>/snapterest/~ directory:
 : npm install --save-dev browserify
 or
 : yarn add --dev browserify
-
-{{{heading(Installing Browserify)}}}
 
 #+NAME:install Browserify
 #+HEADER: :exports results :results output
@@ -1153,7 +1157,7 @@ or
 yarn add --dev browserify
 #+END_SRC
 
-*** Building the Project with Gulp
+*** Building the Project
 
 #+CINDEX:Gulp.js
 #+CINDEX:build tools
@@ -1163,26 +1167,28 @@ concerns that are addressed individually by various technologies.  Addressing
 each concern individually simplifies the overall process of managing the
 project's complexity.  The downside of this approach is that at some point in
 your project, you need to put together all the individual parts into one
-pcoherent application.  Developers have something called /build-tools/ that
-assemble their projects from individual modules.  This process is called the
-/build/ process and, depending on the size and complexity of your project, it
-can take anywhere from milliseconds to hours to build.
+coherent application.  Developers use {{{dfn(build-tools)}}} to assemble their
+projects from individual modules.  This process is called the {{{dfn(build)}}}
+process and, depending on the size and complexity of your project, it can take
+anywhere from milliseconds to hours to build.
+
+{{{heading(Building with Gulp.js)}}}
 
 The Node.js ecosystem has a great tool for automating our build process,
 *Gulp.js*.  You can learn more about it at [[http://gulpjs.com][Gulp]].
 
-**** Install Gulp
+**** Installing Gulp
 
 #+CINDEX:install Gulp.js
 #+CINDEX:Gulp.js installation
 Let's install Gulp using {{{command(npm)}}} or {{{command(yarn)}}}:
 : npm install --save-dev gulp
 or
-: yarn add --dev gelp
+: yarn add --dev gulp
 
-#+CAPTION:Shell script to install Gulp
 #+NAME:install Gulp
-#+BEGIN_SRC sh :dir snapterest :exports both :results output
+#+HEADER :exports results :results output
+#+BEGIN_SRC sh :dir snapterest
 yarn add --dev gulp
 #+END_SRC
 
@@ -1190,9 +1196,9 @@ yarn add --dev gulp
 
 #+CINDEX:gulpfile
 #+CINDEX:@file{gulpfile.js}
-<<example-gulpfile.js>>What is a /gulpfile/?  It's a file where we describe our
-build process.  Create ~gulpfile.js~ in your ~<dir>/snapterest/~ directory and
-add the following content to it[fn::from
+<<example-gulpfile.js>>What is a /gulpfile/?  It's a file in which we describe
+our build process.  Create a small example ~gulpfile.js~ in your
+~<dir>/snapterest/~ directory and add the following content to it[fn::from
 https://gulpjs.com/docs/en/getting-started/quick-start#create-a-gulpfile]:
 
 #+CAPTION:Example of a ~gulpfile.js~
@@ -1207,11 +1213,12 @@ exports.default = defaultTask;
 #+END_SRC
 
 #+CINDEX:@command{gulp} command
-<<gulp-command>>Now if you run the ~gulp~ command:
+<<gulp-command>>Now if you run the ~gulp~ command from inside this directory:
 : yarn run gulp
 
-{{{noindent}}} you will see output thatlooks like this:
+{{{noindent}}} you will see output that looks like this:
 
+#+CAPTION:Example Gulp Output
 #+BEGIN_EXAMPLE
 Using gulpfile ~/<dir>/snapterest/gulpfile.js
 Starting 'default'...
@@ -1219,15 +1226,15 @@ I am about to learn the essentials of React.js
 Finished 'default' after 62 us
 #+END_EXAMPLE
 
-**** Creating a Default Gulp Task
+**** Creating a Default Gulp Task to Build the Project
 
 #+CINDEX:@samp{default} task
 #+CINDEX:Gulp task
 #+CINDEX:Gulp.js build system
 #+CINDEX:Browserify
 <<default-gulp-task>>By default, when you run ~gulp~, it executes a task called
-=default=.  You now have a working Gulp build system.  Let's create a task tht
-will package our source and dependency modules using Browserify.
+=default=.  You now have a working Gulp build system.  Now create a default
+task that will package your source and dependency modules using [[Browserify][Browserify]].
 
 #+CINDEX:@file{gulpfile.js}
 <<default-gulpfile.js>>Replace the contents of your ~gulpfile.js~ with the
