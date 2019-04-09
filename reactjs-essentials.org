@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-04-09 Tue 10:22>
+#+DATE: <2019-04-09 Tue 10:42>
 
 #+TEXINFO: @insertcopying
 
@@ -1174,8 +1174,8 @@ anywhere from milliseconds to hours to build.
 
 {{{heading(Building with Gulp.js)}}}
 
-The Node.js ecosystem has a great tool for automating our build process,
-*Gulp.js*.  You can learn more about it at [[http://gulpjs.com][Gulp]].
+The Node.js ecosystem has a great tool for automating your build process,
+{{{file(Gulp.js)}}}.  You can learn more about it at [[http://gulpjs.com][Gulp]].
 
 **** Installing Gulp
 
@@ -1187,7 +1187,7 @@ or
 : yarn add --dev gulp
 
 #+NAME:install Gulp
-#+HEADER :exports results :results output
+#+HEADER: :exports results :results output
 #+BEGIN_SRC sh :dir snapterest
 yarn add --dev gulp
 #+END_SRC
@@ -1197,11 +1197,13 @@ yarn add --dev gulp
 #+CINDEX:gulpfile
 #+CINDEX:@file{gulpfile.js}
 <<example-gulpfile.js>>What is a /gulpfile/?  It's a file in which we describe
-our build process.  Create a small example ~gulpfile.js~ in your
-~<dir>/snapterest/~ directory and add the following content to it[fn::from
+our build process.
+
+Create a small example ~gulpfile.js~ in your ~<dir>/snapterest/~ directory and
+add the following content to it[fn::from
 https://gulpjs.com/docs/en/getting-started/quick-start#create-a-gulpfile]:
 
-#+CAPTION:Example of a ~gulpfile.js~
+#+CAPTION:Example ~gulpfile.js~
 #+NAME:example-gulpfile.js
 #+BEGIN_SRC js :eval no
 function defaultTask(cb) {
@@ -1258,24 +1260,23 @@ gulp.task('default', function(cb) {
 });
 #+END_SRC
 
-*** Install Babelify
+*** Transpiling JSX Code using Babelify
 
 #+CINDEX:Babelify
+#+CINDEX:JSX syntax
+Babelify transpiles code written in the JSX syntax into JavaScript code, which
+will be introduced in the next chapter.
+
 #+CINDEX:install @file{babelify} module
 <<install-Browserify>>We have already installed the ~browserify~ module, so now
-let's install ([[*Babelify][Babelify]]) the [[https://www.npmjs.com/package/babelify][~babelify~ module]][fn::See [[https://github.com/fedosejev/react-essentials/blob/master/updates.md#chapter-1-page-14][errata]]; The book uses
-babelify version 6.  Version 7 introduced some [[https://github.com/fedosejev/react-essentials#i-get-syntaxerror-appjs-unexpected-token-when-i-run-gulp-command-what-should-i-do][breaking changes]]; to use Version
-7, see [[https://github.com/fedosejev/react-essentials/issues/21#issuecomment-160316774][this comment]].][[fn::The current version is now =10.0.0=.]:
-
+let's install the [[https://www.npmjs.com/package/babelify][~babelify~ module]][fn::See [[https://github.com/fedosejev/react-essentials/blob/master/updates.md#chapter-1-page-14][errata]]; The book uses babelify
+version 6.  Version 7 introduced some [[https://github.com/fedosejev/react-essentials#i-get-syntaxerror-appjs-unexpected-token-when-i-run-gulp-command-what-should-i-do][breaking changes]]; to use Version 7, see
+[[https://github.com/fedosejev/react-essentials/issues/21#issuecomment-160316774][this comment]].][[fn::The current version is now =10.0.0=.] ([[*Babelify][Babelify]]):
 
 #+NAME:install Babelify
 #+BEGIN_SRC sh :dir snapterest :exports both :results output
 yarn add --dev babelify@^6.2.0
 #+END_SRC
-
-#+CINDEX:JSX
-The ~babelify~ module allows us to write the JSX syntax that we'll introduce in
-the next chapter.
 
 *** Install Vinyl-Source-Stream Module
 
