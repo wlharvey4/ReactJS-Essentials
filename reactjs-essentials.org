@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-04-09 Tue 11:06>
+#+DATE: <2019-04-09 Tue 12:15>
 
 #+TEXINFO: @insertcopying
 
@@ -1125,7 +1125,7 @@ reusing Node.js modules.  Does this mean that you'll be reusing Node.js modules
 in a non-Node.js application?  Is that even possible?  Yes, there is a way of
 doing that.
 
-**** Bundling Dependency Node Modules using Browserify
+*** Bundling Dependency Node Modules using Browserify
 
 #+CINDEX:Browserify, dfn
 #+CINDEX:bundling, using Browserify
@@ -1152,12 +1152,12 @@ or
 : yarn add --dev browserify
 
 #+NAME:install Browserify
-#+HEADER: :exports results :results output
+#+HEADER: :exports both :results output
 #+BEGIN_SRC sh :dir snapterest
 yarn add --dev browserify
 #+END_SRC
 
-**** Transpiling JSX Code using Babelify
+*** Transpiling JSX Code using Babelify
 
 #+CINDEX:Babelify
 #+CINDEX:JSX syntax
@@ -1171,25 +1171,12 @@ babelify version 6.  Version 7 introduced some [[https://github.com/fedosejev/re
 7, see [[https://github.com/fedosejev/react-essentials/issues/21#issuecomment-160316774][this comment]].][fn::The current version is now =10.0.0=.]:
 
 #+NAME:install Babelify
-#+BEGIN_SRC sh :dir snapterest :exports both :results output
+#+HEADER: :exports both :results output
+#+BEGIN_SRC sh :dir snapterest
 yarn add --dev babelify@^6.2.0
 #+END_SRC
 
-**** Installing Vinyl-Source-Stream Module
-
-#+CINDEX:Vinyl Source Stream module
-#+CINDEX:Browserify and Gulp
-<<install-Vinyl-Source-Stream>>Why do we need the [[https://www.npmjs.com/package/vinyl-source-stream][~vinyl-source-stream~ module]]?
-It allows us to use Browserify and Gulp together.  For more details on why this
-works, go to [[https://www.npmjs.com/package/vinyl-source-stream][Vinyl-Source-Stream]].  Let's install the ~vinyl-source-stream~
-dependency module:
-
-#+NAME:install Vinyl Source Stream module
-#+BEGIN_SRC sh :dir snapterest :exports both :results output
-yarn add --dev vinyl-source-stream
-#+END_SRC
-
-*** Building the Project
+*** Building the Project with Gulp.js
 
 #+CINDEX:Gulp.js
 #+CINDEX:build tools
@@ -1222,6 +1209,21 @@ or
 #+HEADER: :exports results :results output
 #+BEGIN_SRC sh :dir snapterest
 yarn add --dev gulp
+#+END_SRC
+
+**** Installing the Vinyl-Source-Stream Module in Gulp
+
+#+CINDEX:Vinyl Source Stream module
+#+CINDEX:Browserify and Gulp
+<<install-Vinyl-Source-Stream>>Why do we need to install the
+[[https://www.npmjs.com/package/vinyl-source-stream][~vinyl-source-stream~ module]]?  It allows us to use Browserify and Gulp
+together.  For more details on why this works, go to [[https://www.npmjs.com/package/vinyl-source-stream][Vinyl-Source-Stream]].
+Let's install the ~vinyl-source-stream~ dependency module:
+
+#+NAME:install vinyl-source-stream module
+#+HEADER: :exports both :results output
+#+BEGIN_SRC sh :dir snapterest
+yarn add --dev vinyl-source-stream
 #+END_SRC
 
 **** Creating an Example Gulp File
@@ -1292,7 +1294,7 @@ gulp.task('default', function(cb) {
 });
 #+END_SRC
 
-*** Test Default Gulp Task
+**** Test the Default Gulp Task
 
 #+CINDEX:gulp default task
 <<test-gulp-default-task>>Now we're ready to test our ~default~ task.  Run:
