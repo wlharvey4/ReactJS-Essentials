@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-04-09 Tue 12:15>
+#+DATE: <2019-04-09 Tue 12:52>
 
 #+TEXINFO: @insertcopying
 
@@ -1231,11 +1231,11 @@ yarn add --dev vinyl-source-stream
 #+CINDEX:gulpfile
 #+CINDEX:@file{gulpfile.js}
 <<example-gulpfile.js>>What is a /gulpfile/?  It's a file in which we describe
-our build process.
+the build process.
 
-Create a small example ~gulpfile.js~ in your ~<dir>/snapterest/~ directory and
-add the following content to it[fn::from
-https://gulpjs.com/docs/en/getting-started/quick-start#create-a-gulpfile]:
+Create a small example ~gulpfile.js~ in the ~<dir>/snapterest/~ directory and
+add the following content to it: [fn::from
+https://gulpjs.com/docs/en/getting-started/quick-start#create-a-gulpfile]
 
 #+CAPTION:Example ~gulpfile.js~
 #+NAME:example-gulpfile.js
@@ -1268,12 +1268,12 @@ Finished 'default' after 62 us
 #+CINDEX:Gulp task
 #+CINDEX:Gulp.js build system
 #+CINDEX:Browserify
-<<default-gulp-task>>By default, when you run ~gulp~, it executes a task called
-=default=.  You now have a working Gulp build system.  Now create a default
-task that will package your source and dependency modules using [[Browserify][Browserify]].
+<<default-gulp-task>>By default when ~gulp~ is run, it executes a task called
+=default=.  You now have a working Gulp build system.  Create a =default= task
+that will package your source and dependency modules using [[Browserify][Browserify]].
 
 #+CINDEX:@file{gulpfile.js}
-<<default-gulpfile.js>>Replace the contents of your ~gulpfile.js~ with the
+<<default-gulpfile.js>>Create a ~gulpfile.js~ in ~<dir>/snapterest~ with the
 following code:
 
 #+CAPTION:A default ~gulpfile.js~ that will package source and dependency modules using Browserify
@@ -1327,8 +1327,10 @@ application with some Node.js modules that are ready to run in a web browser.
 #+CINDEX:@file{snapterest.js} file
 #+CINDEX:@file{snapterest/build} directory
 <<create-index.html>>All that is left to do is to create the ~index.html~ file
-with a link to our ~snapterest.js~ script.  Create the ~index.html~ file in the
-~<dir>/snapterest/build/~ directory.  Add the following HTML markup to it:
+with a script link to our ~snapterest.js~ bundled file.
+
+Create an ~index.html~ file in the ~<dir>/snapterest/build/~ directory and add
+the following HTML markup to it:
 
 #+CAPTION:Project Snapterest ~index.html~
 #+NAME:index.html
@@ -1350,9 +1352,13 @@ with a link to our ~snapterest.js~ script.  Create the ~index.html~ file in the
 </html>
 #+END_SRC
 
-<<open-index.html>>Open ~<dir>/snapterest/build/index.html~ in a web browser.
-You should see the following text: ``I am about to learn the essentials of
-React.js.''
+Notice the ~<script src="./snapterest.js">~ tag just before the closing
+=</body>= tag.  This links to the bundled file created by running the Gulp
+default task.
+
+<<open-index.html>>Now open ~<dir>/snapterest/build/index.html~ in a web browser.
+You should see the following text: {{{samp(I am about to learn the essentials of
+React.js)}}}.
 
 ** Summary
 
