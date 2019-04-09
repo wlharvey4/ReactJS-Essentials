@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-04-09 Tue 10:42>
+#+DATE: <2019-04-09 Tue 10:54>
 
 #+TEXINFO: @insertcopying
 
@@ -1269,9 +1269,9 @@ will be introduced in the next chapter.
 
 #+CINDEX:install @file{babelify} module
 <<install-Browserify>>We have already installed the ~browserify~ module, so now
-let's install the [[https://www.npmjs.com/package/babelify][~babelify~ module]][fn::See [[https://github.com/fedosejev/react-essentials/blob/master/updates.md#chapter-1-page-14][errata]]; The book uses babelify
-version 6.  Version 7 introduced some [[https://github.com/fedosejev/react-essentials#i-get-syntaxerror-appjs-unexpected-token-when-i-run-gulp-command-what-should-i-do][breaking changes]]; to use Version 7, see
-[[https://github.com/fedosejev/react-essentials/issues/21#issuecomment-160316774][this comment]].][[fn::The current version is now =10.0.0=.] ([[*Babelify][Babelify]]):
+let's install the [[https://www.npmjs.com/package/babelify][~babelify~ module]] ([[*Babelify][Babelify]]) [fn::See [[https://github.com/fedosejev/react-essentials/blob/master/updates.md#chapter-1-page-14][errata]]; The book uses
+babelify version 6.  Version 7 introduced some [[https://github.com/fedosejev/react-essentials#i-get-syntaxerror-appjs-unexpected-token-when-i-run-gulp-command-what-should-i-do][breaking changes]]; to use Version
+7, see [[https://github.com/fedosejev/react-essentials/issues/21#issuecomment-160316774][this comment]].][fn::The current version is now =10.0.0=.]:
 
 #+NAME:install Babelify
 #+BEGIN_SRC sh :dir snapterest :exports both :results output
