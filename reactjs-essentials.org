@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-04-09 Tue 12:52>
+#+DATE: <2019-04-09 Tue 18:18>
 
 #+TEXINFO: @insertcopying
 
@@ -1166,14 +1166,14 @@ will be introduced in the next chapter.
 
 #+CINDEX:install @file{babelify} module
 <<install-Browserify>>We have already installed the ~browserify~ module, so now
-let's install the [[https://www.npmjs.com/package/babelify][~babelify~ module]] ([[*Babelify][Babelify]]) [fn::See [[https://github.com/fedosejev/react-essentials/blob/master/updates.md#chapter-1-page-14][errata]]; The book uses
-babelify version 6.  Version 7 introduced some [[https://github.com/fedosejev/react-essentials#i-get-syntaxerror-appjs-unexpected-token-when-i-run-gulp-command-what-should-i-do][breaking changes]]; to use Version
-7, see [[https://github.com/fedosejev/react-essentials/issues/21#issuecomment-160316774][this comment]].][fn::The current version is now =10.0.0=.]:
+let's install the [[https://www.npmjs.com/package/babelify][~babelify~ module]] ([[*Babelify][Babelify]] in the Appendix) [fn::See [[https://github.com/fedosejev/react-essentials/blob/master/updates.md#chapter-1-page-14][errata]];
+The book uses babelify version 6.  Version 7 introduced some [[https://github.com/fedosejev/react-essentials#i-get-syntaxerror-appjs-unexpected-token-when-i-run-gulp-command-what-should-i-do][breaking changes]];
+to use Version 7, see [[https://github.com/fedosejev/react-essentials/issues/21#issuecomment-160316774][this comment]].][fn::The current version is now =10.0.0=.]:
 
 #+NAME:install Babelify
 #+HEADER: :exports both :results output
 #+BEGIN_SRC sh :dir snapterest
-yarn add --dev babelify@^6.2.0
+yarn add --dev babelify @babel/core @babel/preset-env @babel/preset-react
 #+END_SRC
 
 *** Building the Project with Gulp.js
@@ -1191,7 +1191,7 @@ projects from individual modules.  This process is called the {{{dfn(build)}}}
 process and, depending on the size and complexity of your project, it can take
 anywhere from milliseconds to hours to build.
 
-{{{heading(Building with Gulp.js)}}}
+{{{heading(Gulp.js Build Tool)}}}
 
 The Node.js ecosystem has a great tool for automating your build process,
 {{{file(Gulp.js)}}}.  You can learn more about it at [[http://gulpjs.com][Gulp]].
@@ -1270,7 +1270,8 @@ Finished 'default' after 62 us
 #+CINDEX:Browserify
 <<default-gulp-task>>By default when ~gulp~ is run, it executes a task called
 =default=.  You now have a working Gulp build system.  Create a =default= task
-that will package your source and dependency modules using [[Browserify][Browserify]].
+that will package your source and dependency modules using Browserify
+([[Browserify][Browserify]], above).
 
 #+CINDEX:@file{gulpfile.js}
 <<default-gulpfile.js>>Create a ~gulpfile.js~ in ~<dir>/snapterest~ with the
@@ -1286,7 +1287,7 @@ var source = require('vinyl-source-stream');
 
 gulp.task('default', function(cb) {
     return browserify('./source/app.js')
-        .transform(babelify)
+        .transform('babelify', {presets: ['@babel/preset-env', '@babel/preset-react']})
         .bundle()
         .pipe(source('snapterest.js'))
         .pipe(gulp.dest('./build/'));
@@ -9264,8 +9265,13 @@ allowing the code to run.
 :appendix: t
 :END:
 
+``Babel browserify transform''
+
 - [[https://www.npmjs.com/package/babelify][Babelify Home]]
 - [[https://github.com/browserify/browserify][Babelify GitHub]]
+
+
+
 
 * Babelify (old)
 :PROPERTIES:
