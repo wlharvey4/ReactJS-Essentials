@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-04-19 Fri 01:48>
+#+DATE: <2019-04-19 Fri 10:30>
 
 #+TEXINFO: @insertcopying
 
@@ -9300,11 +9300,16 @@ post Tweets through their platform using the statuses/update endpoint, the
 developer would have to use *user authentication* to get permission from the
 user to post a Tweet on their behalf.
 
+#+CINDEX:signed request
 #+CINDEX:access token, user's
-In other words, a signed request identifies an application’s identity in
+#+CINDEX:app identity
+#+CINDEX:identity, app
+#+CINDEX:permissions, granted
+#+CINDEX:user identity
+In other words, a *signed request* identifies an application’s identity in
 addition to the identity accompanying granted permissions of the end-user the
-application is making API calls on behalf of, represented by the user’s access
-token.
+application is making API calls on behalf of, represented by the *user’s access
+token*.
 
 #+CINDEX:consumer key and secret
 #+CINDEX:access token and secret
@@ -9312,6 +9317,77 @@ User authentication requires the consumer key and secret from your Twitter app
 and the access token and access token secret retrieved through the
 [[https://developer.twitter.com/en/docs/basics/authentication/overview/3-legged-oauth][3-legged-OAuth]] process with the user that the developer is acting on the behalf
 of.
+
+****** Application-only Authentication
+
+#+CINDEX:authenticated requests
+#+CINDEX:requests, authenticated
+Twitter offers applications the ability to issue *authenticated requests* on
+behalf of the application itself (as opposed to on behalf of a specific user).
+
+{{{heading(OAuth2 Client Credentials Grant Flow)}}}
+
+#+CINDEX:OAuth2
+#+CINDEX:Client Credentials Grant flow
+#+CINDEX:application only authentication
+Twitter’s implementation is based on the [[http://tools.ietf.org/html/rfc6749#section-4.4][Client Credentials Grant]] flow of the
+[[http://tools.ietf.org/html/rfc6749][OAuth 2 specification]]. [fn::OAuth 1.0a is still required to issue requests on
+behalf of users.]]
+
+With application-only authentication, you can perform the following:
+
+- Pull user timelines;
+- Access friends and followers of any account;
+- Access lists resources;
+- Search in Tweets;
+- Retrieve any user information, excluding the user's email address;
+
+
+#+CINDEX:user context
+#+CINDEX:user authentication
+#+CINDEX:access token
+You will need user context, or user authentication with an access token to
+perform the following:
+
+- Post Tweets or other resources;
+- Connect to Streaming endpoints;
+- Search for users;
+- Use any geo endpoint;
+- Access Direct Messages or account credentials;
+- Retrieve user's email addresses;
+
+****** Auth Flow
+The application-only auth flow follows these steps:
+
+- An application encodes its consumer key and secret into a specially encoded
+  set of credentials.
+
+- An application makes a request to the [[https://developer.twitter.com/oauth/reference/post/oauth2/token][POST oauth2 / token]] endpoint to
+  exchange these credentials for a bearer token.
+
+- When accessing the REST API, the application uses the bearer token to
+  authenticate.
+
+
+Because there is no need to sign a request, this approach is dramatically
+simpler than the standard OAuth 1.0a model.
+
+#+begin_comment
+The following conditional statements are necessary because the HTML looks for
+the figure from a different source than the INFO.  However, when this source
+file is compiled, it is compiled from the root directory, and therefore does
+not find the 'figures/' directory and throws a warning.  This warning should be
+ignored.
+#+end_comment
+
+#+caption:Application-only auth flow
+#+name:appauth0.png
+#+texinfo:@ifnothtml
+[[file:figures/appauth0.png]]
+#+texinfo:@end ifnothtml
+#+texinfo:@ifhtml
+[[file:../figures/appauth0.png]]
+#+texinfo:@end ifhtml
 
 **** Guides
 
