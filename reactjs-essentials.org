@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-04-09 Tue 19:42>
+#+DATE: <2019-04-19 Fri 01:48>
 
 #+TEXINFO: @insertcopying
 
@@ -375,7 +375,7 @@ and look at solutions that React provides.
 
 #+CINDEX:Flux
 #+CINDEX:mental model
-You will learn about Flux, [[*Flux][Flux]], which implements a /unidirectional flow of
+You will learn about Flux, ([[*Flux][Flux)]], which implements a /unidirectional flow of
 data/.  Together with Flux and React, you'll create a predictable and
 manageable code base that you will be able to expand upon by adding new
 features /without scaling its complexity/.  The mental model of how your web
@@ -417,13 +417,16 @@ the following core functionalities:
 When you start working on a new project, the very first thing that you do is
 get your tools ready.  For this project, we will be using a number of tools.
 
-- Node.js and {{{command(npm)}}} or {{{command(yarn)}}} for installing and
-  running React
-- Git for installing tools
-- The Twitter Streaming API for obtaining data
+- *Node.js* and *{{{command(npm)}}}* (or *{{{command(yarn)}}}*) for installing
+  and running React
+
+- *Git* for installing tools
+
+- The *Twitter Streaming API* for obtaining data
   + Twitter account
   + Twitter app
-- The Snapkite Engine for filtering data
+
+- The *Snapkite Engine* for filtering data
 
 *** Node.js and npm
 
@@ -449,27 +452,32 @@ get your tools ready.  For this project, we will be using a number of tools.
 
 #+CINDEX:install Node.js
 #+CINDEX:Jest
-Install Node.js.  We'll be using version =v0.10.40=[fn::The currently installed
-version of Node.js as of {{{date}}} is src_sh[:exports results]{node -v}.]
-because, at the time of writing this book, that's the latest version of Node.js
-that Jest supports.[fn::The currently available versions of Node.js as of the
-publication of this document ({{{date}}}) are =10.15.3 LTS= and =11.11.0
-Current=.  The current version of Jest is =24.1=, which appears to work with
-the current version of Node.js and React.]
+At the time the book was written, the version of Node.js that was used was
+=v0.10.40=[fn::For this project , the version of Node.js installed on
+{{{date}}} was src_sh[:exports results]{node -v}.]  because, at that time that
+was the latest version of Node.js that Jest supported.[fn::The currently
+available versions of Node.js as of the publication of this document
+({{{date}}}) are =10.15.3 LTS= and =11.14.0 Current=.  The current version of
+Jest is =24.6=, which appears to work with the current version of Node.js and
+React.]
 
 #+CINDEX:distribution, Node.js
 #+CINDEX:installation package, Node.js
-- Go to http://nodejs.org/dist/v0.10.40/ and download the installation package
-  for your OS[fn::One can also use NVM (Node Version Manager) to install a
-  particular Node.js version. ([[https://github.com/creationix/nvm][NVM on Github]])]:
+- If you do not have Node.js installed, go to http://nodejs.org/dist/v0.10.40/
+  and download the installation package for your OS[fn::One can also use NVM
+  (Node Version Manager) to install a particular Node.js version. ([[https://github.com/creationix/nvm][NVM on
+  Github]])]:
 
     #+CINDEX:OS X
   - [[http://nodejs.org/dist/v0.10.40/node-v0.10.40-darwin-x64.tar.gz][OS X]]:[fn::Created 09-Jul-2015 21:30] ::
 
       Run it and follow the installation steps that Node.js will prompt you with.
-      Test for successful installation:
-      : $ node -v
-      : v0.10.40
+      Test for successful installation with ~node -v~, which will print the
+       installed version if all went well:
+
+      #+begin_src sh :exports both :results output
+      node -v
+      #+end_src
 
 
 {{{subheading(npm Should Be Installed with Node.js)}}}
@@ -590,6 +598,7 @@ tweets to a web socket connection.  Our React app can listen to the events on
 that socket connection and process tweets as they arrive.
 
 <<my-notes>>My Notes [0/13]
+- [ ] [[https://developer.twitter.com][Developer on Twitter]]
 - [ ] [[https://developer.twitter.com/en/docs][Developer Docs]]
 - [ ] [[https://developer.twitter.com/en/docs/tutorials][Tutorials]]
 - [ ] [[https://developer.twitter.com/en/docs/tweets/filter-realtime/overview][Filter realtime Tweets]]
@@ -9125,7 +9134,190 @@ class CounterStore extends ReduceStore<number> {
 
 ** Twitter Docs
 
+- [[https://help.twitter.com/en][Twitter User Help]] Everything you need to know so you can use Twitter like a
+  pro
+  - [[https://help.twitter.com/en/using-twitter/tweeting-gifs-and-pictures][How to post photos or GIFs on Twitter]] ::
+       To post a photo or GIF in a Tweet:
+
+    1. Type your Tweet into the "What's happening" box at the top of your
+       timeline, or click the =Tweet= button.
+    2. Click the =gallery= button to upload a photo or GIF from your computer.
+    3. To search for and select a GIF from the GIF library, click the =GIF=
+       icon.  *Note*: Animated GIFs can't be included in Tweets with multiple
+       images. You can send only one GIF in a Tweet.
+    4. Once you choose a photo or GIF, the image will attach to your Tweet in
+       full size. You can select up to 4 photos to Tweet at once.
+    5. Click =Tweet= to post.  *Tip*: You can also send photos and GIFs in
+       Direct Messages.
+
+    What are the size and file type requirements?
+    - Photos can be up to 5MB; animated GIFs can be up to 5MB on mobile, and up
+      to 15MB on web.
+    - We accept GIF, JPEG, and PNG files.
+    - We DO NOT accept BMP, TIFF or other file formats.
+    - Your photo will be automatically scaled for display in your expanded
+      Tweet and in your gallery.
+
+- [[https://developer.twitter.com][Twitter Developer]]
+  - [[https://developer.twitter.com/en/use-cases/analyze][Analyze]] Use Case ::
+       Evaluate Twitter data to inform business decisions.  Twitter data is the
+       most comprehensive source of live, public conversation worldwide. Our
+       REST, streaming, and Enterprise APIs enable programmatic analysis of
+       data in real-time or back to the first Tweet in 2006. Get insight into
+       audiences, market movements, emerging trends, key topics, breaking news,
+       and much more.
+
+       We offer several tools and endpoints to help you analyze conversations
+       and respond to trends as they unfold.
+
 - [[https://developer.twitter.com/en/docs.html][Twitter Docs]]
+  - [[https://developer.twitter.com/en/docs/basics/getting-started][Getting Started]] with the Twitter Developer Platform ::
+       Twitter’s developer platform offers many APIs, tools, and resources that
+       enable you to harness the power of Twitter's open, global and real-time
+       communication network.
+
+       What do you want to build?
+    - Integrate Tweets into your app or website?
+    - Add the ability to post Tweets or send Direct Messages from your app or
+      website?
+    - Target an audience and advertise on the Twitter network?
+    - *Listen in real-time for Tweets of interest?*
+    - Conduct historical research and search from Twitter's massive archive of
+      publicly-available Tweets posted since March 2006?
+    - Measure how your Tweets or account are engaged with?
+
+      All of these use cases can be implemented with a Twitter API, or in many
+      cases a combination of APIs.
+
+  - Twitter's Developer Tools and APIs ::
+       Twitter’s developer platform includes numerous API endpoints and tools
+       to help you build an app and solution on Twitter.  Please review our full
+       set of developer APIs and tools on our [[https://developer.twitter.com/en/products/products-overview][Products Overview]] page.  These
+       tools include the following:
+    - Standard APIs
+    - Premium APIs
+    - Enterprise APIs
+    - Ads APIs
+    - Twitter for websites
+
+      #+CINDEX:Twitter App
+      #+CINDEX:App, Twitter
+      #+CINDEX:consumer keys
+      #+CINDEX:access tokens
+  - Creating a Twitter App ::
+       Integrating with nearly all of the Twitter APIs requires the creation of
+       a [[https://developer.twitter.com/en/docs/basics/developer-portal/guides/apps][Twitter app]] and the generation of consumer keys and access tokens.
+       The only exception to this are the *enterprise search*, *batched
+       historical*, and *streaming APIs*.
+
+       #+CINDEX:app authentication
+       #+CINDEX:user authentication
+       #+CINDEX:account authentication
+       #+CINDEX:authentication, app, user, account
+       Visit the [[https://developer.twitter.com/en/docs/basics/developer-portal/overview][developer portal]] with an approved developer account to create
+       a Twitter app and generate your authentication tokens.  These include:
+    - =consumer= tokens and secrets for app authentication, and
+    - =access= tokens and secrets for user/account authentication.
+
+
+*** Twitter Authentication
+
+https://developer.twitter.com/en/docs/basics/authentication/overview/authentication-and-authorization
+
+**** Overview
+
+***** Authentication and Authorization
+
+#+CINDEX:authentication
+#+CINDEX:authorization
+Using the Twitter API requires
+
+ - an authorized Twitter App and
+ - authenticated requests.
+
+{{{subheading(Authentication Methods)}}}
+
+The Twitter API supports a few authentication methods depending on the
+endpoint.  Each endpoint's API reference document will describe the required
+authentication method.
+
+When considering an API endpoint, it's important to note which authentication
+is needed on the request and create a plan for authorization when developing
+your application.  In general,
+
+ - endpoints related to specific user information will require OAuth
+   (Application-user) authentication, and
+
+ - endpoints related to retrieving publicly available information will require
+   OAuth2 (bearer token) or Basic Auth (for Enterprise data APIs).
+
+   #+CINDEX:OAuth2
+   #+CINDEX:bearer token
+   #+CINDEX:OAuth 1a
+   #+CINDEX:application-user, OAuth 1a
+For Standard REST and Streaming API, the required authentication method is
+ - OAuth2 (bearer token)
+ - OAuth 1a (application-user)
+
+***** Authentication---OAuth with the Twitter API
+Twitter uses OAuth 1.0a and OAuth2 to provide authorized access to the API.
+
+****** Twitter API Authentication Model
+
+#+CINDEX:application-only authentication
+#+CINDEX:authentication, application-only
+#+CINDEX:OAuth2 bearer token
+#+CINDEX:bearer token OAuth2
+{{{subheading(Application-only authentication: OAuth2 (bearer token))}}}
+
+Application-only authentication is a form of authentication where an
+application makes API requests on its own behalf, without the user context.
+This method is for developers that just need read-only to access public
+information.
+
+Example: If a developer is trying to view Tweets or lists that are publically
+available, then they just have to use application-only authentication.
+
+#+CINDEX:bearer token, generate
+To use this method, you need to use a *bearer token*.  You can generate a
+*bearer token* by passing your /consumer key/ and /secret/ through the [[https://developer.twitter.com/en/docs/basics/authentication/api-reference/token][POST
+oauth2 / token]] endpoint.
+
+#+CINDEX:rate limited
+API calls using app-only authentication are rate limited per API method at the
+app level.
+
+{{{subheading(Application-user authentication: OAuth 1a (access token for user context))}}}
+
+#+CINDEX:user authentication
+#+CINDEX:authentication, user
+#+CINDEX:OAuth1a
+The user authentication method of authentication allows an authorized app to
+act on behalf of the user, as the user.
+
+Example: if a developer wanted to build a feature that would allow a user to
+post Tweets through their platform using the statuses/update endpoint, the
+developer would have to use *user authentication* to get permission from the
+user to post a Tweet on their behalf.
+
+#+CINDEX:access token, user's
+In other words, a signed request identifies an application’s identity in
+addition to the identity accompanying granted permissions of the end-user the
+application is making API calls on behalf of, represented by the user’s access
+token.
+
+#+CINDEX:consumer key and secret
+#+CINDEX:access token and secret
+User authentication requires the consumer key and secret from your Twitter app
+and the access token and access token secret retrieved through the
+[[https://developer.twitter.com/en/docs/basics/authentication/overview/3-legged-oauth][3-legged-OAuth]] process with the user that the developer is acting on the behalf
+of.
+
+**** Guides
+
+**** FAQs
+
+**** API Reference
 
 ** Twitter Tutorial on Consuming Streaming Data
 
