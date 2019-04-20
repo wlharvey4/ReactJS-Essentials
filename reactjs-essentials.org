@@ -3,7 +3,7 @@
 #+TITLE: React.js Essentials
 #+SUBTITLE: A fast-paced guide to designing and building scalable and maintainable web apps with React.js
 #+AUTHOR: Artemij Fedosejev
-#+DATE: <2019-04-19 Fri 10:30>
+#+DATE: <2019-04-19 Fri 17:06>
 
 #+TEXINFO: @insertcopying
 
@@ -9130,14 +9130,17 @@ class CounterStore extends ReduceStore<number> {
 }
 #+END_SRC
 
-* Twitter and Snapkite
+* Twitter Information
 
-** Twitter Docs
+** Twitter User Docs
 
-- [[https://help.twitter.com/en][Twitter User Help]] Everything you need to know so you can use Twitter like a
-  pro
-  - [[https://help.twitter.com/en/using-twitter/tweeting-gifs-and-pictures][How to post photos or GIFs on Twitter]] ::
-       To post a photo or GIF in a Tweet:
+Everything you need to know so you can use Twitter like a pro
+
+{{{heading(How to post photos or GIFs on Twitter)}}}
+
+- [[https://help.twitter.com/en/using-twitter/tweeting-gifs-and-pictures]
+
+To post a photo or GIF in a Tweet:
 
     1. Type your Tweet into the "What's happening" box at the top of your
        timeline, or click the =Tweet= button.
@@ -9158,19 +9161,22 @@ class CounterStore extends ReduceStore<number> {
     - Your photo will be automatically scaled for display in your expanded
       Tweet and in your gallery.
 
-- [[https://developer.twitter.com][Twitter Developer]]
-  - [[https://developer.twitter.com/en/use-cases/analyze][Analyze]] Use Case ::
-       Evaluate Twitter data to inform business decisions.  Twitter data is the
-       most comprehensive source of live, public conversation worldwide. Our
-       REST, streaming, and Enterprise APIs enable programmatic analysis of
-       data in real-time or back to the first Tweet in 2006. Get insight into
-       audiences, market movements, emerging trends, key topics, breaking news,
-       and much more.
+** [[https://developer.twitter.com][Twitter Developer]]
 
-       We offer several tools and endpoints to help you analyze conversations
-       and respond to trends as they unfold.
+  - [[https://developer.twitter.com/en/use-cases/analyze][Analyze]] Use Case
 
-- [[https://developer.twitter.com/en/docs.html][Twitter Docs]]
+    Evaluate Twitter data to inform business decisions.  Twitter data is the
+    most comprehensive source of live, public conversation worldwide. Our REST,
+    streaming, and Enterprise APIs enable programmatic analysis of data in
+    real-time or back to the first Tweet in 2006. Get insight into audiences,
+    market movements, emerging trends, key topics, breaking news, and much
+    more.
+
+    We offer several tools and endpoints to help you analyze conversations and
+    respond to trends as they unfold.
+
+- [[https://developer.twitter.com/en/docs.html][Twitter Developer Docs]]
+
   - [[https://developer.twitter.com/en/docs/basics/getting-started][Getting Started]] with the Twitter Developer Platform ::
        Twitter’s developer platform offers many APIs, tools, and resources that
        enable you to harness the power of Twitter's open, global and real-time
@@ -9219,14 +9225,12 @@ class CounterStore extends ReduceStore<number> {
     - =consumer= tokens and secrets for app authentication, and
     - =access= tokens and secrets for user/account authentication.
 
-
-*** Twitter Authentication
-
+** Twitter Authentication
 https://developer.twitter.com/en/docs/basics/authentication/overview/authentication-and-authorization
 
-**** Overview
+*** Overview
 
-***** Authentication and Authorization
+**** Authentication and Authorization
 
 #+CINDEX:authentication
 #+CINDEX:authorization
@@ -9259,10 +9263,10 @@ For Standard REST and Streaming API, the required authentication method is
  - OAuth2 (bearer token)
  - OAuth 1a (application-user)
 
-***** Authentication---OAuth with the Twitter API
+**** Authentication---OAuth with the Twitter API
 Twitter uses OAuth 1.0a and OAuth2 to provide authorized access to the API.
 
-****** Twitter API Authentication Model
+***** Twitter API Authentication Model
 
 #+CINDEX:application-only authentication
 #+CINDEX:authentication, application-only
@@ -9318,7 +9322,7 @@ and the access token and access token secret retrieved through the
 [[https://developer.twitter.com/en/docs/basics/authentication/overview/3-legged-oauth][3-legged-OAuth]] process with the user that the developer is acting on the behalf
 of.
 
-****** Application-only Authentication
+***** Application-only Authentication
 
 #+CINDEX:authenticated requests
 #+CINDEX:requests, authenticated
@@ -9356,7 +9360,7 @@ perform the following:
 - Access Direct Messages or account credentials;
 - Retrieve user's email addresses;
 
-****** Auth Flow
+***** Auth Flow
 The application-only auth flow follows these steps:
 
 - An application encodes its consumer key and secret into a specially encoded
@@ -9389,17 +9393,158 @@ ignored.
 [[file:../figures/appauth0.png]]
 #+texinfo:@end ifhtml
 
-**** Guides
+***** Application-Only Auth
+{{{heading(Tokens are Passwords)}}}
 
-**** FAQs
+#+CINDEX:passwords
+#+CINDEX:consumer key, secret, password
+#+CINDEX:bearer token credentials, password
+Keep in mind that the consumer key and secret, bearer token credentials, and
+the bearer token itself grant access to make requests on behalf of an
+application.  These values should be considered as sensitive as passwords, and
+must not be shared or distributed to untrusted parties.
 
-**** API Reference
+{{{heading(SSL Required)}}}
+
+#+CINDEX:SSL
+#+CINDEX:HTTPS endpoints
+All requests (both to obtain and use the tokens) must use HTTPS endpoints.
+
+#+CINDEX:connecting to Twitter
+#+CINDEX:peers, verify
+Follow the best practices detailed in [[https://developer.twitter.com/overview/api/tls][Connecting to Twitter API using TLS]] ---
+peers should always be verified.
+
+{{{heading(Rate Limiting)}}}
+
+Applications have two kinds of rate limiting pools.
+
+Requests made on behalf of users with access tokens depletes from a different
+rate limiting context than that used in application-only authentication.
+
+[[https://developer.twitter.com/rest/reference/get/application/rate_limit_status][GET application / rate_limit_status]] supports application-only authentication.
+By issuing requests to this method with your application bearer token, you’ll
+receive a response indicating the current window’s per-resource rate limiting
+context.  You will receive an ``application'' field instead, with the value
+being your application's consumer key.
+
+#+begin_src js :eval no
+{
+  "rate_limit_context": {
+      "application": "nXtEH7H0mi0qT8kSyo7DQ"
+  },
+  "resources": {
+    "search": {
+      "/search/tweets": {
+        "limit": 450,
+        "remaining": 420,
+        "reset": 1362436375 }
+    }
+  }
+}
+#+end_src
+
+**** Issuing Application-Only Requests
+
+***** Encode Consumer Key and Secret
+The steps to encode an application’s consumer key and secret into a set of
+credentials to obtain a bearer token are:
+
+1. URL encode the consumer key and the consumer secret according to [[https://www.rfc-editor.org/info/rfc1738][RFC 1738]].
+   [fn::Note that at the time of writing, this will not actually change the consumer
+   key and secret, but this step should still be performed in case the format
+   of those values changes in the future.]
+
+2. Concatenate the encoded consumer key, a colon character =:=, and the encoded
+   consumer secret into a single string.
+
+3. [[http://en.wikipedia.org/wiki/Base64][Base64 encode]] [fn::Base64 is a group of binary-to-text encoding schemes that
+   represent binary data in an ASCII string format by translating it into a
+   radix-64 representation.  Each Base64 digit represents exactly 6 bits of
+   data (2^6 = 64).] the string from the previous step.
+
+***** Obtain a Bearer Token
+The value calculated in step 1 must be exchanged for a bearer token by issuing
+a request to [[https://developer.twitter.com/oauth/reference/post/oauth2/token][POST oauth2 / token]]:
+
+- The request must be a =HTTP POST= request.
+- The request must include an =Authorization= header with the value of =Basic
+  <base64 encoded value from step 1>=.
+- The request must include a =Content-Type= header with the value of
+  =application/x-www-form-urlencoded;charset=UTF-8=.
+- The body of the request must be =grant_type=client_credentials=.
+
+#+caption:Example request (Authorization header has been wrapped):
+#+name:bearer-token-request
+#+begin_example
+POST /oauth2/token HTTP/1.1
+Host: api.twitter.com
+User-Agent: My Twitter App v1.0.23
+Authorization: Basic eHZ6MWV2RlM0d0VFUFRHRUZQSEJvZzpMOHFxOVBaeVJn
+                     NmllS0dFS2hab2xHQzB2SldMdzhpRUo4OERSZHlPZw==
+Content-Type: application/x-www-form-urlencoded;charset=UTF-8
+Content-Length: 29
+Accept-Encoding: gzip
+
+grant_type=client_credentials
+#+end_example
+
+If the request was formatted correctly, the server will respond with a
+JSON-encoded payload:
+
+#+caption:Example Response
+#+name:example-response
+#+begin_example
+HTTP/1.1 200 OK
+Status: 200 OK
+Content-Type: application/json; charset=utf-8
+...
+Content-Encoding: gzip
+Content-Length: 140
+
+{"token_type":"bearer","access_token":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA%2F
+AAAAAAAAAAAAAAAAAAAA%3DAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"}
+#+end_example
+
+Applications should verify that the value associated with the =token_type= key
+of the returned object is =bearer=.  The value associated with the =access_token=
+key is the bearer token.
+
+Note that one bearer token is valid for an application at a time. Issuing
+another request with the same credentials to /oauth2/token will return the same
+token until it is invalidated.
+
+***** Authenticate API requests with the bearer token
+The bearer token may be used to issue requests to API endpoints which support
+application-only auth.
+
+To use the bearer token, construct a normal HTTPS request and include an
+=Authorization= header with the value of
+: Bearer <base64 bearer token value from step 2>
+Signing is not required.
+
+#+caption: Example Request
+#+name:example-request
+#+begin_example
+GET /1.1/statuses/user_timeline.json?count=100&screen_name=twitterapi HTTP/1.1
+Host: api.twitter.com
+User-Agent: My Twitter App v1.0.23
+Authorization: Bearer AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA%2FAAAAAAAAAAAA
+                      AAAAAAAA%3DAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+Accept-Encoding: gzip
+#+end_example
+
+*** Guides
+
+*** FAQs
+
+*** API Reference
 
 ** Twitter Tutorial on Consuming Streaming Data
 
 - [[https://developer.twitter.com/en/docs/tutorials/consuming-streaming-data][Consuming streaming data]]
 
-** Snapkite Engine
+* Snapkite Engine
 
 Snapkite Engine gives you filtered stream of photos posted publicly on Twitter.
 
@@ -9418,7 +9563,7 @@ It can do 2 (either or both) things with those photos:
 - [[http://snapterest.com/][Snapterest.com]]
 - [[http://map.snapkite.com/][Map.Snapkite.com]]
 
-*** Installation Instructions
+** Installation Instructions
 
 - https://github.com/snapkite/snapkite-engine#install
 
@@ -9430,7 +9575,7 @@ It can do 2 (either or both) things with those photos:
 5. Add your Twitter API keys to config.json
 6. Change default MongoDB config in config.json
 
-*** Configure Instructions
+** Configure Instructions
 
 - https://github.com/snapkite/snapkite-engine#configure
 
@@ -9468,11 +9613,11 @@ You can configure Snapkite Engine by editing config.json.
 
 - ~application.socket~ :: Socket configuration.
 
-*** Snapkite Filters
+** Snapkite Filters
 
 [[https://github.com/snapkite/snapkite-filters/blob/master/README.md][Everything you need to know]] about Snapkite filters.
 
-*** MongoDB
+** MongoDB
 
 https://github.com/snapkite/snapkite-engine#mongodb
 
