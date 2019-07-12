@@ -1791,7 +1791,8 @@ ReactDOM.render(reactElement, document.getElementById('react-application'));
 
 #+CAPTION:Example of ~children~ Parameter with a ~ReactText~ Element
 #+NAME:ch2-ReactElement-children-param
-[[file:img/ch2-ReactElement-children-param-50.png]]
+#+ATTR_TEXINFO: :alt img/ch2-ReactElement-children-param-50.png
+[[file:img/ch2-ReactElement-children-param-50]]
 
 This code will create an ~h1~ HTML element with a =class= attribute and a text
 node, {{{samp(This is React.)}}}:
@@ -1818,7 +1819,8 @@ ReactDOM.render(section, document.getElementById('react-application'));
 
 #+CAPTION:The ~children~ Parameter with an Array of ReactElements
 #+NAME:ch2-ReactElement-children-param-section
-[[file:img/ch2-ReactElement-children-param-section-50.png]]
+#+ATTR_TEXINFO: :alt img/ch2-ReactElement-children-param-section-50.png
+[[file:img/ch2-ReactElement-children-param-section-50]]
 
 We've created three React elements: ~h1~, ~p~, and ~section~.  ~h1~ and ~p~
 both have child text nodes, {{{samp(This is React.)}}} and {{{samp(And that's
@@ -1895,7 +1897,8 @@ ReactDOM.render(listOfItems, document.getElementById('react-application'));
 
 #+CAPTION:Creating Children with a Factory Function
 #+NAME:ch2-ReactElement-children-factory-function
-[[file:img/ch2-ReactElement-children-factory-function-50.png]]
+#+ATTR_TEXINFO: :alt img/ch2-ReactElement-children-factory-function-50.png
+[[file:img/ch2-ReactElement-children-factory-function-50]]
 
 #+CINDEX:@code{React.createFactory()} method
 In the preceding example, we're first called the ~React.createFactory()~
@@ -2084,7 +2087,8 @@ in a web browser.  You will see a list of three items.
 
 #+CAPTION:Creating a List of Items Using JSX
 #+NAME:children-using-jsx
-[[file:img/ch2-ReactElement-children-jsx-50.png]]
+#+ATTR_TEXINFO: :alt img/ch2-ReactElement-children-jsx-50.png
+[[file:img/ch2-ReactElement-children-jsx-50]]
 
 {{{heading(Online JSX Compiler)}}}
 
@@ -4460,7 +4464,7 @@ Navigate to ~<dir>/snapterest/source/components/~ and create the
 #+BEGIN_SRC js -r :tangle snapterest/source/components/Header.react.js
 var React = require('react');
 
-var headerStyle = {
+var headerStyle = {				(ref:headerStyle)
     fontSize: '16px',
     fontWeight: '300',
     display: 'inline-block',
@@ -4685,7 +4689,7 @@ property is missing:
 #+CAPTION:The =PropTypes= Object with ~isRequired~
 #+NAME:PropTypes-object-isRequired
 #+BEGIN_SRC js :eval no
-propTypes: {
+propTypes: {					(ref:propTypes)
     propertyName: React.PropTypes.number.isRequired
 }
 #+END_SRC
@@ -4701,7 +4705,7 @@ You can also specify your own custom validator function tht should return an
 #+BEGIN_SRC js :eval no
 propTypes: {
     propertyName: function (properties, propertyName, componentName) {
-        // ... validation failed
+        // ... validation failed				(ref:tweet-validator)
         return new Error('A property is not valid.');
     }
 }
@@ -4749,7 +4753,7 @@ components.  Next, we're going to focus on our ~Collection~ component.
 #+CAPTION[<Collection Component>]:The ~Collection~ Component (~Collection.react.js~)
 #+NAME:Collection component
 #+HEADER: :noweb yes :eval no
-#+BEGIN_SRC js :tangle snapterest/source/components/Collection.react.js :mkdirp yes
+#+BEGIN_SRC js -n -r :tangle snapterest/source/components/Collection.react.js :mkdirp yes
 <<Collection imports>>
 
 var Collection = React.createClass({
@@ -4788,11 +4792,11 @@ The ~Collection~ component is responsible for rendering two things:
 {{{subheading(Collection's ~render()~ Method)}}}
 
 #+CINDEX:@file{Collection} @code{render()} method
-Take a look at the component's [[(Collection-render)][~render()~ method]].
+Take a look at the component's [[(Collection-render)][~render()~ method, line (Collection-render)]].
 
 #+NAME:Collection.render
-#+BEGIN_SRC js :noweb yes :eval no
-render: function () {
+#+BEGIN_SRC js -n :noweb yes :eval no :exports none
+render: function () {					(ref:Collection-render)
     var numberOfTweetsInCollection = this.getNumberOfTweetsInCollection();
 
     if (numberOfTweetsInCollection > 0) {
@@ -4862,7 +4866,7 @@ we're creating [[(four-variables)][four variables]]:
 
 #+NAME:Collection.render-variables
 #+BEGIN_SRC js :eval no
-var tweets = this.props.tweets;
+var tweets = this.props.tweets;				(ref:four-variables)
 var htmlMarkup = this.createHtmlMarkupStringOfTweetsList();
 var removeAllTweetsFromCollection = this.props.onRemoveAllTweetsFromCollection;
 var handleRemoveTweetFromCollection = this.props.onRemoveTweetFromCollection;
@@ -4957,7 +4961,7 @@ collection [[(Collection-notempty)][is /not/ empty]].
 #+NAME:Collection.render-when not empty
 #+BEGIN_SRC js :eval no
 return (
-    <div>
+    <div>							(ref:Collection-notempty)
         <CollectionControls
             numberOfTweetsInCollection={numberOfTweetsInCollection}
     	htmlMarkup={htmlMarkup}
@@ -5038,7 +5042,7 @@ First build the ~TweetList~ component.  Create the following
 #+CAPTION[<TweetList Component>]:The ~TweetList~ Component (~TweetList.react.js~)
 #+NAME:TweetList component
 #+HEADER: :noweb tangle :mkdirp yes :eval no
-#+BEGIN_SRC js :tangle snapterest/source/components/TweetList.react.js
+#+BEGIN_SRC js -r :tangle snapterest/source/components/TweetList.react.js
 <<TweetList imports>>
 
 <<TweetList styles>>
@@ -5083,7 +5087,7 @@ function.
 #+CAPTION:The ~TweetList~ ~render()~ Method
 #+NAME:TweetList render method
 #+BEGIN_SRC js :eval no
-render: function () {
+render: function () {						(ref:list-of-tweets)
     var tweetElements = this.getListOfTweetIds().map(this.getTweetElement);
 
     return (
@@ -5125,7 +5129,7 @@ this, we will call the ~map()~ method on our array of tweet IDs and pass the
 
 #+NAME:TweetList getTweetElement method A
 #+BEGIN_SRC js :exports none :eval no
-getTweetElement: function (tweetId) {
+getTweetElement: function (tweetId) {		(ref:tweet-in-li)
     var tweet = this.props.tweets[tweetId];
 #+END_SRC
 
@@ -5138,7 +5142,7 @@ var handleRemoveTweetFromCollection = this.props.onRemoveTweetFromCollection;
 #+BEGIN_SRC js :exports none :eval no
     var tweetElement;
 
-    if (handleRemoveTweetFromCollection) {
+    if (handleRemoveTweetFromCollection) {	(ref:scenario1)
         tweetElement = (
             <Tweet
                 tweet={tweet}
@@ -5146,7 +5150,7 @@ var handleRemoveTweetFromCollection = this.props.onRemoveTweetFromCollection;
             />
         );
     } else {
-        tweetElement = <Tweet tweet={tweet} />;
+        tweetElement = <Tweet tweet={tweet} />;	(ref:scenario2)
     }
 
     return (
@@ -8687,7 +8691,8 @@ and API docs check out [[https://facebook.github.io/flux][facebook.github.io/flu
 
 #+NAME:flux-diagram.png
 #+CAPTION:Flux Diagram
-[[file:img/flux-diagram-white-background-25.png]]
+#+ATTR_TEXINFO: :alt img/flux-diagram-white-background-25.png
+[[file:img/flux-diagram-white-background-25]]
 
 ** How Flux works
 
@@ -8828,7 +8833,8 @@ through the system.
 
 #+NAME:flow.png
 #+CAPTION:Views get data from the stores.
-[[file:img/flux-simple-f8-diagram-with-client-action-1300w-50.png]]
+#+ATTR_TEXINFO: :alt img/flux-simple-f8-diagram-with-client-action-1300w-50.png
+[[file:img/flux-simple-f8-diagram-with-client-action-1300w-50]]
 
 *** Next steps
 
